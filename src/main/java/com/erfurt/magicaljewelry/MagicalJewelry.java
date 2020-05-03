@@ -44,7 +44,7 @@ public class MagicalJewelry
 		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(ModColorHandler::registerItemColor);
+		//FMLJavaModLoadingContext.get().getModEventBus().addListener(ModColorHandler::registerItemColor);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueue);
 
 		MinecraftForge.EVENT_BUS.register(this);

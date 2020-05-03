@@ -44,7 +44,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	public JewelItem(Item.Properties properties)
 	{
 		super(properties);
-		//this.setRegistryName(MagicalJewelry.getId(name));
 	}
 	
 	@Override
