@@ -34,10 +34,10 @@ public class MagicalJewelry
 	public MagicalJewelry()
 	{
 		instance = this;
-		
-		MagicalJewelryConfig.loadConfig(MagicalJewelryConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + ".toml"));
-		
+
 		ItemInit.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+		//MagicalJewelryConfig.loadConfig(MagicalJewelryConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + ".toml"));
 		
 		IJewelEffects.init();
 		LootInit.init();

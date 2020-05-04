@@ -41,9 +41,9 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	
 	public static Map<Effect, Integer> totalJewelEffects = new LinkedHashMap<Effect, Integer>();
 	
-	public JewelItem(Item.Properties properties)
+	public JewelItem()
 	{
-		super(properties);
+		super(new Item.Properties().maxStackSize(1).group(ItemGroup.TOOLS).defaultMaxDamage(0));
 	}
 	
 	@Override
@@ -190,12 +190,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		int rarity = getJewelRarity(stack);
 		tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byIndex(rarity).getFormat()));
 		
-		if(MagicalJewelryConfigBuilder.JEWEL_RARTIY_NAME.get())
+		if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get())
 		{
 			tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getName() + ")"));
 		}
 		
-		if(MagicalJewelryConfigBuilder.JEWEL_RARTIY_TOOLTIP.get())
+		if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get())
 		{
 			tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getName()));
 		}

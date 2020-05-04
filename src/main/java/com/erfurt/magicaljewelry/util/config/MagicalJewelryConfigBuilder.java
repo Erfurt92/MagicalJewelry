@@ -6,7 +6,7 @@ public class MagicalJewelryConfigBuilder
 {
 	public static ForgeConfigSpec.IntValue JEWEL_UNCOMMON_EFFECT_AMOUNT, JEWEL_RARE_EFFECT_AMOUNT, JEWEL_EPIC_EFFECT_AMOUNT, JEWEL_LEGENDARY_EFFECT_AMOUNT;
 	
-	public static ForgeConfigSpec.BooleanValue JEWEL_RARTIY_TOOLTIP, JEWEL_RARTIY_NAME;
+	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_TOOLTIP, JEWEL_RARITY_NAME;
 	
 	public static ForgeConfigSpec.IntValue JEWEL_RARE_DROP_RATE, JEWEL_EPIC_DROP_RATE, JEWEL_LEGENDARY_DROP_RATE;
 	
@@ -20,8 +20,8 @@ public class MagicalJewelryConfigBuilder
 		SERVER_BUILDER.pop();
 		
 		SERVER_BUILDER.push("rarity_displayed");
-		JEWEL_RARTIY_TOOLTIP = SERVER_BUILDER.comment("Rarity is displayed in tooltips").define("rarityTooltips", true);
-		JEWEL_RARTIY_NAME = SERVER_BUILDER.comment("Rarity is displayed in the name").define("rarityName", true);
+		JEWEL_RARITY_TOOLTIP = SERVER_BUILDER.comment("Rarity is displayed in tooltips").define("rarityTooltips", true);
+		JEWEL_RARITY_NAME = SERVER_BUILDER.comment("Rarity is displayed in the name").define("rarityName", true);
 		SERVER_BUILDER.pop();
 		
 		SERVER_BUILDER.comment("Rarity Drop Rate Settings", "Note that to change the drop rate for Uncommon rarity, you have to change the other values.", "If Rare, Epic and Legendary are all at max drop rate, Uncommon will not be able to drop.").push("rarity_drop_rate");
