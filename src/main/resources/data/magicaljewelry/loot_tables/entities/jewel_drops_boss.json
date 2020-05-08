@@ -2,6 +2,7 @@
 	"type": "minecraft:entity",
 	"pools": [
 		{
+			"name": "magicaljewelry_jewels_boss",
 			"rolls": 1,
 			"entries": [
 				{

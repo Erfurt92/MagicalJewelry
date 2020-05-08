@@ -1,8 +1,7 @@
 package com.erfurt.magicaljewelry.init;
 
-import com.erfurt.magicaljewelry.loot.SetJewelNBTBossFunction;
-import com.erfurt.magicaljewelry.loot.SetJewelNBTFunction;
-
+import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;
+import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 public class LootInit

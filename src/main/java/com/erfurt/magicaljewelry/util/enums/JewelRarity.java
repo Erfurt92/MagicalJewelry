@@ -1,12 +1,10 @@
 package com.erfurt.magicaljewelry.util.enums;
 
-import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
-
 import net.minecraft.util.text.TextFormatting;
 
-public enum JewelRarity implements IJewelRarity
+public enum JewelRarity
 {
-	UNCOMMEN(0, "Uncommon", TextFormatting.DARK_GREEN),
+	UNCOMMON(0, "Uncommon", TextFormatting.DARK_GREEN),
 	RARE(1, "Rare", TextFormatting.DARK_AQUA),
 	EPIC(2, "Epic", TextFormatting.DARK_PURPLE),
 	LEGENDARY(3, "Legendary", TextFormatting.GOLD);
@@ -43,7 +41,7 @@ public enum JewelRarity implements IJewelRarity
 	{
 		if(index < 0 || index >= INDEX_LOOKUP.length)
 		{
-			index = 0;
+			index = -1;
 		}
 		
 		return INDEX_LOOKUP[index];

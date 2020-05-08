@@ -1,15 +1,9 @@
 package com.erfurt.magicaljewelry.objects.items;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
-
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeColor;
@@ -28,6 +22,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.capability.ICurio;
 import top.theillusivec4.curios.common.capability.CapCurioItem;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 {
@@ -188,16 +187,19 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
 	{
 		int rarity = getJewelRarity(stack);
-		tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byIndex(rarity).getFormat()));
-		
-		if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get())
+		if(rarity >= JewelRarity.UNCOMMON.getIndex())
 		{
-			tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getName() + ")"));
-		}
-		
-		if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get())
-		{
-			tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getName()));
+			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byIndex(rarity).getFormat()));
+
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get())
+			{
+				tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getName() + ")"));
+			}
+
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get())
+			{
+				tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getName()));
+			}
 		}
 		
 		for(int i = 0; i < getJewelEffects(stack).length; i++)
@@ -275,6 +277,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			{
 				ItemStack stack = new ItemStack(this);
 				setGemColor(stack, color.getColorValue());
+				setJewelRarity(stack, -1);
 				items.add(stack);
 			}
 		}

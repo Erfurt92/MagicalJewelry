@@ -1,14 +1,13 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
+import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
+import com.erfurt.magicaljewelry.util.enums.JewelRarity;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
-import com.erfurt.magicaljewelry.util.enums.JewelRarity;
-
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
 
 public interface IJewelEffects
 {
@@ -37,7 +36,7 @@ public interface IJewelEffects
 	
 	public default List<Integer> getEffects(int rarity, List<Integer> effectsForJewel)
 	{
-		List<Effect> effectsForComparising = new ArrayList<Effect>();
+		List<Effect> effectsForComparing = new ArrayList<Effect>();
 		List<Integer> tempIntArray = new ArrayList<Integer>();
 		int j = defaultEffectsList.size() - 3;
 
@@ -45,7 +44,7 @@ public interface IJewelEffects
 		
 		switch(JewelRarity.byIndex(rarity))
 		{
-			case UNCOMMEN: effectCount = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_EFFECT_AMOUNT.get(); break;
+			case UNCOMMON: effectCount = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_EFFECT_AMOUNT.get(); break;
 			case RARE: effectCount = MagicalJewelryConfigBuilder.JEWEL_RARE_EFFECT_AMOUNT.get(); break;
 			case EPIC: effectCount = MagicalJewelryConfigBuilder.JEWEL_EPIC_EFFECT_AMOUNT.get(); break;
 			case LEGENDARY: effectCount = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECT_AMOUNT.get(); break;
@@ -61,17 +60,17 @@ public interface IJewelEffects
 		{
 			int k = rand.nextInt(j);
 			
-			if(!effectsForComparising.contains(defaultEffectsList.get(k)))
+			if(!effectsForComparing.contains(defaultEffectsList.get(k)))
 			{
-				effectsForComparising.add(defaultEffectsList.get(k));
+				effectsForComparing.add(defaultEffectsList.get(k));
 				tempIntArray.add(k);
 			}
 			else
 			{
-				i = effectsForComparising.size();
+				i = effectsForComparing.size();
 			}
 		}
-		
+
 		effectsForJewel = tempIntArray;
 		
 		return effectsForJewel;

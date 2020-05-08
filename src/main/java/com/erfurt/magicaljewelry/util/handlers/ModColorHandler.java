@@ -2,7 +2,6 @@ package com.erfurt.magicaljewelry.util.handlers;
 
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;

@@ -1,6 +1,4 @@
-package com.erfurt.magicaljewelry.loot;
-
-import java.util.Random;
+package com.erfurt.magicaljewelry.loot.functions;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
@@ -9,13 +7,14 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
+
+import java.util.Random;
 
 public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffects, IJewelRarity
 {

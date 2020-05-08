@@ -1,7 +1,6 @@
 package com.erfurt.magicaljewelry.init;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
-
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
