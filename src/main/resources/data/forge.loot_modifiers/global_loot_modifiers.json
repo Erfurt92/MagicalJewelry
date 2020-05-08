@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "entries": [
+    "magicaljewelry:jewel_modifier_hostile",
+    "magicaljewelry:jewel_modifier_boss"
+  ]
+}
