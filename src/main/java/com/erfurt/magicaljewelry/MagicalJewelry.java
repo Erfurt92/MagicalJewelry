@@ -43,7 +43,7 @@ public class MagicalJewelry
 	{
 		instance = this;
 
-		MagicalJewelryConfig.loadConfig(MagicalJewelryConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + ".toml"));
+		MagicalJewelryConfig.loadConfig(MagicalJewelryConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "_client.toml"));
 		
 		IJewelEffects.init();
 		LootInit.init();

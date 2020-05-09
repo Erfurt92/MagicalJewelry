@@ -4,11 +4,16 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class MagicalJewelryConfigBuilder
 {
-	public static ForgeConfigSpec.IntValue JEWEL_UNCOMMON_EFFECT_AMOUNT, JEWEL_RARE_EFFECT_AMOUNT, JEWEL_EPIC_EFFECT_AMOUNT, JEWEL_LEGENDARY_EFFECT_AMOUNT;
-	
-	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_TOOLTIP, JEWEL_RARITY_NAME;
-	
-	public static ForgeConfigSpec.IntValue JEWEL_RARE_DROP_RATE, JEWEL_EPIC_DROP_RATE, JEWEL_LEGENDARY_DROP_RATE;
+	public static ForgeConfigSpec.IntValue JEWEL_UNCOMMON_EFFECT_AMOUNT;
+	public static ForgeConfigSpec.IntValue JEWEL_RARE_EFFECT_AMOUNT;
+	public static ForgeConfigSpec.IntValue JEWEL_EPIC_EFFECT_AMOUNT;
+	public static ForgeConfigSpec.IntValue JEWEL_LEGENDARY_EFFECT_AMOUNT;
+	public static ForgeConfigSpec.BooleanValue JEWEL_LEGENDARY_EFFECTS;
+	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_TOOLTIP;
+	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_NAME;
+	public static ForgeConfigSpec.IntValue JEWEL_RARE_DROP_RATE;
+	public static ForgeConfigSpec.IntValue JEWEL_EPIC_DROP_RATE;
+	public static ForgeConfigSpec.IntValue JEWEL_LEGENDARY_DROP_RATE;
 	
 	public static void init(ForgeConfigSpec.Builder SERVER_BUILDER)
 	{
@@ -18,7 +23,11 @@ public class MagicalJewelryConfigBuilder
 		JEWEL_EPIC_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Epic rarity [default: 3]").defineInRange("epicAmount", 3, 0, 6);
 		JEWEL_LEGENDARY_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Legendary rarity [default: 3]").defineInRange("legendaryAmount", 3, 0, 6);
 		SERVER_BUILDER.pop();
-		
+
+		SERVER_BUILDER.push("legendary_effects");
+		JEWEL_LEGENDARY_EFFECTS = SERVER_BUILDER.comment("Should Legendary rarity have special effects").define("legendartEffects", true);
+		SERVER_BUILDER.pop();
+
 		SERVER_BUILDER.push("rarity_displayed");
 		JEWEL_RARITY_TOOLTIP = SERVER_BUILDER.comment("Rarity is displayed in tooltips").define("rarityTooltips", true);
 		JEWEL_RARITY_NAME = SERVER_BUILDER.comment("Rarity is displayed in the name").define("rarityName", true);

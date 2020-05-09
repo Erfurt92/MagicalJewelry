@@ -51,7 +51,7 @@ public interface IJewelEffects
 			default: effectCount = 0; break;
 		}
 		
-		if(rarity == JewelRarity.LEGENDARY.getIndex())
+		if(rarity == JewelRarity.LEGENDARY.getIndex() && MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get())
 		{
 			tempIntArray.add(rand.nextInt(3) + j);
 		}

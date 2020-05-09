@@ -49,7 +49,6 @@ public class JewelModifier extends LootModifier
         @Override
         public JewelModifier read(ResourceLocation location, JsonObject object, ILootCondition[] iLootCondition)
         {
-            MagicalJewelry.LOGGER.info("JewelModifier have been added");
             ResourceLocation lootTable = new ResourceLocation(JSONUtils.getString(object, "add_loot_table"));
             return new JewelModifier(iLootCondition, lootTable);
         }

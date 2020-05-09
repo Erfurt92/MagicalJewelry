@@ -4,10 +4,10 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum JewelRarity
 {
-	UNCOMMON(0, "Uncommon", TextFormatting.DARK_GREEN),
-	RARE(1, "Rare", TextFormatting.DARK_AQUA),
-	EPIC(2, "Epic", TextFormatting.DARK_PURPLE),
-	LEGENDARY(3, "Legendary", TextFormatting.GOLD);
+	UNCOMMON(0, "uncommon", TextFormatting.DARK_GREEN),
+	RARE(1, "rare", TextFormatting.DARK_AQUA),
+	EPIC(2, "epic", TextFormatting.DARK_PURPLE),
+	LEGENDARY(3, "legendary", TextFormatting.GOLD);
 	
 	private static final JewelRarity[] INDEX_LOOKUP = new JewelRarity[values().length];
 
@@ -30,6 +30,12 @@ public enum JewelRarity
 	public String getName()
 	{
 		return this.name;
+	}
+
+	public String getDisplayName()
+	{
+		String displayName = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
+		return displayName;
 	}
 	
 	public TextFormatting getFormat()

@@ -193,12 +193,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get())
 			{
-				tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getName() + ")"));
+				tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getDisplayName() + ")"));
 			}
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get())
 			{
-				tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getName()));
+				tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getDisplayName()));
 			}
 		}
 		
