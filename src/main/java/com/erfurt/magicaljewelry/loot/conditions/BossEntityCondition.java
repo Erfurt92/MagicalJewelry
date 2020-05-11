@@ -13,26 +13,15 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 public class BossEntityCondition implements ILootCondition
 {
 
-    private BossEntityCondition()
-    {
-
-    }
+    private BossEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)
     {
         Entity entity = context.get(LootParameters.THIS_ENTITY);
 
-        System.out.println(entity);
-
-        if(entity instanceof IMob && !entity.isNonBoss())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if(entity instanceof IMob && !entity.isNonBoss()) return true;
+        else return false;
     }
 
     public static class Serializer extends AbstractSerializer<BossEntityCondition>
@@ -43,15 +32,11 @@ public class BossEntityCondition implements ILootCondition
         }
 
         @Override
-        public void serialize(JsonObject json, BossEntityCondition value, JsonSerializationContext context)
-        {
-
-        }
+        public void serialize(JsonObject json, BossEntityCondition value, JsonSerializationContext context) { }
 
         @Override
         public BossEntityCondition deserialize(JsonObject json, JsonDeserializationContext context)
         {
-
             return new BossEntityCondition();
         }
     }

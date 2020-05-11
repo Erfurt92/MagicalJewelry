@@ -5,14 +5,11 @@ import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
-import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;
-import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTFunction;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -34,7 +31,6 @@ public class MagicalJewelry
 {
 	public static final String MOD_ID = "magicaljewelry";
 	public static final String MOD_NAME = "Magical Jewelry";
-	public static final String VERSION = "1.15.2_1.0.0b";
 	
 	public static MagicalJewelry instance;
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
@@ -73,8 +69,8 @@ public class MagicalJewelry
 	
 	private void enqueue(final InterModEnqueueEvent evt)
 	{
-		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("necklace"));
-		InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring").setSize(2));
+		InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("necklace"));
+		InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring").setSize(2));
 		LOGGER.info("enqueue method registered.");
 	}
 	

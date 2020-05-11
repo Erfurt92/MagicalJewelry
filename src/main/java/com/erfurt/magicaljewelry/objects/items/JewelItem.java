@@ -23,6 +23,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.capability.ICurio;
 import top.theillusivec4.curios.common.capability.CapCurioItem;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,10 +54,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			@Override
 			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
 			{
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
-				{
-					updateJewelEffects(stack, livingEntity, false);
-				}
+				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty()) updateJewelEffects(stack, livingEntity, false);
 			}
 			
 			@Override
@@ -75,14 +73,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			@Override
 			public boolean canRightClickEquip()
 			{	
-				if(!(getJewelEffects(stack).length == 0))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				return true;
 			}
 		});
 	}
@@ -91,34 +82,20 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	{
 		if(removeEffects)
 		{
-			for(int i = 0; i < getJewelEffects(stack).length; i++)
+			if(legendaryEffectsEnabled() && getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex())
+			{
+				int j = getJewelEffects(stack)[6];
+
+				Effect effect = (Effect) defaultEffectsList.toArray()[j];
+				updateJewelEffects(livingEntity, effect);
+			}
+
+			for(int i = 0; i < effectsLength(stack); i++)
 			{
 				int j = getJewelEffects(stack)[i];
 				
 				Effect effect = (Effect) defaultEffectsList.toArray()[j];
-				int length = totalJewelEffects.size();
-				
-				for(int k = 0; k < length; k++)
-				{
-					if(totalJewelEffects.keySet().toArray()[k].equals(effect))
-					{
-						int oldValue = (int) totalJewelEffects.values().toArray()[k];
-						
-						int newValue = (int) totalJewelEffects.values().toArray()[k] - 1;
-						totalJewelEffects.replace(effect, oldValue, newValue);
-						
-						livingEntity.removePotionEffect(effect);
-						livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue, true, false, true));
-						
-						if(oldValue <= 0)
-						{
-							totalJewelEffects.remove(effect);
-							livingEntity.removePotionEffect(effect);
-							
-							break;
-						}
-					}
-				}
+				updateJewelEffects(livingEntity, effect);
 			}
 		}
 		else
@@ -127,9 +104,13 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			{
 				Effect effect = (Effect) totalJewelEffects.keySet().toArray()[i];
 				int level = (int) totalJewelEffects.values().toArray()[i];
-				if(level > 1)
+
+				int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
+				switch(maxLevel)
 				{
-					level = 1;
+					case 1: level = 0; break;
+					case 2: if(level > 1) level = 1; break;
+					case 3: break;
 				}
 
 				boolean flag1 = (effect == (Effect) Effects.FIRE_RESISTANCE);
@@ -137,50 +118,119 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 				boolean flag3 = (effect == (Effect) Effects.NIGHT_VISION);
 				boolean finalFlag = flag1 || flag2 || flag3;
 
-				if(finalFlag)
-				{
-					level = 0;
-				}
+				if(finalFlag) level = 0;
 
 				livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
 			}
+
+			legendaryEffectRemoval(stack, livingEntity);
 		}
 	}
-	
+
+	private void legendaryEffectRemoval(ItemStack stack, LivingEntity livingEntity)
+	{
+		if(!legendaryEffectsEnabled() && getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex())
+		{
+			int j = getJewelEffects(stack)[6];
+			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+
+			boolean effectIsActive = livingEntity.getActivePotionMap().containsKey(effect);
+
+			if(effectIsActive)
+			{
+				boolean effectDuration = livingEntity.getActivePotionEffect(effect).getDuration() > 10000;
+
+				if(effectDuration) livingEntity.removePotionEffect(effect);
+			}
+		}
+	}
+
+	private void updateJewelEffects(LivingEntity livingEntity, Effect effect)
+	{
+		int length = totalJewelEffects.size();
+
+		for(int k = 0; k < length; k++)
+		{
+			if(totalJewelEffects.keySet().toArray()[k].equals(effect))
+			{
+				int oldValue = (int) totalJewelEffects.values().toArray()[k];
+
+				int newValue = (int) totalJewelEffects.values().toArray()[k] - 1;
+				totalJewelEffects.replace(effect, oldValue, newValue);
+
+				livingEntity.removePotionEffect(effect);
+				livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue, true, false, true));
+
+				if(oldValue <= 0)
+				{
+					totalJewelEffects.remove(effect);
+					livingEntity.removePotionEffect(effect);
+
+					break;
+				}
+			}
+		}
+	}
+
 	public void getTotalJewelEffects(ItemStack stack)
 	{
-		for(int i = 0; i < getJewelEffects(stack).length; i++)
+		if(legendaryEffectsEnabled() && getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex())
+		{
+			int j = getJewelEffects(stack)[6];
+
+			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+
+			updateTotalJewelEffects(effect);
+		}
+		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
 
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
-			
-			int length = totalJewelEffects.size();
 
-			if(!totalJewelEffects.isEmpty())
+			updateTotalJewelEffects(effect);
+		}
+	}
+
+	private void updateTotalJewelEffects(Effect effect)
+	{
+		int length = totalJewelEffects.size();
+
+		if(!totalJewelEffects.isEmpty())
+		{
+			for(int k = 0; k < length; k++)
 			{
-				for(int k = 0; k < length; k++)
+				if(totalJewelEffects.keySet().toArray()[k].equals(effect))
 				{
-					if(totalJewelEffects.keySet().toArray()[k].equals(effect))
-					{
-						int oldValue = (int) totalJewelEffects.values().toArray()[k];
-						int newValue = (int) totalJewelEffects.values().toArray()[k] + 1;
-						
-						totalJewelEffects.replace(effect, oldValue, newValue);
-						
-						break;
-					}
-					if(k == (length - 1))
-					{
-						totalJewelEffects.put(effect, 0);
-					}
+					int oldValue = (int) totalJewelEffects.values().toArray()[k];
+					int newValue = (int) totalJewelEffects.values().toArray()[k] + 1;
+
+					totalJewelEffects.replace(effect, oldValue, newValue);
+
+					break;
 				}
-			}
-			else
-			{
-				totalJewelEffects.put(effect, 0);
+				if(k == (length - 1)) totalJewelEffects.put(effect, 0);
 			}
 		}
+		else totalJewelEffects.put(effect, 0);
+	}
+
+	public boolean legendaryEffectsEnabled()
+	{
+		boolean legendaryEffectsEnabled = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get();
+		return legendaryEffectsEnabled;
+	}
+
+	public int effectsLength(ItemStack stack)
+	{
+		int effectLength = 0;
+
+		if(getJewelRarity(stack) == JewelRarity.UNCOMMON.getIndex()) effectLength = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_EFFECT_AMOUNT.get();
+		else if(getJewelRarity(stack) == JewelRarity.RARE.getIndex()) effectLength = MagicalJewelryConfigBuilder.JEWEL_RARE_EFFECT_AMOUNT.get();
+		else if(getJewelRarity(stack) == JewelRarity.EPIC.getIndex()) effectLength = MagicalJewelryConfigBuilder.JEWEL_EPIC_EFFECT_AMOUNT.get();
+		else if(getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex()) effectLength = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECT_AMOUNT.get();
+		
+		return effectLength;
 	}
 	
 	@Override
@@ -191,18 +241,22 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		{
 			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byIndex(rarity).getFormat()));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get())
-			{
-				tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getDisplayName() + ")"));
-			}
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byIndex(rarity).getDisplayName() + ")"));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get())
-			{
-				tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getDisplayName()));
-			}
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new StringTextComponent(JewelRarity.byIndex(rarity).getFormat() + JewelRarity.byIndex(rarity).getDisplayName()));
 		}
-		
-		for(int i = 0; i < getJewelEffects(stack).length; i++)
+
+		if(legendaryEffectsEnabled() && rarity == JewelRarity.LEGENDARY.getIndex())
+		{
+			int j = getJewelEffects(stack)[6];
+
+			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+			String effectName = effect.getDisplayName().getString();
+
+			tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
+		}
+
+		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
 			
@@ -216,14 +270,8 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	@Override
 	public boolean hasEffect(ItemStack stack)
 	{
-		if(getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		if(getJewelRarity(stack) == JewelRarity.LEGENDARY.getIndex()) return true;
+		else return false;
 	}
 	
 	public static int getJewelRarity(ItemStack stack)
@@ -261,10 +309,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 
 	public static int getItemColor(ItemStack stack, int tintIndex)
 	{
-		if(tintIndex == 0)
-		{
-			return getGemColor(stack);
-		}
+		if(tintIndex == 0) return getGemColor(stack);
 		return 0xFFFFFF;
 	}
 	

@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.init;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
+import com.erfurt.magicaljewelry.objects.items.TheOneRingItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,4 +16,6 @@ public class ItemInit
 	public static final RegistryObject<Item> SILVER_AMULET = ITEMS.register("silver_amulet", JewelItem::new);
 	public static final RegistryObject<Item> GOLD_RING = ITEMS.register("gold_ring", JewelItem::new);
 	public static final RegistryObject<Item> SILVER_RING = ITEMS.register("silver_ring", JewelItem::new);
+
+	public static final RegistryObject<Item> THE_ONE_RING = ITEMS.register("the_one_ring", TheOneRingItem::new);
 }

@@ -2,6 +2,7 @@
 	"replace": false,
 	"values": [
   		"magicaljewelry:gold_ring",
-  		"magicaljewelry:silver_ring"
+  		"magicaljewelry:silver_ring",
+		"magicaljewelry:the_one_ring"
 	]
 }

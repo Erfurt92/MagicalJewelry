@@ -13,26 +13,15 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 public class HostileEntityCondition implements ILootCondition
 {
 
-    private HostileEntityCondition()
-    {
-
-    }
+    private HostileEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)
     {
         Entity entity = context.get(LootParameters.THIS_ENTITY);
 
-        System.out.println(entity);
-
-        if(entity instanceof IMob && entity.isNonBoss())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if(entity instanceof IMob && entity.isNonBoss()) return true;
+        else return false;
     }
 
     public static class Serializer extends ILootCondition.AbstractSerializer<HostileEntityCondition>
@@ -43,15 +32,11 @@ public class HostileEntityCondition implements ILootCondition
         }
 
         @Override
-        public void serialize(JsonObject json, HostileEntityCondition value, JsonSerializationContext context)
-        {
-
-        }
+        public void serialize(JsonObject json, HostileEntityCondition value, JsonSerializationContext context) { }
 
         @Override
         public HostileEntityCondition deserialize(JsonObject json, JsonDeserializationContext context)
         {
-
             return new HostileEntityCondition();
         }
     }

@@ -15,7 +15,7 @@ public enum JewelRarity
 	private final String name;
 	private final TextFormatting format;
 	
-	private JewelRarity(int indexIn, String nameIn, TextFormatting formatIn)
+	JewelRarity(int indexIn, String nameIn, TextFormatting formatIn)
 	{
 		this.index = indexIn;
 		this.name = nameIn;
@@ -45,18 +45,12 @@ public enum JewelRarity
 	
 	public static JewelRarity byIndex(int index)
 	{
-		if(index < 0 || index >= INDEX_LOOKUP.length)
-		{
-			index = -1;
-		}
+		if(index < 0 || index >= INDEX_LOOKUP.length) index = -1;
 		
 		return INDEX_LOOKUP[index];
 	}
 	static
 	{
-		for(JewelRarity types : values())
-		{
-			INDEX_LOOKUP[types.getIndex()] = types;
-		}
+		for(JewelRarity types : values()) INDEX_LOOKUP[types.getIndex()] = types;
 	}
 }

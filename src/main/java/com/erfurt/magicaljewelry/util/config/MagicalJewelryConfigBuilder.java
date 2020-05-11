@@ -8,6 +8,7 @@ public class MagicalJewelryConfigBuilder
 	public static ForgeConfigSpec.IntValue JEWEL_RARE_EFFECT_AMOUNT;
 	public static ForgeConfigSpec.IntValue JEWEL_EPIC_EFFECT_AMOUNT;
 	public static ForgeConfigSpec.IntValue JEWEL_LEGENDARY_EFFECT_AMOUNT;
+	public static ForgeConfigSpec.IntValue JEWEL_MAX_EFFECT_LEVEL;
 	public static ForgeConfigSpec.BooleanValue JEWEL_LEGENDARY_EFFECTS;
 	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_TOOLTIP;
 	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_NAME;
@@ -17,15 +18,13 @@ public class MagicalJewelryConfigBuilder
 	
 	public static void init(ForgeConfigSpec.Builder SERVER_BUILDER)
 	{
-		SERVER_BUILDER.comment("Misc Jewel Settings").push("effect_amount");
-		JEWEL_UNCOMMON_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Uncommon rarity [default: 1]").defineInRange("uncommonAmount", 1, 0, 4);
-		JEWEL_RARE_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Rare rarity [default: 2]").defineInRange("rareAmount", 2, 0, 5);
-		JEWEL_EPIC_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Epic rarity [default: 3]").defineInRange("epicAmount", 3, 0, 6);
+		SERVER_BUILDER.comment("Misc Jewel Settings").push("effect_settings");
+		JEWEL_UNCOMMON_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Uncommon rarity [default: 1]").defineInRange("uncommonAmount", 1, 0, 3);
+		JEWEL_RARE_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Rare rarity [default: 2]").defineInRange("rareAmount", 2, 0, 4);
+		JEWEL_EPIC_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Epic rarity [default: 3]").defineInRange("epicAmount", 3, 0, 5);
 		JEWEL_LEGENDARY_EFFECT_AMOUNT = SERVER_BUILDER.comment("Amount of effects for Legendary rarity [default: 3]").defineInRange("legendaryAmount", 3, 0, 6);
-		SERVER_BUILDER.pop();
-
-		SERVER_BUILDER.push("legendary_effects");
-		JEWEL_LEGENDARY_EFFECTS = SERVER_BUILDER.comment("Should Legendary rarity have special effects").define("legendartEffects", true);
+		JEWEL_MAX_EFFECT_LEVEL = SERVER_BUILDER.comment("Max level for combined effects [default: 2]").defineInRange("maxEffectLevel", 2, 1, 3);
+		JEWEL_LEGENDARY_EFFECTS = SERVER_BUILDER.comment("Should Legendary rarity have special effects").define("legendaryEffects", true);
 		SERVER_BUILDER.pop();
 
 		SERVER_BUILDER.push("rarity_displayed");

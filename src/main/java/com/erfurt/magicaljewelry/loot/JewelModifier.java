@@ -1,6 +1,5 @@
 package com.erfurt.magicaljewelry.loot;
 
-import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
@@ -30,10 +29,7 @@ public class JewelModifier extends LootModifier
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
-        if(doubleEntryPrevention)
-        {
-            return generatedLoot;
-        }
+        if(doubleEntryPrevention) return generatedLoot;
 
         doubleEntryPrevention = true;
         LootTable lootTable = context.getLootTable(this.lootTable);

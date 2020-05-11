@@ -9,14 +9,14 @@ public interface IJewelRarity
 {
 	Random rand = new Random();
 
-	static int legendaryDropRate = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
-	static int epicDropRate = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
-	static int rareDropRate = MagicalJewelryConfigBuilder.JEWEL_RARE_DROP_RATE.get();
+	int legendaryDropRate = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
+	int epicDropRate = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
+	int rareDropRate = MagicalJewelryConfigBuilder.JEWEL_RARE_DROP_RATE.get();
 
-	public static int totalEpicDropRate = epicDropRate + legendaryDropRate;
-	public static int totalRareDropRate = rareDropRate + totalEpicDropRate;
+	int totalEpicDropRate = epicDropRate + legendaryDropRate;
+	int totalRareDropRate = rareDropRate + totalEpicDropRate;
 
-	public default int getRarity()
+	default int getRarity()
 	{
 		int chance = rand.nextInt(100) + 1;
 
@@ -30,7 +30,7 @@ public interface IJewelRarity
 		return rarity;
 	}
 	
-	public default int getRarityBoss()
+	default int getRarityBoss()
 	{
 		int chance =  rand.nextInt(totalEpicDropRate) + 1;
 		
