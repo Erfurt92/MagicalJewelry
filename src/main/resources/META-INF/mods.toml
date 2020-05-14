@@ -25,9 +25,3 @@ Magical Jewelry is a mod that adds rings and amulets of different rarities, with
     versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"
-[[dependencies.magicaljewelry]]
-    modId="curios"
-    mandatory=true
-    versionRange="[FORGE-1.15.2-2.0.2.1,)"
-    ordering="NONE"
-    side="BOTH"

@@ -18,9 +18,9 @@ import java.util.Random;
 
 public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffects, IJewelRarity
 {
-	private static int rarityID;
+	private static String rarityID;
 	
-	private static int gemColor;
+	private static String gemColor;
 	
 	private SetJewelNBTBossFunction(ILootCondition[] conditionIn)
 	{
@@ -31,13 +31,15 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffec
 	public ItemStack doApply(ItemStack stack, LootContext context)
 	{
 		rarityID = getRarityBoss();
+
 		JewelItem.setJewelRarity(stack, rarityID);
 		
 		JewelItem.setJewelEffects(stack, getEffects(rarityID, JewelItem.jewelEffects));
 
 		int colorID = new Random().nextInt(DyeColor.values().length);
-		gemColor = DyeColor.byId(colorID).getColorValue();
+		gemColor = DyeColor.byId(colorID).getName();
 		JewelItem.setGemColor(stack, gemColor);
+
 		return stack;
 	}
 	

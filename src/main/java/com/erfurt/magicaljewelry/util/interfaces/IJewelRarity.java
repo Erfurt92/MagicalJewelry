@@ -16,28 +16,28 @@ public interface IJewelRarity
 	int totalEpicDropRate = epicDropRate + legendaryDropRate;
 	int totalRareDropRate = rareDropRate + totalEpicDropRate;
 
-	default int getRarity()
+	default String getRarity()
 	{
 		int chance = rand.nextInt(100) + 1;
 
-		int rarity;
+		String rarity;
 		
-		if(chance <= legendaryDropRate) rarity = JewelRarity.LEGENDARY.getIndex();
-		else if(chance <= totalEpicDropRate && chance > legendaryDropRate) rarity = JewelRarity.EPIC.getIndex();
-		else if(chance <= totalRareDropRate && chance > totalEpicDropRate) rarity = JewelRarity.RARE.getIndex();
-		else rarity = JewelRarity.UNCOMMON.getIndex();
+		if(chance <= legendaryDropRate) rarity = JewelRarity.LEGENDARY.getName();
+		else if(chance <= totalEpicDropRate) rarity = JewelRarity.EPIC.getName();
+		else if(chance <= totalRareDropRate) rarity = JewelRarity.RARE.getName();
+		else rarity = JewelRarity.UNCOMMON.getName();
 		
 		return rarity;
 	}
 	
-	default int getRarityBoss()
+	default String getRarityBoss()
 	{
-		int chance =  rand.nextInt(totalEpicDropRate) + 1;
+		int chance = rand.nextInt(totalEpicDropRate) + 1;
 		
-		int rarity;
+		String rarity;
 		
-		if(chance <= legendaryDropRate) rarity = JewelRarity.LEGENDARY.getIndex();
-		else rarity = JewelRarity.EPIC.getIndex();
+		if(chance <= legendaryDropRate) rarity = JewelRarity.LEGENDARY.getName();
+		else rarity = JewelRarity.EPIC.getName();
 		
 		return rarity;
 	}

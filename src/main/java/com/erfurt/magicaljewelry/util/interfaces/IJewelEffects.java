@@ -12,7 +12,7 @@ public interface IJewelEffects
 {
 	Random rand = new Random();
 	
-	List<Effect> defaultEffectsList = new ArrayList<Effect>();
+	List<Effect> defaultEffectsList = new ArrayList<>();
 	
 	static void init()
 	{
@@ -33,7 +33,7 @@ public interface IJewelEffects
 		defaultEffectsList.add(8, Effects.NIGHT_VISION);
 	}
 	
-	default List<Integer> getEffects(int rarity, List<Integer> effectsForJewel)
+	default List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
 	{
 		List<Effect> effectsForComparing = new ArrayList<Effect>();
 		List<Integer> tempIntArray = new ArrayList<Integer>();
@@ -51,7 +51,7 @@ public interface IJewelEffects
 			else i = effectsForComparing.size();
 		}
 
-		if(rarity == JewelRarity.LEGENDARY.getIndex()) tempIntArray.add(rand.nextInt(3) + j);
+		if(rarity == JewelRarity.LEGENDARY.getName()) tempIntArray.add(rand.nextInt(3) + j);
 
 		effectsForJewel = tempIntArray;
 		
