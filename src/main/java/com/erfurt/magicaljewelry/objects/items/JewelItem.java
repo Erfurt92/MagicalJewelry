@@ -10,7 +10,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -19,9 +18,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import top.theillusivec4.curios.api.capability.ICurio;
-import top.theillusivec4.curios.common.capability.CapCurioItem;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,38 +39,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	public JewelItem()
 	{
 		super(new Item.Properties().maxStackSize(1).group(ItemGroup.TOOLS).defaultMaxDamage(0));
-	}
-	
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
-	{
-		return CapCurioItem.createProvider(new ICurio()
-		{
-			@Override
-			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
-			{
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty()) updateJewelEffects(stack, livingEntity, false);
-			}
-			
-			@Override
-			public void onEquipped(String identifier, LivingEntity livingEntity)
-			{
-				getTotalJewelEffects(stack);
-				updateJewelEffects(stack, livingEntity, false);
-			}
-			
-			@Override
-			public void onUnequipped(String identifier, LivingEntity livingEntity)
-			{
-				updateJewelEffects(stack, livingEntity, true);
-			}
-
-			@Override
-			public boolean canRightClickEquip()
-			{	
-				return true;
-			}
-		});
 	}
 	
 	public void updateJewelEffects(ItemStack stack, LivingEntity livingEntity, boolean removeEffects)
