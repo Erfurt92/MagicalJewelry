@@ -1,7 +1,5 @@
 package com.erfurt.magicaljewelry.objects.items;
 
-import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
-import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -19,7 +17,7 @@ import top.theillusivec4.curios.common.capability.CapCurioItem;
 
 import java.util.List;
 
-public class TheOneRingItem extends Item implements IJewelEffects, IJewelRarity
+public class TheOneRingItem extends Item
 {
     public TheOneRingItem()
     {

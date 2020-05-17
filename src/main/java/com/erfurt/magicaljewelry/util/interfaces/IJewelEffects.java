@@ -35,8 +35,8 @@ public interface IJewelEffects
 	
 	default List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
 	{
-		List<Effect> effectsForComparing = new ArrayList<Effect>();
-		List<Integer> tempIntArray = new ArrayList<Integer>();
+		List<Effect> effectsForComparing = new ArrayList<>();
+		List<Integer> tempIntArray = new ArrayList<>();
 		int j = defaultEffectsList.size() - 3;
 
 		for(int i = 1; i <= j; i++)

@@ -1,5 +1,8 @@
 package com.erfurt.magicaljewelry.objects.items;
 
+import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.init.ItemInit;
+import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
@@ -7,6 +10,11 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -14,14 +22,19 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import top.theillusivec4.curios.api.capability.ICurio;
+import top.theillusivec4.curios.common.capability.CapCurioItem;
 
 import java.util.*;
 
@@ -38,10 +51,95 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	public static Map<Effect, Integer> totalJewelEffects = new LinkedHashMap<>();
 
 	public static Multimap<String, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
-	
+
+	public static final ResourceLocation GOLD_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/gold_amulet.png");
+	public static final ResourceLocation SILVER_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/silver_amulet.png");
+	public static final ResourceLocation GEM_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/gem_amulet.png");
+
 	public JewelItem()
 	{
 		super(new Item.Properties().maxStackSize(1).group(ItemGroup.TOOLS).defaultMaxDamage(0));
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	{
+		return CapCurioItem.createProvider(new ICurio()
+		{
+			private Object amuletModel;
+
+			@Override
+			public boolean hasRender(String identifier, LivingEntity livingEntity)
+			{
+				return stack.getItem() instanceof JewelAmuletItem;
+			}
+
+			@Override
+			public void render(String identifier, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
+			{
+				RenderHelper.translateIfSneaking(matrixStack, livingEntity);
+				RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
+
+				if(!(this.amuletModel instanceof JewelAmuletModel)) this.amuletModel = new JewelAmuletModel();
+
+				JewelAmuletModel<?> jewelAmuletModel = (JewelAmuletModel)this.amuletModel;
+				IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(renderTypeBuffer, jewelAmuletModel.getRenderType(getRenderType(stack)), false, stack.hasEffect());
+				jewelAmuletModel.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+				float[] i = DyeColor.byTranslationKey(getGemColor(stack), DyeColor.WHITE).getColorComponentValues();
+				float red = i[0];
+				float green = i[1];
+				float blue = i[2];
+
+				IVertexBuilder vertexBuilderGem = ItemRenderer.getBuffer(renderTypeBuffer, jewelAmuletModel.getRenderType(GEM_AMULET_TEXTURE), false, stack.hasEffect());
+				jewelAmuletModel.render(matrixStack, vertexBuilderGem, light, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+			}
+
+			@Override
+			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
+			{
+				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
+				{
+					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+
+					updateJewelEffects(stack, livingEntity, false);
+				}
+			}
+
+			@Override
+			public void onEquipped(String identifier, LivingEntity livingEntity)
+			{
+				getTotalJewelEffects(stack);
+				updateJewelEffects(stack, livingEntity, false);
+			}
+
+			@Override
+			public void onUnequipped(String identifier, LivingEntity livingEntity)
+			{
+				updateJewelEffects(stack, livingEntity, true);
+			}
+
+			@Override
+			public Multimap<String, AttributeModifier> getAttributeModifiers(String identifier)
+			{
+				Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+				updateJewelAttributes(stack, attributes);
+
+				return attributes;
+			}
+
+			@Override
+			public boolean canRightClickEquip()
+			{
+				return true;
+			}
+		});
+	}
+
+	private static ResourceLocation getRenderType(ItemStack stack)
+	{
+		if(stack.getItem() == ItemInit.GOLD_AMULET.get().getItem()) return GOLD_AMULET_TEXTURE;
+		return SILVER_AMULET_TEXTURE;
 	}
 
 	public void updateJewelEffects(ItemStack stack, LivingEntity livingEntity, boolean removeEffects)
