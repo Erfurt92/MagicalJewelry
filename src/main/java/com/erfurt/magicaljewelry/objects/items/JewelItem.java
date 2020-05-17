@@ -2,10 +2,14 @@ package com.erfurt.magicaljewelry.objects.items;
 
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
+import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -19,28 +23,27 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class JewelItem extends Item implements IJewelEffects, IJewelRarity
+public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJewelAttributes
 {
 	private static final String NBT_RARITY = "Rarity";
-	
-	private static final String NBT_COLOR = "GemColor";
-	
 	private static final String NBT_EFFECTS = "Effects";
-	
+	private static final String NBT_ATTRIBUTES = "Attributes";
+	private static final String NBT_UUID = "UUID";
+	private static final String NBT_COLOR = "GemColor";
+
 	public static List<Integer> jewelEffects = new ArrayList<>();
 	
 	public static Map<Effect, Integer> totalJewelEffects = new LinkedHashMap<>();
+
+	public static Multimap<String, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
 	
 	public JewelItem()
 	{
 		super(new Item.Properties().maxStackSize(1).group(ItemGroup.TOOLS).defaultMaxDamage(0));
 	}
-	
+
 	public void updateJewelEffects(ItemStack stack, LivingEntity livingEntity, boolean removeEffects)
 	{
 		if(removeEffects)
@@ -48,16 +51,16 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			if(legendaryEffectsEnabled() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
 			{
 				int j = getJewelEffects(stack)[6];
-
 				Effect effect = (Effect) defaultEffectsList.toArray()[j];
+
 				updateJewelEffects(livingEntity, effect);
 			}
 
 			for(int i = 0; i < effectsLength(stack); i++)
 			{
 				int j = getJewelEffects(stack)[i];
-				
 				Effect effect = (Effect) defaultEffectsList.toArray()[j];
+
 				updateJewelEffects(livingEntity, effect);
 			}
 		}
@@ -69,6 +72,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 				int level = (int) totalJewelEffects.values().toArray()[i];
 
 				int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
+
 				switch(maxLevel)
 				{
 					case 1: level = 0; break;
@@ -76,10 +80,10 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 					case 3: break;
 				}
 
-				boolean flag1 = (effect == Effects.FIRE_RESISTANCE);
-				boolean flag2 = (effect == Effects.WATER_BREATHING);
-				boolean flag3 = (effect == Effects.NIGHT_VISION);
-				boolean finalFlag = flag1 || flag2 || flag3;
+				boolean flagFR = (effect == Effects.FIRE_RESISTANCE);
+				boolean flagWB = (effect == Effects.WATER_BREATHING);
+				boolean flagNV = (effect == Effects.NIGHT_VISION);
+				boolean finalFlag = flagFR || flagWB || flagNV;
 
 				if(finalFlag) level = 0;
 
@@ -99,7 +103,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			if(totalJewelEffects.keySet().toArray()[k].equals(effect))
 			{
 				int oldValue = (int) totalJewelEffects.values().toArray()[k];
-
 				int newValue = (int) totalJewelEffects.values().toArray()[k] - 1;
 				totalJewelEffects.replace(effect, oldValue, newValue);
 
@@ -110,7 +113,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 				{
 					totalJewelEffects.remove(effect);
 					livingEntity.removePotionEffect(effect);
-
 					break;
 				}
 			}
@@ -140,7 +142,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		if(legendaryEffectsEnabled() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
 		{
 			int j = getJewelEffects(stack)[6];
-
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
 
 			updateTotalJewelEffects(effect);
@@ -148,7 +149,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
-
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
 
 			updateTotalJewelEffects(effect);
@@ -167,7 +167,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 				{
 					int oldValue = (int) totalJewelEffects.values().toArray()[k];
 					int newValue = (int) totalJewelEffects.values().toArray()[k] + 1;
-
 					totalJewelEffects.replace(effect, oldValue, newValue);
 
 					break;
@@ -176,6 +175,38 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			}
 		}
 		else totalJewelEffects.put(effect, 0);
+	}
+
+	public void updateJewelAttributes(ItemStack stack, Multimap<String, AttributeModifier> jewelAttributes)
+	{
+		if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()) || getJewelRarity(stack).equals(JewelRarity.EPIC.getName()))
+		{
+			int amount = 2;
+			int index = getJewelAttributes(stack);
+
+			switch(index)
+			{
+				// ARMOR TOUGHNESS
+				case 0:
+				// ATTACK DAMAGE
+				case 2: break;
+				// ARMOR
+				case 1: if(stack.getItem() instanceof JewelAmuletItem) amount = 4; break;
+				// MAX HEALTH
+				case 3:
+				{
+					if(stack.getItem() instanceof JewelAmuletItem) amount = 8;
+					else amount = 6;
+					break;
+				}
+			}
+			String uuid = getJewelUUID(stack);
+			AttributeModifier attributeModifier = new AttributeModifier(UUID.fromString(uuid), descriptionAttributesList.get(index), amount, AttributeModifier.Operation.ADDITION);
+
+			jewelAttributesForRemoval.put(nameAttributesList.get(index), attributeModifier);
+
+			if(MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) jewelAttributes.put(nameAttributesList.get(index), attributeModifier);
+		}
 	}
 
 	public boolean legendaryEffectsEnabled()
@@ -187,10 +218,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	{
 		int effectLength = 0;
 
-		if(getJewelRarity(stack).equals(JewelRarity.UNCOMMON.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_EFFECT_AMOUNT.get();
-		else if(getJewelRarity(stack).equals(JewelRarity.RARE.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_RARE_EFFECT_AMOUNT.get();
-		else if(getJewelRarity(stack).equals(JewelRarity.EPIC.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_EPIC_EFFECT_AMOUNT.get();
-		else if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECT_AMOUNT.get();
+		String rarity = getJewelRarity(stack);
+
+		if(rarity.equals(JewelRarity.UNCOMMON.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_EFFECT_AMOUNT.get();
+		else if(rarity.equals(JewelRarity.RARE.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_RARE_EFFECT_AMOUNT.get();
+		else if(rarity.equals(JewelRarity.EPIC.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_EPIC_EFFECT_AMOUNT.get();
+		else if(rarity.equals(JewelRarity.LEGENDARY.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECT_AMOUNT.get();
 
 		return effectLength;
 	}
@@ -199,7 +232,14 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
 	{
 		String rarity = getJewelRarity(stack);
-		if(!getJewelRarity(stack).equals("common"))
+
+		boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
+		boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
+		boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
+		boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
+		boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
+
+		if(finalFlag)
 		{
 			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byName(rarity).getFormat()));
 
@@ -211,7 +251,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		if(legendaryEffectsEnabled() && rarity.equals(JewelRarity.LEGENDARY.getName()))
 		{
 			int j = getJewelEffects(stack)[6];
-
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
 			String effectName = effect.getDisplayName().getString();
 
@@ -221,7 +260,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
-
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
 			String effectName = effect.getDisplayName().getString();
 
@@ -256,6 +294,28 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 		stack.getOrCreateTag().putIntArray(NBT_EFFECTS, effects);
 		return stack;
 	}
+
+	public static int getJewelAttributes(ItemStack stack)
+	{
+		return stack.getOrCreateTag().getInt(NBT_ATTRIBUTES);
+	}
+
+	public static ItemStack setJewelAttributes(ItemStack stack, int attributes)
+	{
+		stack.getOrCreateTag().putInt(NBT_ATTRIBUTES, attributes);
+		return stack;
+	}
+
+	public static String getJewelUUID(ItemStack stack)
+	{
+		return stack.getOrCreateTag().getString(NBT_UUID);
+	}
+
+	public static ItemStack setJewelUUID(ItemStack stack, String uuid)
+	{
+		stack.getOrCreateTag().putString(NBT_UUID, uuid);
+		return stack;
+	}
 	
 	public static String getGemColor(ItemStack stack)
 	{
@@ -283,7 +343,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity
 			{
 				ItemStack stack = new ItemStack(this);
 				setGemColor(stack, color.getName());
-				setJewelRarity(stack, "common");
+				setJewelRarity(stack, "null");
 				items.add(stack);
 			}
 		}

@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.loot.functions;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
+import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.gson.JsonDeserializationContext;
@@ -15,8 +16,9 @@ import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
 import java.util.Random;
+import java.util.UUID;
 
-public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffects, IJewelRarity
+public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffects, IJewelRarity, IJewelAttributes
 {
 	private static String rarityID;
 	
@@ -35,6 +37,10 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffec
 		JewelItem.setJewelRarity(stack, rarityID);
 		
 		JewelItem.setJewelEffects(stack, getEffects(rarityID, JewelItem.jewelEffects));
+
+		JewelItem.setJewelAttributes(stack, getAttributes());
+
+		JewelItem.setJewelUUID(stack, UUID.randomUUID().toString());
 
 		int colorID = new Random().nextInt(DyeColor.values().length);
 		gemColor = DyeColor.byId(colorID).getName();

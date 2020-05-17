@@ -7,6 +7,7 @@ import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
+import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -42,6 +43,7 @@ public class MagicalJewelry
 		MagicalJewelryConfig.loadConfig(MagicalJewelryConfig.CONFIG, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "_client.toml"));
 		
 		IJewelEffects.init();
+		IJewelAttributes.init();
 		LootInit.init();
 
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

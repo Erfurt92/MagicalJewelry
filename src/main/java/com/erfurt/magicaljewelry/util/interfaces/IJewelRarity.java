@@ -1,9 +1,9 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
-import java.util.Random;
-
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
+
+import java.util.Random;
 
 public interface IJewelRarity
 {

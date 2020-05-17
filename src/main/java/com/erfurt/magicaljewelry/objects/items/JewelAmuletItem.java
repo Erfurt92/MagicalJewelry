@@ -3,12 +3,16 @@ package com.erfurt.magicaljewelry.objects.items;
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
+import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,10 +50,8 @@ public class JewelAmuletItem extends JewelItem
             {
                 RenderHelper.translateIfSneaking(matrixStack, livingEntity);
                 RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
-                if(!(this.amuletModel instanceof JewelAmuletModel))
-                {
-                    this.amuletModel = new JewelAmuletModel();
-                }
+
+                if(!(this.amuletModel instanceof JewelAmuletModel)) this.amuletModel = new JewelAmuletModel();
 
                 JewelAmuletModel<?> jewelAmuletModel = (JewelAmuletModel)this.amuletModel;
                 IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(renderTypeBuffer, jewelAmuletModel.getRenderType(getRenderType(stack)), false, stack.hasEffect());
@@ -67,7 +69,12 @@ public class JewelAmuletItem extends JewelItem
             @Override
             public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
             {
-                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty()) updateJewelEffects(stack, livingEntity, false);
+                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
+                {
+                    if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+
+                    updateJewelEffects(stack, livingEntity, false);
+                }
             }
 
             @Override
@@ -81,6 +88,15 @@ public class JewelAmuletItem extends JewelItem
             public void onUnequipped(String identifier, LivingEntity livingEntity)
             {
                 updateJewelEffects(stack, livingEntity, true);
+            }
+
+            @Override
+            public Multimap<String, AttributeModifier> getAttributeModifiers(String identifier)
+            {
+                Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+                updateJewelAttributes(stack, attributes);
+
+                return attributes;
             }
 
             @Override
