@@ -441,7 +441,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			{
 				ItemStack stack = new ItemStack(this);
 				setGemColor(stack, color.getName());
-				setJewelRarity(stack, "null");
 				items.add(stack);
 			}
 		}
