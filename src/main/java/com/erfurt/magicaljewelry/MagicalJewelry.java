@@ -9,6 +9,8 @@ import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -89,4 +91,13 @@ public class MagicalJewelry
 	{
 		return new ResourceLocation(MOD_ID, path);
 	}
+
+	public static final ItemGroup GROUP = new ItemGroup("magicaljewelryGroup")
+	{
+		@Override
+		public ItemStack createIcon()
+		{
+			return new ItemStack(ItemInit.GOLD_RING.get());
+		}
+	};
 }

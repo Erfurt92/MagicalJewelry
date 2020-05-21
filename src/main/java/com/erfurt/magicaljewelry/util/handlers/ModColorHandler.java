@@ -11,10 +11,10 @@ public class ModColorHandler
 {
 	public static void registerItemColor(ColorHandlerEvent.Item event)
 	{
-		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_AMULET.get().getItem());
-		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_AMULET.get().getItem());
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_AMULET.get());
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_AMULET.get());
 		
-		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_RING.get().getItem());
-		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_RING.get().getItem());
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_RING.get());
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_RING.get());
 	}
 }

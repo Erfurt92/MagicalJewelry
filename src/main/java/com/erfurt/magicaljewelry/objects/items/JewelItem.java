@@ -58,7 +58,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 	public JewelItem()
 	{
-		super(new Item.Properties().maxStackSize(1).group(ItemGroup.TOOLS).defaultMaxDamage(0));
+		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP).defaultMaxDamage(0));
 	}
 
 	@Override

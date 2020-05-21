@@ -4,5 +4,7 @@
 	"item.magicaljewelry.gold_ring": "Gold Ring",
 	"item.magicaljewelry.silver_ring": "Silver Ring",
 
-	"item.magicaljewelry.the_one_ring": "The One Ring"
+	"item.magicaljewelry.the_one_ring": "The One Ring",
+
+	"itemGroup.magicaljewelryGroup": "Magical Jewelry"
 }
