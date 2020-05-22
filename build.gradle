@@ -62,15 +62,6 @@ dependencies {
 }
 
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += 'docs'
-        }
-    }
-}
-
-
 jar {
     manifest {
         attributes([
