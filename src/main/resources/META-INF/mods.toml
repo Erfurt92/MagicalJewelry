@@ -1,22 +1,24 @@
-modLoader="javafml" #mandatory
+modLoader="javafml"
 
-loaderVersion="[31,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[31,)"
 
-issueTrackerURL="http://my.issue.tracker/" #optional
+issueTrackerURL="https://https://github.com/Erfurt92/MagicalJewelry/issues"
+logoFile="${mod_icon}"
 
-[[mods]] #mandatory
-modId="magicaljewelry" #mandatory
-version="${file.jarVersion}" #mandatory
-displayName="Magical Jewelry" #mandatory
-authors="Erfurt"
+[[mods]]
+modId="${mod_id}"
+version="${version}"
+displayName="${mod_name}"
+displayURL="${mod_url}"
+authors="${mod_author}"
 description='''
-Magical Jewelry is a mod that adds rings and amulets of different rarities, with potion/beacon effects.
+${mod_description}
 '''
 
-[[dependencies.magicaljewelry]] #optional
-    modId="forge" #mandatory
-    mandatory=true #mandatory
-    versionRange="[31,)" #mandatory
+[[dependencies.magicaljewelry]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.magicaljewelry]]
