@@ -16,6 +16,10 @@ Please reproduce all issues without any other unnecessary mods or data packs bef
 * Curios:
 * Forge:
 
+**There might be an incompatibility issue with this "mod"**
+Make sure that the issue is only happening with my mod installed.
+Test both with and without my mod before making an issue about it!
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
