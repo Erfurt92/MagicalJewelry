@@ -62,6 +62,24 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	}
 
 	@Override
+	public int getMaxDamage(ItemStack stack)
+	{
+		int durability;
+
+		if(MagicalJewelryConfigBuilder.JEWEL_DURABILITY.get())
+		{
+			String rarity = getJewelRarity(stack);
+			if(rarity.equals(JewelRarity.UNCOMMON.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_DURABILITY.get();
+			else if(rarity.equals(JewelRarity.RARE.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_RARE_DURABILITY.get();
+			else if(rarity.equals(JewelRarity.EPIC.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_EPIC_DURABILITY.get();
+			else durability = 0;
+		}
+		else durability = 0;
+
+		return durability;
+	}
+
+	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		return CapCurioItem.createProvider(new ICurio()
@@ -98,11 +116,16 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			@Override
 			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
 			{
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
+				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 19 == 0 && !stack.isEmpty() && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
 				{
-					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+					stack.damageItem(1, livingEntity, (livingEntity1) -> this.onCurioBreak(stack, livingEntity));
+				}
 
+				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty() &&!stack.isEmpty())
+				{
 					updateJewelEffects(stack, livingEntity, false);
+
+					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
 				}
 			}
 
@@ -120,9 +143,16 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			}
 
 			@Override
+			public void onCurioBreak(ItemStack stack, LivingEntity livingEntity)
+			{
+				// Do stuff here when jewel breaks
+			}
+
+			@Override
 			public Multimap<String, AttributeModifier> getAttributeModifiers(String identifier)
 			{
 				Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+
 				updateJewelAttributes(stack, attributes);
 
 				return attributes;
@@ -314,7 +344,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 	public int effectsLength(ItemStack stack)
 	{
-		int effectLength = 0;
+		int effectLength;
 
 		String rarity = getJewelRarity(stack);
 
@@ -322,6 +352,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		else if(rarity.equals(JewelRarity.RARE.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_RARE_EFFECT_AMOUNT.get();
 		else if(rarity.equals(JewelRarity.EPIC.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_EPIC_EFFECT_AMOUNT.get();
 		else if(rarity.equals(JewelRarity.LEGENDARY.getName())) effectLength = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECT_AMOUNT.get();
+		else effectLength = 0;
 
 		return effectLength;
 	}

@@ -11,6 +11,10 @@ public class MagicalJewelryConfigBuilder
 	public static ForgeConfigSpec.IntValue JEWEL_MAX_EFFECT_LEVEL;
 	public static ForgeConfigSpec.BooleanValue JEWEL_ATTRIBUTES;
 	public static ForgeConfigSpec.BooleanValue JEWEL_LEGENDARY_EFFECTS;
+	public static ForgeConfigSpec.BooleanValue JEWEL_DURABILITY;
+	public static ForgeConfigSpec.IntValue JEWEL_UNCOMMON_DURABILITY;
+	public static ForgeConfigSpec.IntValue JEWEL_RARE_DURABILITY;
+	public static ForgeConfigSpec.IntValue JEWEL_EPIC_DURABILITY;
 	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_TOOLTIP;
 	public static ForgeConfigSpec.BooleanValue JEWEL_RARITY_NAME;
 	public static ForgeConfigSpec.IntValue JEWEL_RARE_DROP_RATE;
@@ -29,7 +33,14 @@ public class MagicalJewelryConfigBuilder
 		JEWEL_LEGENDARY_EFFECTS = SERVER_BUILDER.comment("Should Legendary rarity have special effects").define("legendaryEffects", true);
 		SERVER_BUILDER.pop();
 
-		SERVER_BUILDER.push("rarity_displayed");
+		SERVER_BUILDER.comment("Misc Jewel Settings").push("jewel_durability");
+		JEWEL_DURABILITY = SERVER_BUILDER.comment("Should Jewels have durability, legendary is unbreakable").define("jewelDurability", true);
+		JEWEL_UNCOMMON_DURABILITY = SERVER_BUILDER.comment("Set the durability of Uncommon rarity [default: 7200]").defineInRange("uncommonDurability", 7200, 600, 21600);
+		JEWEL_RARE_DURABILITY = SERVER_BUILDER.comment("Set the durability of Rare rarity [default: 14400]").defineInRange("rareDurability", 14400, 600, 21600);
+		JEWEL_EPIC_DURABILITY = SERVER_BUILDER.comment("Set the durability of Epic rarity [default: 21600]").defineInRange("epicDurability", 21600, 600, 21600);
+		SERVER_BUILDER.pop();
+
+		SERVER_BUILDER.comment("Misc Jewel Settings").push("rarity_displayed");
 		JEWEL_RARITY_TOOLTIP = SERVER_BUILDER.comment("Rarity is displayed in tooltips").define("rarityTooltips", true);
 		JEWEL_RARITY_NAME = SERVER_BUILDER.comment("Rarity is displayed in the name").define("rarityName", true);
 		SERVER_BUILDER.pop();
