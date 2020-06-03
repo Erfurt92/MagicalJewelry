@@ -11,8 +11,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = MagicalJewelry.MOD_ID)
 public final class EventHandler
 {
-	private EventHandler() {}
-
 	@SubscribeEvent
 	public static void onLootLoad(LootTableLoadEvent event)
 	{

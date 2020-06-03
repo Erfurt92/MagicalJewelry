@@ -1,57 +1,57 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "name": "magicaljewelry_jewels_chests",
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "magicaljewelry:gold_amulet",
-          "weight": 25,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "magicaljewelry:silver_amulet",
-          "weight": 25,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "magicaljewelry:gold_ring",
-          "weight": 25,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "magicaljewelry:silver_ring",
-          "weight": 25,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt"
-            }
-          ]
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.01
-        }
-      ]
-    }
-  ]
+	"type": "minecraft:chest",
+	"pools": [
+		{
+			"name": "magicaljewelry_jewels_chests",
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:gold_amulet",
+					"weight": 1,
+					"functions": [
+                        {
+                            "function": "magicaljewelry:set_jewel_nbt"
+                        }
+                    ]
+				},
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:silver_amulet",
+					"weight": 1,
+					"functions": [
+                        {
+                            "function": "magicaljewelry:set_jewel_nbt"
+                        }
+                    ]
+				},
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:gold_ring",
+					"weight": 2,
+					"functions": [
+                        {
+                            "function": "magicaljewelry:set_jewel_nbt"
+                        }
+                    ]
+				},
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:silver_ring",
+					"weight": 2,
+					"functions": [
+                        {
+                            "function": "magicaljewelry:set_jewel_nbt"
+                        }
+                    ]
+				}
+			],
+			"conditions": [
+				{
+					"condition": "minecraft:random_chance",
+					"chance": 0.01
+				}
+			]
+		}
+	]
 }
