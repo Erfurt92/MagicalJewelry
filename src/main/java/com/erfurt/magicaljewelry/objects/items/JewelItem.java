@@ -70,7 +70,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			String rarity = getJewelRarity(stack);
 			if(rarity.equals(JewelRarity.UNCOMMON.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_UNCOMMON_DURABILITY.get();
 			else if(rarity.equals(JewelRarity.RARE.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_RARE_DURABILITY.get();
-			else if(rarity.equals(JewelRarity.EPIC.getName())) durability = 30; //MagicalJewelryConfigBuilder.JEWEL_EPIC_DURABILITY.get();
+			else if(rarity.equals(JewelRarity.EPIC.getName())) durability = MagicalJewelryConfigBuilder.JEWEL_EPIC_DURABILITY.get();
 			else durability = 0;
 		}
 		else durability = 0;
