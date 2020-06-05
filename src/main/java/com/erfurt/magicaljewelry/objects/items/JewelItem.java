@@ -132,7 +132,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			public void onEquipped(String identifier, LivingEntity livingEntity)
 			{
 				MagicalJewelry.LOGGER.debug("onEquipped method triggered");
-				MagicalJewelry.LOGGER.debug("Equipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
+				//MagicalJewelry.LOGGER.debug("Equipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
 				if(stack.getItem() instanceof JewelItem)
 				{
 					getTotalJewelEffects(stack);
@@ -144,7 +144,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			public void onUnequipped(String identifier, LivingEntity livingEntity)
 			{
 				MagicalJewelry.LOGGER.debug("onUnequipped method triggered");
-				MagicalJewelry.LOGGER.debug("Unequipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
+				//MagicalJewelry.LOGGER.debug("Unequipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
 				if(stack.getItem() instanceof JewelItem) updateJewelEffects(stack, livingEntity, true);
 			}
 
