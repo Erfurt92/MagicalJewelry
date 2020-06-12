@@ -34,7 +34,7 @@ public class MagicalJewelryConfigBuilder
 		SERVER_BUILDER.pop();
 
 		SERVER_BUILDER.comment("Misc Jewel Settings").push("jewel_durability");
-		JEWEL_DURABILITY = SERVER_BUILDER.comment("Should Jewels have durability, legendary is unbreakable").define("jewelDurability", true);
+		JEWEL_DURABILITY = SERVER_BUILDER.comment("Should Jewels have durability, Legendary rarity is always unbreakable").define("jewelDurability", true);
 		JEWEL_UNCOMMON_DURABILITY = SERVER_BUILDER.comment("Set the durability of Uncommon rarity [default: 7200]").defineInRange("uncommonDurability", 7200, 600, 21600);
 		JEWEL_RARE_DURABILITY = SERVER_BUILDER.comment("Set the durability of Rare rarity [default: 14400]").defineInRange("rareDurability", 14400, 600, 21600);
 		JEWEL_EPIC_DURABILITY = SERVER_BUILDER.comment("Set the durability of Epic rarity [default: 21600]").defineInRange("epicDurability", 21600, 600, 21600);

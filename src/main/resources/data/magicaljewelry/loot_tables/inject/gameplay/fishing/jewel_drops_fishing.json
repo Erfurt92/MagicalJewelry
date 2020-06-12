@@ -7,13 +7,12 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "magicaljewelry:the_one_ring"
-				}
-			],
-			"conditions": [
+					"name": "magicaljewelry:the_one_ring",
+					"weight": 1
+				},
 				{
-					"condition": "minecraft:random_chance",
-					"chance": 0.0001
+					"type": "empty",
+					"weight": 9999
 				}
 			]
 		}

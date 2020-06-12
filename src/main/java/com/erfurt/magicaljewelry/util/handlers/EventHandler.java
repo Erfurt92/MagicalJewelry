@@ -14,7 +14,9 @@ public final class EventHandler
 	@SubscribeEvent
 	public static void onLootLoad(LootTableLoadEvent event)
 	{
-		if(event.getName().getPath().contains("chests/")) event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(MagicalJewelry.MOD_ID, "chests/jewel_drops_chests"))).build());
-		if(event.getName().getPath().contains("gameplay/fishing/treasure")) event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(MagicalJewelry.MOD_ID, "gameplay/fishing/jewel_drops_fishing"))).build());
+		ResourceLocation resourceName = event.getName();
+		String name = event.getName().toString();
+		if(resourceName.getPath().startsWith("chests/")) event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(MagicalJewelry.MOD_ID, "inject/chests/jewel_drops_chests"))).name("magicaljewelry_jewels_chests").build());
+		if(name.equals("minecraft:gameplay/fishing/treasure")) event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(MagicalJewelry.MOD_ID, "inject/gameplay/fishing/jewel_drops_fishing"))).name("magicaljewelry_jewels_fishing_treasure").build());
 	}
 }

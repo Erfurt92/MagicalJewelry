@@ -44,12 +44,10 @@
                             "function": "magicaljewelry:set_jewel_nbt"
                         }
                     ]
-				}
-			],
-			"conditions": [
+				},
 				{
-					"condition": "minecraft:random_chance",
-					"chance": 0.01
+					"type": "empty",
+					"weight": 594
 				}
 			]
 		}
