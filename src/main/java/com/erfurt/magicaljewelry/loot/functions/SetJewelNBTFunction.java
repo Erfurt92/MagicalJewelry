@@ -21,6 +21,8 @@ import java.util.UUID;
 
 public class SetJewelNBTFunction extends LootFunction implements IJewelEffects, IJewelRarity, IJewelAttributes
 {
+	Random rand = new Random();
+
 	private static String rarityID;
 	
 	private static String gemColor;
@@ -41,6 +43,8 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelEffects, 
 
 		if(rarityID.equals(JewelRarity.LEGENDARY.getName()) || rarityID.equals(JewelRarity.EPIC.getName()))
 		{
+			if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size() - 1) + 1);
+
 			JewelItem.setJewelAttributes(stack, getAttributes());
 
 			JewelItem.setJewelUUID(stack, UUID.randomUUID().toString());

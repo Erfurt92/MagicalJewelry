@@ -42,6 +42,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 {
 	private static final String NBT_RARITY = "Rarity";
 	private static final String NBT_EFFECTS = "Effects";
+	private static final String NBT_LEGENDARY_EFFECT = "LegendaryEffect";
 	private static final String NBT_ATTRIBUTES = "Attributes";
 	private static final String NBT_UUID = "UUID";
 	private static final String NBT_COLOR = "GemColor";
@@ -58,6 +59,23 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	public JewelItem()
 	{
 		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP).defaultMaxDamage(0));
+	}
+
+	public void moveLegendaryEffect(ItemStack stack)
+	{
+		if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()) && getJewelLegendaryEffect(stack) == 0)
+		{
+			int legendaryEffect = getJewelEffects(stack)[6];
+			stack.getOrCreateTag().putInt(NBT_LEGENDARY_EFFECT, legendaryEffect - 5);
+
+			List<Integer> jewelEffects = new ArrayList<>();
+
+			for(int i = 0; i < getJewelEffects(stack).length -1; i++)
+			{
+				jewelEffects.add(getJewelEffects(stack)[i]);
+			}
+			stack.getOrCreateTag().putIntArray(NBT_EFFECTS, jewelEffects);
+		}
 	}
 
 	@Override
@@ -81,6 +99,8 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
+		moveLegendaryEffect(stack);
+
 		return CapCurioItem.createProvider(new ICurio()
 		{
 			private Object amuletModel;
@@ -117,7 +137,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			{
 				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 19 == 0 && stack.getItem() instanceof JewelItem && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
 				{
-					stack.damageItem(1, livingEntity, (livingEntity1) -> { MagicalJewelry.LOGGER.debug("Jewel broke!"); });
+					stack.damageItem(1, livingEntity, (livingEntity1) -> {  });
 				}
 
 				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
@@ -131,8 +151,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			@Override
 			public void onEquipped(String identifier, LivingEntity livingEntity)
 			{
-				MagicalJewelry.LOGGER.debug("onEquipped method triggered");
-				//MagicalJewelry.LOGGER.debug("Equipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
 				if(stack.getItem() instanceof JewelItem)
 				{
 					getTotalJewelEffects(stack);
@@ -143,8 +161,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			@Override
 			public void onUnequipped(String identifier, LivingEntity livingEntity)
 			{
-				MagicalJewelry.LOGGER.debug("onUnequipped method triggered");
-				//MagicalJewelry.LOGGER.debug("Unequipped: " + JewelRarity.byName(getJewelRarity(stack)).getDisplayName() + " " + stack.getDisplayName().getString());
 				if(stack.getItem() instanceof JewelItem) updateJewelEffects(stack, livingEntity, true);
 			}
 
@@ -174,11 +190,10 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	{
 		if(removeEffects)
 		{
-			MagicalJewelry.LOGGER.debug("Tries to remove Effects from map");
 			if(legendaryEffectsEnabled(stack))
 			{
-				int j = getJewelEffects(stack)[6];
-				Effect effect = (Effect) defaultEffectsList.toArray()[j];
+				int j = getJewelLegendaryEffect(stack);
+				Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 
 				updateJewelEffects(livingEntity, effect);
 			}
@@ -207,12 +222,9 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 					case 3: break;
 				}
 
-				boolean flagFR = (effect == Effects.FIRE_RESISTANCE);
-				boolean flagWB = (effect == Effects.WATER_BREATHING);
-				boolean flagNV = (effect == Effects.NIGHT_VISION);
-				boolean finalFlag = flagFR || flagWB || flagNV;
+				boolean legendaryFlag = legendaryEffectsList.contains(effect);
 
-				if(finalFlag) level = 0;
+				if(legendaryFlag) level = 0;
 
 				livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
 			}
@@ -232,17 +244,21 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				int oldValue = (int) totalJewelEffects.values().toArray()[k];
 				int newValue = (int) totalJewelEffects.values().toArray()[k] - 1;
 				totalJewelEffects.replace(effect, oldValue, newValue);
-				MagicalJewelry.LOGGER.debug(effect.getDisplayName().getString() + " is already in the map updating value from: " + oldValue + " to: " + newValue);
-
-				livingEntity.removePotionEffect(effect);
-				livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
 
 				if(newValue < 1)
 				{
-					MagicalJewelry.LOGGER.debug("Value is lower than 1. Removed: " + effect.getDisplayName().getString());
 					totalJewelEffects.remove(effect);
 					livingEntity.removePotionEffect(effect);
 					break;
+				}
+				else
+				{
+					boolean legendaryFlag = legendaryEffectsList.contains(effect);
+					if(!legendaryFlag)
+					{
+						livingEntity.removePotionEffect(effect);
+						livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
+					}
 				}
 			}
 		}
@@ -252,8 +268,8 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	{
 		if(!legendaryEffectsEnabled(stack))
 		{
-			int j = getJewelEffects(stack)[6];
-			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+			int j = getJewelLegendaryEffect(stack);
+			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 
 			boolean effectIsActive = livingEntity.getActivePotionMap().containsKey(effect);
 
@@ -270,14 +286,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	{
 		if(legendaryEffectsEnabled(stack))
 		{
-			MagicalJewelry.LOGGER.debug("Adding Legendary effect");
-			int j = getJewelEffects(stack)[6];
-			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+			int j = getJewelLegendaryEffect(stack);
+			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 
 			updateTotalJewelEffects(effect);
 		}
 
-		MagicalJewelry.LOGGER.debug("Adding Jewel effects");
 		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
@@ -293,29 +307,24 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 		if(!totalJewelEffects.isEmpty())
 		{
-			MagicalJewelry.LOGGER.debug("Map is not Empty");
 			for(int k = 0; k < length; k++)
 			{
-				MagicalJewelry.LOGGER.debug("Checking map");
 				if(totalJewelEffects.keySet().toArray()[k].equals(effect))
 				{
 					int oldValue = (int) totalJewelEffects.values().toArray()[k];
 					int newValue = (int) totalJewelEffects.values().toArray()[k] + 1;
 					totalJewelEffects.replace(effect, oldValue, newValue);
-					MagicalJewelry.LOGGER.debug(effect.getDisplayName().getString() + " is already in the map updating value from: " + oldValue + " to: " + newValue);
 
 					break;
 				}
 				else if(k == (length - 1))
 				{
-					MagicalJewelry.LOGGER.debug(effect.getDisplayName().getString() + " is not in the map, added effect");
 					totalJewelEffects.put(effect, 1);
 				}
 			}
 		}
 		else
 		{
-			MagicalJewelry.LOGGER.debug("Map is empty, added " + effect.getDisplayName().getString());
 			totalJewelEffects.put(effect, 1);
 		}
 	}
@@ -393,8 +402,8 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 		if(legendaryEffectsEnabled(stack))
 		{
-			int j = getJewelEffects(stack)[6];
-			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+			int j = getJewelLegendaryEffect(stack);
+			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 			String effectName = effect.getDisplayName().getString();
 
 			tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
@@ -435,6 +444,17 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	public static ItemStack setJewelEffects(ItemStack stack, List<Integer> effects)
 	{
 		stack.getOrCreateTag().putIntArray(NBT_EFFECTS, effects);
+		return stack;
+	}
+
+	public static int getJewelLegendaryEffect(ItemStack stack)
+	{
+		return stack.getOrCreateTag().getInt(NBT_LEGENDARY_EFFECT);
+	}
+
+	public static ItemStack setJewelLegendaryEffect(ItemStack stack, int legendaryEffect)
+	{
+		stack.getOrCreateTag().putInt(NBT_LEGENDARY_EFFECT, legendaryEffect);
 		return stack;
 	}
 

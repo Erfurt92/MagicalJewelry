@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.loot.functions;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
+import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
@@ -20,6 +21,8 @@ import java.util.UUID;
 
 public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffects, IJewelRarity, IJewelAttributes
 {
+	Random rand = new Random();
+
 	private static String rarityID;
 	
 	private static String gemColor;
@@ -37,6 +40,8 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffec
 		JewelItem.setJewelRarity(stack, rarityID);
 		
 		JewelItem.setJewelEffects(stack, getEffects(rarityID, JewelItem.jewelEffects));
+
+		if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size() - 1) + 1);
 
 		JewelItem.setJewelAttributes(stack, getAttributes());
 

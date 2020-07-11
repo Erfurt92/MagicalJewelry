@@ -1,6 +1,5 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
-import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
 
@@ -13,6 +12,7 @@ public interface IJewelEffects
 	Random rand = new Random();
 	
 	List<Effect> defaultEffectsList = new ArrayList<>();
+	List<Effect> legendaryEffectsList = new ArrayList<>();
 	
 	static void init()
 	{
@@ -27,21 +27,22 @@ public interface IJewelEffects
 		defaultEffectsList.add(3, Effects.JUMP_BOOST);
 		defaultEffectsList.add(4, Effects.RESISTANCE);
 		defaultEffectsList.add(5, Effects.LUCK);
-		
-		defaultEffectsList.add(6, Effects.FIRE_RESISTANCE);
-		defaultEffectsList.add(7, Effects.WATER_BREATHING);
-		defaultEffectsList.add(8, Effects.NIGHT_VISION);
+
+		legendaryEffectsList.add(0, null);
+		legendaryEffectsList.add(1, Effects.FIRE_RESISTANCE);
+		legendaryEffectsList.add(2, Effects.WATER_BREATHING);
+		legendaryEffectsList.add(3, Effects.NIGHT_VISION);
+		// legendaryEffectsList.add(, Effects.REGENERATION); // Maybe add, still on the fence about it
 	}
 	
 	default List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
 	{
 		List<Effect> effectsForComparing = new ArrayList<>();
 		List<Integer> tempIntArray = new ArrayList<>();
-		int j = defaultEffectsList.size() - 3;
 
-		for(int i = 1; i <= j; i++)
+		for(int i = 1; i <= defaultEffectsList.size(); i++)
 		{
-			int k = rand.nextInt(j);
+			int k = rand.nextInt(defaultEffectsList.size());
 			
 			if(!effectsForComparing.contains(defaultEffectsList.get(k)))
 			{
@@ -50,8 +51,6 @@ public interface IJewelEffects
 			}
 			else i = effectsForComparing.size();
 		}
-
-		if(rarity == JewelRarity.LEGENDARY.getName()) tempIntArray.add(rand.nextInt(3) + j);
 
 		effectsForJewel = tempIntArray;
 		
