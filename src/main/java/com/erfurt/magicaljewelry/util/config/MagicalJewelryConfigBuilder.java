@@ -20,6 +20,7 @@ public class MagicalJewelryConfigBuilder
 	public static ForgeConfigSpec.IntValue JEWEL_RARE_DROP_RATE;
 	public static ForgeConfigSpec.IntValue JEWEL_EPIC_DROP_RATE;
 	public static ForgeConfigSpec.IntValue JEWEL_LEGENDARY_DROP_RATE;
+	public static ForgeConfigSpec.BooleanValue JEWELS_IN_CHESTS;
 	
 	public static void init(ForgeConfigSpec.Builder SERVER_BUILDER)
 	{
@@ -49,6 +50,10 @@ public class MagicalJewelryConfigBuilder
 		JEWEL_RARE_DROP_RATE = SERVER_BUILDER.comment("Drop rate for Rare rarity [default: 30]").defineInRange("rareDrop", 30, 15, 60);
 		JEWEL_EPIC_DROP_RATE = SERVER_BUILDER.comment("Drop rate for Epic rarity [default: 15]").defineInRange("epicDrop", 15, 5, 30);
 		JEWEL_LEGENDARY_DROP_RATE = SERVER_BUILDER.comment("Drop rate for Legendary rarity [default: 5]").defineInRange("legendaryDrop", 5, 1, 10);
+		SERVER_BUILDER.pop();
+
+		SERVER_BUILDER.comment("Jewels in chests").push("jewels_in_chests");
+		JEWELS_IN_CHESTS = SERVER_BUILDER.comment("Jewels can be found in chests").define("jewelsInChest", true);
 		SERVER_BUILDER.pop();
 	}
 }

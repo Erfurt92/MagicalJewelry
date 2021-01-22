@@ -2,7 +2,7 @@ modLoader="javafml"
 
 loaderVersion="[31,)"
 
-issueTrackerURL="https://https://github.com/Erfurt92/MagicalJewelry/issues"
+issueTrackerURL="https://github.com/Erfurt92/MagicalJewelry/issues"
 logoFile="${mod_icon}"
 
 [[mods]]

@@ -11,7 +11,7 @@
 					"weight": 1,
 					"functions": [
 						{
-							"function": "magicaljewelry:set_jewel_nbt"
+							"function": "magicaljewelry:set_jewel_nbt_boss"
 						}
 					]
 				},
@@ -21,7 +21,7 @@
 					"weight": 1,
 					"functions": [
 						{
-							"function": "magicaljewelry:set_jewel_nbt"
+							"function": "magicaljewelry:set_jewel_nbt_boss"
 						}
 					]
 				},
@@ -31,7 +31,7 @@
 					"weight": 2,
 					"functions": [
 						{
-							"function": "magicaljewelry:set_jewel_nbt"
+							"function": "magicaljewelry:set_jewel_nbt_boss"
 						}
 					]
 				},
@@ -41,7 +41,7 @@
 					"weight": 2,
 					"functions": [
 						{
-							"function": "magicaljewelry:set_jewel_nbt"
+							"function": "magicaljewelry:set_jewel_nbt_boss"
 						}
 					]
 				}

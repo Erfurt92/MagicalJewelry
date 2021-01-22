@@ -43,7 +43,7 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelEffects, 
 
 		if(rarityID.equals(JewelRarity.LEGENDARY.getName()) || rarityID.equals(JewelRarity.EPIC.getName()))
 		{
-			if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size() - 1) + 1);
+			if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size()));
 
 			JewelItem.setJewelAttributes(stack, getAttributes());
 

@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -61,23 +60,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP).defaultMaxDamage(0));
 	}
 
-	public void moveLegendaryEffect(ItemStack stack)
-	{
-		if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()) && getJewelLegendaryEffect(stack) == 0)
-		{
-			int legendaryEffect = getJewelEffects(stack)[6];
-			stack.getOrCreateTag().putInt(NBT_LEGENDARY_EFFECT, legendaryEffect - 5);
-
-			List<Integer> jewelEffects = new ArrayList<>();
-
-			for(int i = 0; i < getJewelEffects(stack).length -1; i++)
-			{
-				jewelEffects.add(getJewelEffects(stack)[i]);
-			}
-			stack.getOrCreateTag().putIntArray(NBT_EFFECTS, jewelEffects);
-		}
-	}
-
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
@@ -99,8 +81,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
-		moveLegendaryEffect(stack);
-
 		return CapCurioItem.createProvider(new ICurio()
 		{
 			private Object amuletModel;

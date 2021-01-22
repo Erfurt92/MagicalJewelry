@@ -41,7 +41,7 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelEffec
 		
 		JewelItem.setJewelEffects(stack, getEffects(rarityID, JewelItem.jewelEffects));
 
-		if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size() - 1) + 1);
+		if(rarityID.equals(JewelRarity.LEGENDARY.getName())) JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size()));
 
 		JewelItem.setJewelAttributes(stack, getAttributes());
 

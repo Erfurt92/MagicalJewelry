@@ -28,11 +28,10 @@ public interface IJewelEffects
 		defaultEffectsList.add(4, Effects.RESISTANCE);
 		defaultEffectsList.add(5, Effects.LUCK);
 
-		legendaryEffectsList.add(0, null);
+		legendaryEffectsList.add(0, Effects.REGENERATION);
 		legendaryEffectsList.add(1, Effects.FIRE_RESISTANCE);
 		legendaryEffectsList.add(2, Effects.WATER_BREATHING);
 		legendaryEffectsList.add(3, Effects.NIGHT_VISION);
-		// legendaryEffectsList.add(, Effects.REGENERATION); // Maybe add, still on the fence about it
 	}
 	
 	default List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
