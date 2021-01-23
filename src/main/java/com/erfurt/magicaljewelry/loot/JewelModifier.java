@@ -2,11 +2,11 @@ package com.erfurt.magicaljewelry.loot;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 
@@ -47,6 +47,12 @@ public class JewelModifier extends LootModifier
         {
             ResourceLocation lootTable = new ResourceLocation(JSONUtils.getString(object, "add_loot_table"));
             return new JewelModifier(iLootCondition, lootTable);
+        }
+
+        @Override
+        public JsonObject write(JewelModifier instance)
+        {
+            return makeConditions(instance.conditions);
         }
     }
 }

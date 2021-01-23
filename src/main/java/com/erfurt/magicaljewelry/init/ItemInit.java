@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 @SuppressWarnings("unused")
 public class ItemInit
 {
-	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MagicalJewelry.MOD_ID);
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MagicalJewelry.MOD_ID);
 
 	public static final RegistryObject<Item> GOLD_AMULET = ITEMS.register("gold_amulet", JewelAmuletItem::new);
 	public static final RegistryObject<Item> SILVER_AMULET = ITEMS.register("silver_amulet", JewelAmuletItem::new);

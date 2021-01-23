@@ -1,17 +1,20 @@
 package com.erfurt.magicaljewelry.loot.conditions;
 
-import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.init.LootInit;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootConditionType;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 
 public class BossEntityCondition implements ILootCondition
 {
+    public static final Serializer SERIALIZER = new Serializer();
 
     private BossEntityCondition() { }
 
@@ -24,13 +27,14 @@ public class BossEntityCondition implements ILootCondition
         else return false;
     }
 
-    public static class Serializer extends AbstractSerializer<BossEntityCondition>
+    @Override
+    public LootConditionType func_230419_b_()
     {
-        public Serializer()
-        {
-            super(MagicalJewelry.getId("is_boss_entity"), BossEntityCondition.class);
-        }
+        return LootInit.BOSS_ENTITY_CONDITION;
+    }
 
+    public static class Serializer implements ILootSerializer<BossEntityCondition>
+    {
         @Override
         public void serialize(JsonObject json, BossEntityCondition value, JsonSerializationContext context) { }
 

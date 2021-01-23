@@ -1,17 +1,21 @@
 package com.erfurt.magicaljewelry.loot.conditions;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.init.LootInit;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootConditionType;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 
 public class HostileEntityCondition implements ILootCondition
 {
+    public static final Serializer SERIALIZER = new Serializer();
 
     private HostileEntityCondition() { }
 
@@ -24,13 +28,14 @@ public class HostileEntityCondition implements ILootCondition
         else return false;
     }
 
-    public static class Serializer extends ILootCondition.AbstractSerializer<HostileEntityCondition>
+    @Override
+    public LootConditionType func_230419_b_()
     {
-        public Serializer()
-        {
-            super(MagicalJewelry.getId("is_hostile_entity"), HostileEntityCondition.class);
-        }
+        return LootInit.HOSTILE_ENTITY_CONDITION;
+    }
 
+    public static class Serializer implements ILootSerializer<HostileEntityCondition>
+    {
         @Override
         public void serialize(JsonObject json, HostileEntityCondition value, JsonSerializationContext context) { }
 

@@ -1,6 +1,7 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public interface IJewelAttributes
 {
     Random rand = new Random();
 
-    List<String> nameAttributesList = new ArrayList<>();
+    List<Attribute> attributesList = new ArrayList<>();
     List<String> descriptionAttributesList = new ArrayList<>();
 
     static void init()
@@ -20,20 +21,20 @@ public interface IJewelAttributes
 
     static void Attributes()
     {
-        addNewAttribute(0, SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), "Armor Toughness bonus");
-        addNewAttribute(1, SharedMonsterAttributes.ARMOR.getName(), "Armor bonus");
-        addNewAttribute(2, SharedMonsterAttributes.ATTACK_DAMAGE.getName(), "Attack Damage bonus");
-        addNewAttribute(3, SharedMonsterAttributes.MAX_HEALTH.getName(), "Health Boost bonus");
+        addNewAttribute(0, Attributes.ARMOR_TOUGHNESS, "Armor Toughness bonus");
+        addNewAttribute(1, Attributes.ARMOR, "Armor bonus");
+        addNewAttribute(2, Attributes.ATTACK_DAMAGE, "Attack Damage bonus");
+        addNewAttribute(3, Attributes.MAX_HEALTH, "Health Boost bonus");
     }
 
-    static void addNewAttribute(int index, String name, String description)
+    static void addNewAttribute(int index, Attribute attribute, String description)
     {
-        nameAttributesList.add(index, name);
+        attributesList.add(index, attribute);
         descriptionAttributesList.add(index, description);
     }
 
     default int getAttributes()
     {
-        return rand.nextInt(nameAttributesList.size());
+        return rand.nextInt(attributesList.size());
     }
 }

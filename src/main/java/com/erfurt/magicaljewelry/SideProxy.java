@@ -3,13 +3,10 @@ package com.erfurt.magicaljewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
-import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
-import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,8 +16,8 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.imc.CurioIMCMessage;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
 
 public class SideProxy
 {
@@ -56,8 +53,8 @@ public class SideProxy
 
     private static void enqueue(final InterModEnqueueEvent event)
     {
-        InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("necklace"));
-        InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring").setSize(2));
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("necklace").size(1).build());
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("ring").size(2).build());
         MagicalJewelry.LOGGER.info("enqueue method registered.");
     }
 
@@ -73,9 +70,6 @@ public class SideProxy
 
     private static void lootModifierRegistries(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event)
     {
-        LootConditionManager.registerCondition(new HostileEntityCondition.Serializer());
-        LootConditionManager.registerCondition(new BossEntityCondition.Serializer());
-
         event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
         MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");
     }

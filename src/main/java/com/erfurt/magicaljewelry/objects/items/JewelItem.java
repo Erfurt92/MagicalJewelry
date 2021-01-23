@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -32,8 +33,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import top.theillusivec4.curios.api.capability.ICurio;
-import top.theillusivec4.curios.common.capability.CapCurioItem;
+import top.theillusivec4.curios.api.type.capability.ICurio;
+import top.theillusivec4.curios.common.capability.CurioItemCapability;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	public static List<Integer> jewelEffects = new ArrayList<>();
 	public static Map<Effect, Integer> totalJewelEffects = new LinkedHashMap<>();
 
-	public static Multimap<String, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
+	public static Multimap<Attribute, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
 
 	public static final ResourceLocation GOLD_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/gold_amulet.png");
 	public static final ResourceLocation SILVER_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/silver_amulet.png");
@@ -81,18 +82,18 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
-		return CapCurioItem.createProvider(new ICurio()
+		return CurioItemCapability.createProvider(new ICurio()
 		{
 			private Object amuletModel;
 
 			@Override
-			public boolean hasRender(String identifier, LivingEntity livingEntity)
+			public boolean canRender(String identifier, int index, LivingEntity livingEntity)
 			{
 				return stack.getItem() instanceof JewelAmuletItem;
 			}
 
 			@Override
-			public void render(String identifier, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
+			public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 			{
 				RenderHelper.translateIfSneaking(matrixStack, livingEntity);
 				RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
@@ -113,7 +114,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			}
 
 			@Override
-			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
+			public void curioTick(String identifier, int index, LivingEntity livingEntity)
 			{
 				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 19 == 0 && stack.getItem() instanceof JewelItem && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
 				{
@@ -124,12 +125,15 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				{
 					updateJewelEffects(stack, livingEntity, false);
 
-					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get())
+					{
+						livingEntity.getAttributeManager().removeModifiers(jewelAttributesForRemoval);
+					}
 				}
 			}
 
 			@Override
-			public void onEquipped(String identifier, LivingEntity livingEntity)
+			public void onEquip(String identifier, int index, LivingEntity livingEntity)
 			{
 				if(stack.getItem() instanceof JewelItem)
 				{
@@ -139,15 +143,15 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			}
 
 			@Override
-			public void onUnequipped(String identifier, LivingEntity livingEntity)
+			public void onUnequip(String identifier, int index, LivingEntity livingEntity)
 			{
 				if(stack.getItem() instanceof JewelItem) updateJewelEffects(stack, livingEntity, true);
 			}
 
 			@Override
-			public Multimap<String, AttributeModifier> getAttributeModifiers(String identifier)
+			public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier)
 			{
-				Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+				Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
 				if(stack.getItem() instanceof JewelItem) updateJewelAttributes(stack, attributes);
 				return attributes;
 			}
@@ -309,7 +313,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 	}
 
-	public void updateJewelAttributes(ItemStack stack, Multimap<String, AttributeModifier> jewelAttributes)
+	public void updateJewelAttributes(ItemStack stack, Multimap<Attribute, AttributeModifier> jewelAttributes)
 	{
 		if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()) || getJewelRarity(stack).equals(JewelRarity.EPIC.getName()))
 		{
@@ -334,9 +338,9 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			String uuid = getJewelUUID(stack);
 			AttributeModifier attributeModifier = new AttributeModifier(UUID.fromString(uuid), descriptionAttributesList.get(index), amount, AttributeModifier.Operation.ADDITION);
 
-			jewelAttributesForRemoval.put(nameAttributesList.get(index), attributeModifier);
+			jewelAttributesForRemoval.put(attributesList.get(index), attributeModifier);
 
-			if(MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) jewelAttributes.put(nameAttributesList.get(index), attributeModifier);
+			if(MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) jewelAttributes.put(attributesList.get(index), attributeModifier);
 		}
 	}
 
@@ -373,9 +377,9 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 		if(finalFlag)
 		{
-			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byName(rarity).getFormat()));
+			tooltip.set(0, tooltip.get(0).deepCopy().mergeStyle(JewelRarity.byName(rarity).getFormat()));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).deepCopy().appendString(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new StringTextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
 		}
@@ -485,7 +489,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			for(DyeColor color : DyeColor.values())
 			{
 				ItemStack stack = new ItemStack(this);
-				setGemColor(stack, color.getName());
+				setGemColor(stack, color.getString());
 				items.add(stack);
 			}
 		}
