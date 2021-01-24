@@ -44,6 +44,26 @@
                             "function": "magicaljewelry:set_jewel_nbt"
                         }
                     ]
+				},
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:gold_bracelet",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "magicaljewelry:set_jewel_nbt_boss"
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"name": "magicaljewelry:silver_bracelet",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "magicaljewelry:set_jewel_nbt_boss"
+						}
+					]
 				}
 			],
 			"conditions": [

@@ -203,7 +203,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				{
 					case 1: level = 0; break;
 					case 2: if(level > 1) level = 1; break;
-					case 3: break;
+					case 3: if(level > 2) level = 2; break;
 				}
 
 				boolean legendaryFlag = legendaryEffectsList.contains(effect);
@@ -240,8 +240,11 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 					boolean legendaryFlag = legendaryEffectsList.contains(effect);
 					if(!legendaryFlag)
 					{
-						livingEntity.removePotionEffect(effect);
-						livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
+						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
+						{
+							livingEntity.removePotionEffect(effect);
+							livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
+						}
 					}
 				}
 			}
@@ -330,8 +333,9 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				case 1: if(stack.getItem() instanceof JewelAmuletItem) amount = 4; break;
 				// MAX HEALTH
 				case 3:
-					if(stack.getItem() instanceof JewelAmuletItem) amount = 8;
-					else if(stack.getItem() instanceof JewelRingItem) amount = 6;
+					amount = 4;
+					/*if(stack.getItem() instanceof JewelAmuletItem) amount = 8;
+					else if(stack.getItem() instanceof JewelRingItem) amount = 6;*/
 					break;
 			}
 
