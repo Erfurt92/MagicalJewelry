@@ -48,7 +48,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	private static final String NBT_COLOR = "GemColor";
 
 	public static List<Integer> jewelEffects = new ArrayList<>();
-	public static Map<Effect, Integer> totalJewelEffects = new LinkedHashMap<>();
+	public static Map<LivingEntity, Map<Effect, Integer>> totalJewelEffectsPlayer = new LinkedHashMap<>();
 
 	public static Multimap<Attribute, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
 
@@ -121,7 +121,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 					stack.damageItem(1, livingEntity, (livingEntity1) -> {  });
 				}
 
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && !totalJewelEffects.isEmpty())
+				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && totalJewelEffectsPlayer.containsKey(livingEntity) && !totalJewelEffectsPlayer.get(livingEntity).isEmpty())
 				{
 					updateJewelEffects(stack, livingEntity, false);
 
@@ -137,7 +137,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			{
 				if(stack.getItem() instanceof JewelItem)
 				{
-					getTotalJewelEffects(stack);
+					getTotalJewelEffects(stack, livingEntity);
 					updateJewelEffects(stack, livingEntity, false);
 				}
 			}
@@ -170,7 +170,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		return SILVER_AMULET_TEXTURE;
 	}
 
-	public void updateJewelEffects(ItemStack stack, LivingEntity livingEntity, boolean removeEffects)
+	public void updateJewelEffects(ItemStack stack, LivingEntity player, boolean removeEffects)
 	{
 		if(removeEffects)
 		{
@@ -179,7 +179,7 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				int j = getJewelLegendaryEffect(stack);
 				Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 
-				updateJewelEffects(livingEntity, effect);
+				updateJewelEffects(player, effect);
 			}
 
 			for(int i = 0; i < effectsLength(stack); i++)
@@ -187,15 +187,15 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				int j = getJewelEffects(stack)[i];
 				Effect effect = (Effect) defaultEffectsList.toArray()[j];
 
-				updateJewelEffects(livingEntity, effect);
+				updateJewelEffects(player, effect);
 			}
 		}
 		else
 		{
-			for(int i = 0; i < totalJewelEffects.size(); i++)
+			for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 			{
-				Effect effect = (Effect) totalJewelEffects.keySet().toArray()[i];
-				int level = (int) totalJewelEffects.values().toArray()[i] - 1;
+				Effect effect = (Effect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
+				int level = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
 
 				int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
 
@@ -210,29 +210,29 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 
 				if(legendaryFlag) level = 0;
 
-				livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
+				player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
 			}
 
-			if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, livingEntity);
+			if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 		}
 	}
 
-	private void updateJewelEffects(LivingEntity livingEntity, Effect effect)
+	private void updateJewelEffects(LivingEntity player, Effect effect)
 	{
-		int length = totalJewelEffects.size();
+		int length = totalJewelEffectsPlayer.get(player).size();
 
 		for(int k = 0; k < length; k++)
 		{
-			if(totalJewelEffects.keySet().toArray()[k].equals(effect))
+			if(totalJewelEffectsPlayer.get(player).keySet().toArray()[k].equals(effect))
 			{
-				int oldValue = (int) totalJewelEffects.values().toArray()[k];
-				int newValue = (int) totalJewelEffects.values().toArray()[k] - 1;
-				totalJewelEffects.replace(effect, oldValue, newValue);
+				int oldValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[k];
+				int newValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[k] - 1;
+				totalJewelEffectsPlayer.get(player).replace(effect, oldValue, newValue);
 
 				if(newValue < 1)
 				{
-					totalJewelEffects.remove(effect);
-					livingEntity.removePotionEffect(effect);
+					totalJewelEffectsPlayer.get(player).remove(effect);
+					player.removePotionEffect(effect);
 					break;
 				}
 				else
@@ -242,8 +242,8 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 					{
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
-							livingEntity.removePotionEffect(effect);
-							livingEntity.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
+							player.removePotionEffect(effect);
+							player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
 						}
 					}
 				}
@@ -269,14 +269,14 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 	}
 
-	public void getTotalJewelEffects(ItemStack stack)
+	public void getTotalJewelEffects(ItemStack stack, LivingEntity player)
 	{
 		if(legendaryEffectsEnabled(stack))
 		{
 			int j = getJewelLegendaryEffect(stack);
 			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
 
-			updateTotalJewelEffects(effect);
+			updateTotalJewelEffects(effect, player);
 		}
 
 		for(int i = 0; i < effectsLength(stack); i++)
@@ -284,35 +284,43 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			int j = getJewelEffects(stack)[i];
 			Effect effect = (Effect) defaultEffectsList.toArray()[j];
 
-			updateTotalJewelEffects(effect);
+			updateTotalJewelEffects(effect, player);
 		}
 	}
 
-	private void updateTotalJewelEffects(Effect effect)
+	private void updateTotalJewelEffects(Effect effect, LivingEntity player)
 	{
-		int length = totalJewelEffects.size();
-
-		if(!totalJewelEffects.isEmpty())
+		if(totalJewelEffectsPlayer.containsKey(player))
 		{
-			for(int k = 0; k < length; k++)
+			if(!totalJewelEffectsPlayer.get(player).isEmpty())
 			{
-				if(totalJewelEffects.keySet().toArray()[k].equals(effect))
-				{
-					int oldValue = (int) totalJewelEffects.values().toArray()[k];
-					int newValue = (int) totalJewelEffects.values().toArray()[k] + 1;
-					totalJewelEffects.replace(effect, oldValue, newValue);
+				int length = totalJewelEffectsPlayer.get(player).size();
 
-					break;
-				}
-				else if(k == (length - 1))
+				for(int k = 0; k < length; k++)
 				{
-					totalJewelEffects.put(effect, 1);
+					if(totalJewelEffectsPlayer.get(player).keySet().toArray()[k].equals(effect))
+					{
+						int oldValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[k];
+						int newValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[k] + 1;
+						totalJewelEffectsPlayer.get(player).replace(effect, oldValue, newValue);
+
+						break;
+					}
+					else if(k == (length - 1))
+					{
+						totalJewelEffectsPlayer.get(player).put(effect, 1);
+					}
 				}
+			}
+			else
+			{
+				totalJewelEffectsPlayer.get(player).put(effect, 1);
 			}
 		}
 		else
 		{
-			totalJewelEffects.put(effect, 1);
+			totalJewelEffectsPlayer.put(player, new HashMap<>());
+			totalJewelEffectsPlayer.get(player).put(effect, 1);
 		}
 	}
 
@@ -334,8 +342,6 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 				// MAX HEALTH
 				case 3:
 					amount = 4;
-					/*if(stack.getItem() instanceof JewelAmuletItem) amount = 8;
-					else if(stack.getItem() instanceof JewelRingItem) amount = 6;*/
 					break;
 			}
 
