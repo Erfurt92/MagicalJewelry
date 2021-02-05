@@ -24,6 +24,7 @@ public interface IJewelAttributes
         addNewAttribute(1, SharedMonsterAttributes.ARMOR.getName(), "Armor bonus");
         addNewAttribute(2, SharedMonsterAttributes.ATTACK_DAMAGE.getName(), "Attack Damage bonus");
         addNewAttribute(3, SharedMonsterAttributes.MAX_HEALTH.getName(), "Health Boost bonus");
+        addNewAttribute(4, SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), "Knockback Resistance bonus");
     }
 
     static void addNewAttribute(int index, String name, String description)

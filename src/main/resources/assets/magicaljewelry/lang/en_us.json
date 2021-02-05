@@ -3,8 +3,17 @@
 	"item.magicaljewelry.silver_amulet": "Silver Amulet",
 	"item.magicaljewelry.gold_ring": "Gold Ring",
 	"item.magicaljewelry.silver_ring": "Silver Ring",
+	"item.magicaljewelry.gold_bracelet": "Gold Bracelet",
+	"item.magicaljewelry.silver_bracelet": "Silver Bracelet",
 
 	"item.magicaljewelry.the_one_ring": "The One Ring",
 
-	"itemGroup.magicaljewelryGroup": "Magical Jewelry"
+	"rarity.magicaljewelry.uncommon": "Uncommon",
+	"rarity.magicaljewelry.rare": "Rare",
+	"rarity.magicaljewelry.epic": "Epic",
+	"rarity.magicaljewelry.legendary": "Legendary",
+
+	"itemGroup.magicaljewelryGroup": "Magical Jewelry",
+
+	"curios.identifier.bracelet": "Bracelet"
 }
