@@ -9,10 +9,12 @@
 					"type": "minecraft:item",
 					"name": "magicaljewelry:the_one_ring",
 					"weight": 1
-				},
+				}
+			],
+			"conditions": [
 				{
-					"type": "empty",
-					"weight": 9999
+					"condition": "minecraft:random_chance",
+					"chance": 0.001
 				}
 			]
 		}

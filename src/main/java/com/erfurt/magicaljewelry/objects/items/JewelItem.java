@@ -5,9 +5,7 @@ import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
-import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
-import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
-import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
+import com.erfurt.magicaljewelry.util.interfaces.IJewel;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -37,7 +35,7 @@ import top.theillusivec4.curios.common.capability.CapCurioItem;
 
 import java.util.*;
 
-public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJewelAttributes
+public class JewelItem extends Item implements IJewel
 {
 	private static final String NBT_RARITY = "Rarity";
 	private static final String NBT_EFFECTS = "Effects";
@@ -166,6 +164,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		return SILVER_AMULET_TEXTURE;
 	}
 
+	/** This method is used to update the mapped effects for the player
+	 *
+	 * @param stack ItemStack in - Used to check what rarity and effects are stored in the NBT for the ItemStack
+	 * @param player LivingEntity in - this should always a player
+	 * @param removeEffects Boolean in - are the effects being removed or added - true if you want to remove the effects
+	 */
 	public void updateJewelEffects(ItemStack stack, LivingEntity player, boolean removeEffects)
 	{
 		if(removeEffects)
@@ -188,31 +192,54 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 		else
 		{
-			for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
+			String rarity = getJewelRarity(stack);
+
+			boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
+			boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
+			boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
+			boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
+			boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
+
+			if(finalFlag)
 			{
-				Effect effect = (Effect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
-				int level = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
-
-				int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
-
-				switch(maxLevel)
+				for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 				{
-					case 1: level = 0; break;
-					case 2: if(level > 1) level = 1; break;
-					case 3: if(level > 2) level = 2; break;
+					Effect effect = (Effect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
+					int level = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
+
+					int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
+
+					switch(maxLevel)
+					{
+						case 1:
+							level = 0;
+							break;
+						case 2:
+							if (level > 1) level = 1;
+							break;
+						case 3:
+							if (level > 2) level = 2;
+							break;
+					}
+
+					boolean legendaryFlag = legendaryEffectsList.contains(effect);
+
+					if(legendaryFlag) level = 0;
+
+					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
+
+					if(flagLegendary) legendaryEffectRemoval(stack, player);
 				}
-
-				boolean legendaryFlag = legendaryEffectsList.contains(effect);
-
-				if(legendaryFlag) level = 0;
-
-				player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
 			}
-
-			if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 		}
 	}
 
+	/** This method is a sub-method for updateJewelEffects <br>
+	 * Used to update the mapped jewel effects value or removal if the value get's to 0
+	 *
+	 * @param player LivingEntity in - should always be a player
+	 * @param effect Effect in - the effect that are being updated
+	 */
 	private void updateJewelEffects(LivingEntity player, Effect effect)
 	{
 		int length = totalJewelEffectsPlayer.get(player).size();
@@ -247,6 +274,11 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 	}
 
+	/** This method is used for legendary effect removal
+	 *
+	 * @param stack ItemStack in - Used to check what rarity and effects are stored in the NBT for the ItemStack
+	 * @param player LivingEntity in - this should always be a player
+	 */
 	private void legendaryEffectRemoval(ItemStack stack, LivingEntity player)
 	{
 		if(!legendaryEffectsEnabled(stack))
@@ -265,6 +297,11 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 	}
 
+	/** This method is used to add a map for the player with effects and the amount of times it's present on the equipped ItemStacks
+	 *
+	 * @param stack ItemStack in - Used to check what rarity and effects are stored in the NBT for the ItemStack
+	 * @param player LivingEntity in - should always be a player
+	 */
 	public void getTotalJewelEffects(ItemStack stack, LivingEntity player)
 	{
 		if(legendaryEffectsEnabled(stack))
@@ -284,6 +321,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 		}
 	}
 
+	/** This method is a sub-method for getTotalJewelEffects <br>
+	 * Used to update the total mapped jewel effects value for each player
+	 *
+	 * @param effect Effect in - the effect that are being updated
+	 * @param player LivingEntity in - should always be a player
+	 */
 	private void updateTotalJewelEffects(Effect effect, LivingEntity player)
 	{
 		if(totalJewelEffectsPlayer.containsKey(player))
@@ -324,21 +367,25 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 	{
 		if(getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()) || getJewelRarity(stack).equals(JewelRarity.EPIC.getName()))
 		{
-			int amount = 2;
+			double amount = 2.0D;
 			int index = getJewelAttributes(stack);
 
 			switch(index)
 			{
 				// ARMOR TOUGHNESS
-				case 0:
+				case 0: break;
 				// ATTACK DAMAGE
 				case 2: break;
 				// ARMOR
-				case 1: if(stack.getItem() instanceof JewelAmuletItem) amount = 4; break;
+				case 1: if(stack.getItem() instanceof JewelAmuletItem) amount = 4.0D; break;
 				// MAX HEALTH
 				case 3:
-					if(stack.getItem() instanceof JewelAmuletItem) amount = 8;
-					else if(stack.getItem() instanceof JewelRingItem) amount = 6;
+					if(stack.getItem() instanceof JewelAmuletItem) amount = 8.0D;
+					else amount = 4.0D;
+					break;
+				// KNOCKBACK RESISTANCE
+				case 4:
+					amount = 1.0D;
 					break;
 			}
 
@@ -389,6 +436,12 @@ public class JewelItem extends Item implements IJewelEffects, IJewelRarity, IJew
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new StringTextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
+		}
+		else
+		{
+			tooltip.add(new StringTextComponent("This item have no effects").applyTextStyle(TextFormatting.RED));
+			tooltip.add(new StringTextComponent("or attributes attached to it,").applyTextStyle(TextFormatting.RED));
+			tooltip.add(new StringTextComponent("and therefore does nothing!").applyTextStyle(TextFormatting.RED));
 		}
 
 		if(legendaryEffectsEnabled(stack))

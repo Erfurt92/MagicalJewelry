@@ -13,5 +13,8 @@ public class ModColorHandler
 		
 		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_RING.get());
 		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_RING.get());
+
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.GOLD_BRACELET.get());
+		event.getItemColors().register(JewelItem::getItemColor, ItemInit.SILVER_BRACELET.get());
 	}
 }
