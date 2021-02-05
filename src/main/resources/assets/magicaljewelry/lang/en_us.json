@@ -8,5 +8,10 @@
 
 	"item.magicaljewelry.the_one_ring": "The One Ring",
 
+	"rarity.magicaljewelry.uncommon": "Uncommon",
+	"rarity.magicaljewelry.rare": "Rare",
+	"rarity.magicaljewelry.epic": "Epic",
+	"rarity.magicaljewelry.legendary": "Legendary",
+
 	"itemGroup.magicaljewelryGroup": "Magical Jewelry"
 }

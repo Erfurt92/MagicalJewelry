@@ -1,6 +1,9 @@
 package com.erfurt.magicaljewelry.util.enums;
 
+import com.erfurt.magicaljewelry.MagicalJewelry;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum JewelRarity
 {
@@ -11,11 +14,13 @@ public enum JewelRarity
 
 	private final String name;
 	private final TextFormatting format;
+	private final ITextComponent displayName;
 	
 	JewelRarity(String nameIn, TextFormatting formatIn)
 	{
 		this.name = nameIn;
 		this.format = formatIn;
+		this.displayName = new TranslationTextComponent("rarity." + MagicalJewelry.MOD_ID + "." + nameIn);
 	}
 	
 	public String getName()
@@ -25,8 +30,7 @@ public enum JewelRarity
 
 	public String getDisplayName()
 	{
-		String displayName = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
-		return displayName;
+		return displayName.getString();
 	}
 	
 	public TextFormatting getFormat()

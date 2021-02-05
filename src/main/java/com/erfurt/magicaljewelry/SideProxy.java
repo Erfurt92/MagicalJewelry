@@ -3,10 +3,12 @@ package com.erfurt.magicaljewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
+import com.erfurt.magicaljewelry.recipes.JewelUpgradeRecipe;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -16,6 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.IForgeRegistry;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
@@ -33,6 +36,7 @@ public class SideProxy
         ItemInit.ITEMS.register(modEventBus);
 
         modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
+        modEventBus.addGenericListener(IRecipeSerializer.class, SideProxy::registerRecipeSerializers);
         modEventBus.addListener(SideProxy::setup);
         modEventBus.addListener(SideProxy::clientRegistries);
         modEventBus.addListener(SideProxy::enqueue);
@@ -73,6 +77,13 @@ public class SideProxy
     {
         event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
         MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");
+    }
+
+    public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event)
+    {
+        IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
+
+        r.registerAll(JewelUpgradeRecipe.Serializer.SERIALIZER);
     }
 
     static class Client extends SideProxy

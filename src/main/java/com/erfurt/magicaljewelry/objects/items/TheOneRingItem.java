@@ -27,8 +27,7 @@ public class TheOneRingItem extends Item
 {
     private static final UUID ARMOR_TOUGHNESS_UUID = UUID.fromString("c9d470e7-bd2a-4c30-a13c-c381b99655da");
     private static final UUID ATTACK_DAMAGE_UUID = UUID.fromString("ba527873-7d67-48a2-90a3-7e2cf0a7aa97");
-    private static final UUID ARMOR_UUID = UUID.fromString("a1efe6cf-83e1-45a1-a45c-227381251caa");
-    private static final UUID MAX_HEALTH_UUID = UUID.fromString("4715d2d3-0b7f-4ac7-9875-f18ef0fc7321");
+    private static final UUID KNOCKBACK_RESISTANCE_UUID = UUID.fromString("a1efe6cf-83e1-45a1-a45c-227381251caa");
 
     public TheOneRingItem()
     {
@@ -64,8 +63,7 @@ public class TheOneRingItem extends Item
                 Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
                 attributes.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(ARMOR_TOUGHNESS_UUID, "Armor Toughness bonus", 2.0D, AttributeModifier.Operation.ADDITION));
                 attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_UUID, "Attack Damage bonus", 2.0D, AttributeModifier.Operation.ADDITION));
-                attributes.put(Attributes.ARMOR, new AttributeModifier(ARMOR_UUID, "Armor bonus", 2.0D, AttributeModifier.Operation.ADDITION));
-                attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(MAX_HEALTH_UUID, "Health Boost bonus", 4.0D, AttributeModifier.Operation.ADDITION));
+                attributes.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(KNOCKBACK_RESISTANCE_UUID, "Knockback Resistance bonus", 1.0D, AttributeModifier.Operation.ADDITION));
                 return attributes;
             }
 

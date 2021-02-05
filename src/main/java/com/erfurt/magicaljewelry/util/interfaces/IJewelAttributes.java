@@ -25,6 +25,7 @@ public interface IJewelAttributes
         addNewAttribute(1, Attributes.ARMOR, "Armor bonus");
         addNewAttribute(2, Attributes.ATTACK_DAMAGE, "Attack Damage bonus");
         addNewAttribute(3, Attributes.MAX_HEALTH, "Health Boost bonus");
+        addNewAttribute(4, Attributes.KNOCKBACK_RESISTANCE, "Knockback Resistance bonus");
     }
 
     static void addNewAttribute(int index, Attribute attribute, String description)

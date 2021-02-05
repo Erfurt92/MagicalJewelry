@@ -1,0 +1,12 @@
+{
+  "type": "magicaljewelry:jewel_upgrade",
+  "base": {
+    "item": "magicaljewelry:silver_ring"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "item": "magicaljewelry:silver_ring"
+  }
+}

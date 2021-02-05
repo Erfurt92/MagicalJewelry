@@ -64,10 +64,12 @@
 							"function": "magicaljewelry:set_jewel_nbt_boss"
 						}
 					]
-				},
+				}
+			],
+			"conditions": [
 				{
-					"type": "empty",
-					"weight": 990
+					"condition": "minecraft:random_chance",
+					"chance": 0.01
 				}
 			]
 		}

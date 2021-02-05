@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import java.util.Random;
 import java.util.UUID;
 
-public interface IJewelNBTHandler extends IJewelEffects, IJewelRarity, IJewelAttributes
+public interface IJewelNBTHandler extends IJewel
 {
     Random rand = new Random();
 
