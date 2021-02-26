@@ -194,13 +194,7 @@ public class JewelItem extends Item implements IJewel
 		{
 			String rarity = getJewelRarity(stack);
 
-			boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
-			boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
-			boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
-			boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
-			boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
-
-			if(finalFlag)
+			if(rarityCheck(rarity))
 			{
 				for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 				{
@@ -228,7 +222,7 @@ public class JewelItem extends Item implements IJewel
 
 					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
 
-					if(flagLegendary) legendaryEffectRemoval(stack, player);
+					if(rarity.equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 				}
 			}
 		}
@@ -403,6 +397,17 @@ public class JewelItem extends Item implements IJewel
 		return (MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()));
 	}
 
+	private boolean rarityCheck(String rarity)
+	{
+		boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
+		boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
+		boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
+		boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
+		boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
+
+		return finalFlag;
+	}
+
 	public int effectsLength(ItemStack stack)
 	{
 		int effectLength;
@@ -423,13 +428,7 @@ public class JewelItem extends Item implements IJewel
 	{
 		String rarity = getJewelRarity(stack);
 
-		boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
-		boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
-		boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
-		boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
-		boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
-
-		if(finalFlag)
+		if(rarityCheck(rarity))
 		{
 			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byName(rarity).getFormat()));
 
