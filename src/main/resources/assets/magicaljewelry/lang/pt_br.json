@@ -3,8 +3,15 @@
 	"item.magicaljewelry.silver_amulet": "Colar de Prata",
 	"item.magicaljewelry.gold_ring": "Anel de Ouro",
 	"item.magicaljewelry.silver_ring": "Anel de Prata",
+	"item.magicaljewelry.gold_bracelet": "Bracelete de Ouro",
+	"item.magicaljewelry.silver_bracelet": "Bracelete de Prata",
 
 	"item.magicaljewelry.the_one_ring": "O Um Anel",
+
+	"rarity.magicaljewelry.uncommon": "Incomum",
+	"rarity.magicaljewelry.rare": "Raro",
+	"rarity.magicaljewelry.epic": "Épico",
+	"rarity.magicaljewelry.legendary": "Lendário",
 
 	"itemGroup.magicaljewelryGroup": "Magical Jewelry"
 }
