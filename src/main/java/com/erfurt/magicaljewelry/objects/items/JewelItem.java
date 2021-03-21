@@ -131,8 +131,9 @@ public class JewelItem extends Item implements IJewel
 			}
 
 			@Override
-			public void onEquip(String identifier, int index, LivingEntity livingEntity)
+			public void onEquip(SlotContext slotContext, ItemStack prevStack)
 			{
+				LivingEntity livingEntity = slotContext.getWearer();
 				if(stack.getItem() instanceof JewelItem)
 				{
 					getTotalJewelEffects(stack, livingEntity);
@@ -141,8 +142,9 @@ public class JewelItem extends Item implements IJewel
 			}
 
 			@Override
-			public void onUnequip(String identifier, int index, LivingEntity livingEntity)
+			public void onUnequip(SlotContext slotContext, ItemStack newStack)
 			{
+				LivingEntity livingEntity = slotContext.getWearer();
 				if(stack.getItem() instanceof JewelItem) updateJewelEffects(stack, livingEntity, true);
 			}
 
