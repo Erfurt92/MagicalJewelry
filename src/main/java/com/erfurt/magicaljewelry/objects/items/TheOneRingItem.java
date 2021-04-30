@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry.objects.items;
 
+import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
@@ -41,13 +42,13 @@ public class TheOneRingItem extends Item
             @Override
             public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
             {
-                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0) livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, true));
+                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0) livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
             }
 
             @Override
             public void onEquipped(String identifier, LivingEntity livingEntity)
             {
-                livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, true));
+                livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
             }
 
             @Override
