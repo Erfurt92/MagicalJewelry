@@ -16,7 +16,7 @@ version = "${mod_version}"
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     mappings channel: 'snapshot', version: "${version_mcp}"
@@ -50,10 +50,6 @@ minecraft {
     }
 }
 
-repositories {
-    maven { url = "https://maven.theillusivec4.top/" }
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${version_forge}"
 
@@ -61,6 +57,9 @@ dependencies {
     compile fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}:api")
 }
 
+repositories {
+    maven { url = "https://maven.theillusivec4.top/" }
+}
 
 jar {
     manifest {
@@ -76,6 +75,7 @@ jar {
     }
 }
 
+jar.finalizedBy('reobfJar')
 
 processResources {
 
@@ -88,8 +88,6 @@ processResources {
         exclude 'META-INF/mods.toml'
     }
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {

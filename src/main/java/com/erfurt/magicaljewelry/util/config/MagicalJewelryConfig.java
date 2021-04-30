@@ -1,30 +1,28 @@
 package com.erfurt.magicaljewelry.util.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.nio.file.Path;
+import static com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder.*;
 
 public class MagicalJewelryConfig
 {
-	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-	
-	public static final ForgeConfigSpec CONFIG;
+	public static final CommonConfig COMMON_BUILDER;
+
+	public static final ForgeConfigSpec COMMON_CONFIG;
+
+	public static final ClientConfig CLIENT_BUILDER;
+
+	public static final ForgeConfigSpec CLIENT_CONFIG;
 	
 	static
 	{
-		MagicalJewelryConfigBuilder.init(BUILDER);
-		
-		CONFIG = BUILDER.build();
-	}
-	
-	public static void loadConfig(ForgeConfigSpec spec, Path path)
-	{
-		final CommentedFileConfig configData = CommentedFileConfig.builder(path).sync().autosave().writingMode(WritingMode.REPLACE).build();
-		
-		configData.load();
-		
-		spec.setConfig(configData);
+		final Pair<CommonConfig, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
+		COMMON_CONFIG = commonSpecPair.getRight();
+		COMMON_BUILDER = commonSpecPair.getLeft();
+
+		final Pair<ClientConfig, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+		CLIENT_CONFIG = clientSpecPair.getRight();
+		CLIENT_BUILDER = clientSpecPair.getLeft();
 	}
 }

@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.recipes;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
+import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Blocks;
@@ -38,8 +39,9 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
     public boolean matches(IInventory inv, World worldIn)
     {
         ItemStack stackIn = inv.getStackInSlot(0);
-        Boolean legendaryCheck = JewelItem.getJewelRarity(stackIn).equals(JewelRarity.LEGENDARY.getName());
-        return this.base.test(stackIn) && this.addition.test(inv.getStackInSlot(1)) && !legendaryCheck;
+        boolean legendaryCheck = JewelItem.getJewelRarity(stackIn).equals(JewelRarity.LEGENDARY.getName());
+        boolean upgradeEnabled = MagicalJewelryConfigBuilder.JEWEL_UPGRADE_DISABLE.get();
+        return this.base.test(stackIn) && this.addition.test(inv.getStackInSlot(1)) && !legendaryCheck && !upgradeEnabled;
     }
 
     /**

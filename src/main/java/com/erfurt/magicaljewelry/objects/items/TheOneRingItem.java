@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry.objects.items;
 
+import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
@@ -17,6 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.common.capability.CurioItemCapability;
 
@@ -42,23 +44,25 @@ public class TheOneRingItem extends Item
             @Override
             public void curioTick(String identifier, int index, LivingEntity livingEntity)
             {
-                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0) livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, true));
+                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0) livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
             }
 
             @Override
-            public void onEquip(String identifier, int index, LivingEntity livingEntity)
+            public void onEquip(SlotContext slotContext, ItemStack prevStack)
             {
-                livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, true));
+                LivingEntity livingEntity = slotContext.getWearer();
+                livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
             }
 
             @Override
-            public void onUnequip(String identifier, int index, LivingEntity livingEntity)
+            public void onUnequip(SlotContext slotContext, ItemStack newStack)
             {
+                LivingEntity livingEntity = slotContext.getWearer();
                 livingEntity.removePotionEffect(Effects.INVISIBILITY);
             }
 
             @Override
-            public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier)
+            public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid)
             {
                 Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
                 attributes.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(ARMOR_TOUGHNESS_UUID, "Armor Toughness bonus", 2.0D, AttributeModifier.Operation.ADDITION));
@@ -68,7 +72,7 @@ public class TheOneRingItem extends Item
             }
 
             @Override
-            public boolean canRightClickEquip()
+            public boolean canEquipFromUse(SlotContext slotContext)
             {
                 return true;
             }

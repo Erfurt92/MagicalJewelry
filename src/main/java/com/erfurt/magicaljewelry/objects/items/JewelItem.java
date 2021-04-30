@@ -226,7 +226,7 @@ public class JewelItem extends Item implements IJewel
 
 					if(legendaryFlag) level = 0;
 
-					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, true));
+					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 
 					if(rarity.equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 				}
@@ -266,7 +266,7 @@ public class JewelItem extends Item implements IJewel
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
 							player.removePotionEffect(effect);
-							player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, true));
+							player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 						}
 					}
 				}
@@ -409,9 +409,8 @@ public class JewelItem extends Item implements IJewel
 		boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
 		boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
 		boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
-		boolean finalFlag = flagUncommon || flagRare || flagEpic || flagLegendary;
 
-		return finalFlag;
+		return flagUncommon || flagRare || flagEpic || flagLegendary;
 	}
 
 	public int effectsLength(ItemStack stack)
