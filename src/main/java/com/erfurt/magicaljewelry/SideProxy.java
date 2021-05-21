@@ -5,6 +5,8 @@ import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
+import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
+import com.erfurt.magicaljewelry.loot.conditions.WaterHostileEntityCondition;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
@@ -54,6 +56,8 @@ public class SideProxy
     {
         LootConditionManager.registerCondition(new HostileEntityCondition.Serializer());
         LootConditionManager.registerCondition(new BossEntityCondition.Serializer());
+        LootConditionManager.registerCondition(new WaterEntityCondition.Serializer());
+        LootConditionManager.registerCondition(new WaterHostileEntityCondition.Serializer());
 
         event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
         MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");

@@ -7,37 +7,36 @@ import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.DrownedEntity;
 import net.minecraft.entity.monster.GuardianEntity;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
-public class HostileEntityCondition implements ILootCondition
+public class WaterHostileEntityCondition implements ILootCondition
 {
-    private HostileEntityCondition() { }
+    private WaterHostileEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)
     {
         Entity entity = context.get(LootParameters.THIS_ENTITY);
 
-        return entity instanceof IMob && entity.isNonBoss() && !(entity instanceof GuardianEntity || entity instanceof DrownedEntity);
+        return entity instanceof GuardianEntity || entity instanceof DrownedEntity;
     }
 
-    public static class Serializer extends AbstractSerializer<HostileEntityCondition>
+    public static class Serializer extends AbstractSerializer<WaterHostileEntityCondition>
     {
         public Serializer()
         {
-            super(MagicalJewelry.getId("is_hostile_entity"), HostileEntityCondition.class);
+            super(MagicalJewelry.getId("is_water_hostile_entity"), WaterHostileEntityCondition.class);
         }
 
         @Override
-        public void serialize(JsonObject json, HostileEntityCondition value, JsonSerializationContext context) { }
+        public void serialize(JsonObject json, WaterHostileEntityCondition value, JsonSerializationContext context) { }
 
         @Override
-        public HostileEntityCondition deserialize(JsonObject json, JsonDeserializationContext context)
+        public WaterHostileEntityCondition deserialize(JsonObject json, JsonDeserializationContext context)
         {
-            return new HostileEntityCondition();
+            return new WaterHostileEntityCondition();
         }
     }
 }

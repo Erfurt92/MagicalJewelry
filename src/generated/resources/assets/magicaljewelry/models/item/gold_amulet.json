@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "magicaljewelry:item/gem_amulet",
+    "layer1": "magicaljewelry:item/gold_amulet"
+  }
+}

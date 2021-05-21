@@ -41,7 +41,7 @@ public class MagicalJewelryConfigBuilder
 			config_builder.pop();
 
 			config_builder.comment("Misc Jewel Settings").push("effect_icon_disabled");
-			JEWEL_EFFECT_ICON = config_builder.define("effectIconDisabled", false);
+			JEWEL_EFFECT_ICON = config_builder.comment("Disable Effect Icons in the top right corner").define("effectIconDisabled", false);
 			config_builder.pop();
 
 			config_builder.comment("Misc Jewel Settings").push("jewel_durability");
@@ -53,8 +53,8 @@ public class MagicalJewelryConfigBuilder
 
 			config_builder.comment("Rarity Drop Settings").push("rarity_drop_settings");
 			JEWEL_RARE_DROP_RATE = config_builder.comment("Note that to change the drop rate for Uncommon rarity, you have to change the other values.", "If Rare, Epic and Legendary are all at max drop rate, Uncommon will not be able to drop.", "Drop rate for Rare rarity [default: 30]").defineInRange("rareDrop", 30, 15, 60);
-			JEWEL_EPIC_DROP_RATE = config_builder.comment("Drop rate for Epic rarity [default: 15]").defineInRange("epicDrop", 15, 5, 30);
-			JEWEL_LEGENDARY_DROP_RATE = config_builder.comment("Drop rate for Legendary rarity [default: 5]").defineInRange("legendaryDrop", 5, 1, 10);
+			JEWEL_EPIC_DROP_RATE = config_builder.comment("Note that to change the drop rate for Uncommon rarity, you have to change the other values.", "If Rare, Epic and Legendary are all at max drop rate, Uncommon will not be able to drop.", "Drop rate for Epic rarity [default: 15]").defineInRange("epicDrop", 15, 5, 30);
+			JEWEL_LEGENDARY_DROP_RATE = config_builder.comment("Note that to change the drop rate for Uncommon rarity, you have to change the other values.", "If Rare, Epic and Legendary are all at max drop rate, Uncommon will not be able to drop.", "Drop rate for Legendary rarity [default: 5]").defineInRange("legendaryDrop", 5, 1, 10);
 			JEWEL_ONE_RARITY_DROP = config_builder.comment("Should there only be one rarity that can drop").define("oneRarityDrop", false);
 			JEWEL_RARITY_TO_DROP = config_builder.comment("Pick what rarity to drop, if oneRarityDrop is enabled").defineEnum("jewelRarityToDrop", JewelRarity.UNCOMMON);
 			config_builder.pop();

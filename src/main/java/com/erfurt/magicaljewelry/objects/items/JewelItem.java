@@ -55,7 +55,7 @@ public class JewelItem extends Item implements IJewel
 
 	public JewelItem()
 	{
-		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP).defaultMaxDamage(0));
+		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP));
 	}
 
 	@Override
@@ -113,16 +113,16 @@ public class JewelItem extends Item implements IJewel
 			@Override
 			public void onCurioTick(String identifier, int index, LivingEntity livingEntity)
 			{
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 19 == 0 && stack.getItem() instanceof JewelItem && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()))
+				if(!livingEntity.getEntityWorld().isRemote && stack.getItem() instanceof JewelItem)
 				{
-					stack.damageItem(1, livingEntity, (livingEntity1) -> {  });
-				}
+					if(livingEntity.ticksExisted % 19 == 0) stack.damageItem(1, livingEntity, (livingEntity1) -> { });
 
-				if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0 && totalJewelEffectsPlayer.containsKey(livingEntity) && !totalJewelEffectsPlayer.get(livingEntity).isEmpty())
-				{
-					updateJewelEffects(stack, livingEntity, false);
+					if(livingEntity.ticksExisted % 199 == 0 && totalJewelEffectsPlayer.containsKey(livingEntity) && !totalJewelEffectsPlayer.get(livingEntity).isEmpty())
+					{
+						updateJewelEffects(stack, livingEntity, false);
 
-					if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+						if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
+					}
 				}
 			}
 
@@ -146,7 +146,7 @@ public class JewelItem extends Item implements IJewel
 			public Multimap<String, AttributeModifier> getAttributeModifiers(String identifier)
 			{
 				Multimap<String, AttributeModifier> attributes = HashMultimap.create();
-				if(stack.getItem() instanceof JewelItem) updateJewelAttributes(stack, attributes);
+				if(stack.getItem() instanceof JewelItem && stack.getTag().contains(NBT_ATTRIBUTES) && stack.getTag().contains(NBT_UUID)) updateJewelAttributes(stack, attributes);
 				return attributes;
 			}
 
@@ -194,7 +194,7 @@ public class JewelItem extends Item implements IJewel
 		{
 			String rarity = getJewelRarity(stack);
 
-			if(rarityCheck(rarity))
+			if(JewelRarity.containsRarity(rarity))
 			{
 				for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 				{
@@ -397,16 +397,6 @@ public class JewelItem extends Item implements IJewel
 		return (MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()));
 	}
 
-	private boolean rarityCheck(String rarity)
-	{
-		boolean flagUncommon = rarity.equals(JewelRarity.UNCOMMON.getName());
-		boolean flagRare = rarity.equals(JewelRarity.RARE.getName());
-		boolean flagEpic = rarity.equals(JewelRarity.EPIC.getName());
-		boolean flagLegendary = rarity.equals(JewelRarity.LEGENDARY.getName());
-
-		return flagUncommon || flagRare || flagEpic || flagLegendary;
-	}
-
 	public int effectsLength(ItemStack stack)
 	{
 		int effectLength;
@@ -427,37 +417,40 @@ public class JewelItem extends Item implements IJewel
 	{
 		String rarity = getJewelRarity(stack);
 
-		if(rarityCheck(rarity))
+		if(JewelRarity.containsRarity(rarity))
 		{
 			tooltip.set(0, tooltip.get(0).applyTextStyle(JewelRarity.byName(rarity).getFormat()));
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).appendText(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new StringTextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
+
+			if(legendaryEffectsEnabled(stack) && stack.getTag().contains(NBT_LEGENDARY_EFFECT))
+			{
+				int j = getJewelLegendaryEffect(stack);
+				Effect effect = (Effect) legendaryEffectsList.toArray()[j];
+				String effectName = effect.getDisplayName().getString();
+
+				tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
+			}
+
+			if(stack.getTag().contains(NBT_EFFECTS))
+			{
+				for (int i = 0; i < effectsLength(stack); i++)
+				{
+					int j = getJewelEffects(stack)[i];
+					Effect effect = (Effect) defaultEffectsList.toArray()[j];
+					String effectName = effect.getDisplayName().getString();
+
+					tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
+				}
+			}
 		}
 		else
 		{
 			tooltip.add(new StringTextComponent("This item have no effects").applyTextStyle(TextFormatting.RED));
 			tooltip.add(new StringTextComponent("or attributes attached to it,").applyTextStyle(TextFormatting.RED));
 			tooltip.add(new StringTextComponent("and therefore does nothing!").applyTextStyle(TextFormatting.RED));
-		}
-
-		if(legendaryEffectsEnabled(stack))
-		{
-			int j = getJewelLegendaryEffect(stack);
-			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
-			String effectName = effect.getDisplayName().getString();
-
-			tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
-		}
-
-		for(int i = 0; i < effectsLength(stack); i++)
-		{
-			int j = getJewelEffects(stack)[i];
-			Effect effect = (Effect) defaultEffectsList.toArray()[j];
-			String effectName = effect.getDisplayName().getString();
-
-			tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
 		}
 	}
 	

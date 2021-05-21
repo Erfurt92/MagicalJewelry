@@ -31,7 +31,7 @@ public class TheOneRingItem extends Item
 
     public TheOneRingItem()
     {
-        super(new Item.Properties().maxStackSize(1).defaultMaxDamage(0));
+        super(new Item.Properties().maxStackSize(1));
     }
 
     @Override

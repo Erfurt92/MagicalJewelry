@@ -29,6 +29,11 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelNBTHa
 
 		return stack;
 	}
+
+    public static LootFunction.Builder<?> builder()
+    {
+        return builder(SetJewelNBTBossFunction::new);
+    }
 	
 	public static class Serializer extends LootFunction.Serializer<SetJewelNBTBossFunction>
 	{
