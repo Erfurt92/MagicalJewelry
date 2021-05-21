@@ -32,6 +32,11 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelNBTHa
 		return stack;
 	}
 
+	public static LootFunction.Builder<?> builder()
+	{
+		return builder(SetJewelNBTBossFunction::new);
+	}
+
 	@Override
 	public LootFunctionType getFunctionType()
 	{

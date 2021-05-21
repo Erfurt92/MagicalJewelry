@@ -1,0 +1,19 @@
+{
+  "type": "magicaljewelry:jewel_upgrade",
+  "base": {
+    "type": "magicaljewelry:upgrade",
+    "item": "magicaljewelry:silver_bracelet",
+    "nbt": {
+      "Rarity": "rare"
+    }
+  },
+  "addition": {
+    "item": "minecraft:nether_star"
+  },
+  "result": {
+    "item": "magicaljewelry:silver_bracelet",
+    "nbt": {
+      "Rarity": "epic"
+    }
+  }
+}

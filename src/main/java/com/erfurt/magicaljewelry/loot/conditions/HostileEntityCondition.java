@@ -1,11 +1,12 @@
 package com.erfurt.magicaljewelry.loot.conditions;
 
-import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.DrownedEntity;
+import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.LootConditionType;
@@ -24,12 +25,11 @@ public class HostileEntityCondition implements ILootCondition
     {
         Entity entity = context.get(LootParameters.THIS_ENTITY);
 
-        if(entity instanceof IMob && entity.isNonBoss()) return true;
-        else return false;
+        return entity instanceof IMob && entity.canChangeDimension() && !(entity instanceof GuardianEntity || entity instanceof DrownedEntity);
     }
 
     @Override
-    public LootConditionType func_230419_b_()
+    public LootConditionType getConditionType()
     {
         return LootInit.HOSTILE_ENTITY_CONDITION;
     }

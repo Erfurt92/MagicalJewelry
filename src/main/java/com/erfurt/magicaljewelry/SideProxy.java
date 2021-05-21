@@ -4,11 +4,13 @@ import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.recipes.JewelUpgradeRecipe;
+import com.erfurt.magicaljewelry.recipes.UpgradeNBTIngredient;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -59,9 +61,11 @@ public class SideProxy
 
     public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event)
     {
+        CraftingHelper.register(MagicalJewelry.getId("upgrade"), UpgradeNBTIngredient.Serializer.INSTANCE);
         IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
         r.registerAll(JewelUpgradeRecipe.Serializer.SERIALIZER);
+        MagicalJewelry.LOGGER.info("registerRecipeSerializers method registered.");
     }
 
     static class Client extends SideProxy

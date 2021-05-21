@@ -1,0 +1,19 @@
+{
+  "type": "magicaljewelry:jewel_upgrade",
+  "base": {
+    "type": "magicaljewelry:upgrade",
+    "item": "magicaljewelry:gold_amulet",
+    "nbt": {
+      "Rarity": "epic"
+    }
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "item": "magicaljewelry:gold_amulet",
+    "nbt": {
+      "Rarity": "legendary"
+    }
+  }
+}

@@ -44,4 +44,11 @@ public enum JewelRarity
 
 		return null;
 	}
+
+	public static boolean containsRarity(String name)
+	{
+		for(JewelRarity rarity : values()) if(rarity.name.equals(name)) return true;
+
+		return false;
+	}
 }

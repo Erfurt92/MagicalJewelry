@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "magicaljewelry:item/gem_bracelet",
+    "layer1": "magicaljewelry:item/gold_bracelet"
+  }
+}

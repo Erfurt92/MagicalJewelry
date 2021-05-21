@@ -1,0 +1,19 @@
+{
+  "type": "magicaljewelry:jewel_upgrade",
+  "base": {
+    "type": "magicaljewelry:upgrade",
+    "item": "magicaljewelry:silver_bracelet",
+    "nbt": {
+      "Rarity": "uncommon"
+    }
+  },
+  "addition": {
+    "item": "minecraft:diamond_block"
+  },
+  "result": {
+    "item": "magicaljewelry:silver_bracelet",
+    "nbt": {
+      "Rarity": "rare"
+    }
+  }
+}

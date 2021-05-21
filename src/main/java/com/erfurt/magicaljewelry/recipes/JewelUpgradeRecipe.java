@@ -39,9 +39,21 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
     public boolean matches(IInventory inv, World worldIn)
     {
         ItemStack stackIn = inv.getStackInSlot(0);
-        boolean legendaryCheck = JewelItem.getJewelRarity(stackIn).equals(JewelRarity.LEGENDARY.getName());
+        ItemStack stackOut = this.result.copy();
+        boolean rarityInCheck = false;
+        boolean rarityOutCheck = false;
+        if(stackIn.hasTag())
+        {
+            String rarityIn = stackIn.getTag().get(JewelItem.NBT_RARITY).getString();
+            rarityInCheck = JewelRarity.containsRarity(rarityIn);
+        }
+        if(stackOut.hasTag())
+        {
+            String rarityOut = stackOut.getTag().get(JewelItem.NBT_RARITY).getString();
+            rarityOutCheck = JewelRarity.containsRarity(rarityOut);
+        }
         boolean upgradeEnabled = MagicalJewelryConfigBuilder.JEWEL_UPGRADE_DISABLE.get();
-        return this.base.test(stackIn) && this.addition.test(inv.getStackInSlot(1)) && !legendaryCheck && !upgradeEnabled;
+        return this.base.test(stackIn) && this.addition.test(inv.getStackInSlot(1)) && rarityInCheck && rarityOutCheck && !upgradeEnabled;
     }
 
     /**
@@ -50,28 +62,19 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
     @Override
     public ItemStack getCraftingResult(IInventory inv)
     {
-        ItemStack itemstack = this.result.copy();
+        ItemStack stackOut = this.result.copy();
         ItemStack stackIn = inv.getStackInSlot(0);
-        CompoundNBT compoundnbt = stackIn.getTag();
-        String rarity = JewelItem.getJewelRarity(stackIn);
-        if(compoundnbt != null)
+        if(stackIn.hasTag() && stackOut.hasTag())
         {
-            itemstack.setTag(compoundnbt.copy());
-            if(rarity.equals(JewelRarity.UNCOMMON.getName()))
-            {
-                JewelItem.setJewelRarity(itemstack, JewelRarity.RARE.getName());
-            }
-            else if(rarity.equals(JewelRarity.RARE.getName()))
-            {
-                JewelItem.setJewelRarity(itemstack, JewelRarity.EPIC.getName());
-            }
-            else if(rarity.equals(JewelRarity.EPIC.getName()))
-            {
-                JewelItem.setJewelRarity(itemstack, JewelRarity.LEGENDARY.getName());
-            }
+            String rarityOut = stackOut.getTag().get(JewelItem.NBT_RARITY).getString();
+            CompoundNBT nbtIn = stackIn.getTag();
+
+            stackOut.setTag(nbtIn.copy());
+            JewelItem.setJewelRarity(stackOut, rarityOut);
+            stackOut.setDamage(0);
         }
 
-        return itemstack;
+        return stackOut;
     }
 
     /**
@@ -128,18 +131,18 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
 
         public JewelUpgradeRecipe read(ResourceLocation recipeId, JsonObject json)
         {
-            Ingredient ingredient = Ingredient.deserialize(JSONUtils.getJsonObject(json, "base"));
+            Ingredient ingredient = UpgradeNBTIngredient.deserialize(JSONUtils.getJsonObject(json, "base"));
             Ingredient ingredient1 = Ingredient.deserialize(JSONUtils.getJsonObject(json, "addition"));
-            ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, itemstack);
+            ItemStack stackOut = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, stackOut);
         }
 
         public JewelUpgradeRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
         {
-            Ingredient ingredient = Ingredient.read(buffer);
+            Ingredient ingredient = UpgradeNBTIngredient.read(buffer);
             Ingredient ingredient1 = Ingredient.read(buffer);
-            ItemStack itemstack = buffer.readItemStack();
-            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, itemstack);
+            ItemStack stackOut = buffer.readItemStack();
+            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, stackOut);
         }
 
         public void write(PacketBuffer buffer, JewelUpgradeRecipe recipe)

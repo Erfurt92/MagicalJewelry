@@ -6,10 +6,12 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.functions.SetCount;
 
 public class SetJewelNBTFunction extends LootFunction implements IJewelNBTHandler
 {
@@ -30,6 +32,11 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelNBTHandle
 		setJewelNBTData(stack, rarityID);
 
 		return stack;
+	}
+
+	public static LootFunction.Builder<?> builder()
+	{
+		return builder(SetJewelNBTFunction::new);
 	}
 
 	@Override

@@ -23,12 +23,11 @@ public class BossEntityCondition implements ILootCondition
     {
         Entity entity = context.get(LootParameters.THIS_ENTITY);
 
-        if(entity instanceof IMob && !entity.isNonBoss()) return true;
-        else return false;
+        return entity instanceof IMob && !entity.canChangeDimension();
     }
 
     @Override
-    public LootConditionType func_230419_b_()
+    public LootConditionType getConditionType()
     {
         return LootInit.BOSS_ENTITY_CONDITION;
     }
