@@ -11,6 +11,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class UpgradeNBTIngredient extends Ingredient
@@ -27,12 +28,16 @@ public class UpgradeNBTIngredient extends Ingredient
     {
         JsonObject json = serialize().getAsJsonObject();
         boolean rarityCheck = false;
-        if(input != null && input.hasTag())
+        if(input != null && input.hasTag() && input.getItem() instanceof JewelItem)
         {
-            String rarityTemp = json.get("nbt").getAsString();
-            int stringSize = rarityTemp.length();
-            String rarity = rarityTemp.substring(1, stringSize - 1);
-            rarityCheck = input.getTag().get(JewelItem.NBT_RARITY).getString().equals(rarity) && JewelRarity.containsRarity(rarity);
+            boolean rarityCheckTemp = JewelRarity.containsRarity(JewelItem.getJewelRarity(input));
+            if(rarityCheckTemp)
+            {
+                String rarityTemp = json.get("nbt").getAsString();
+                int stringSize = rarityTemp.length();
+                String rarity = rarityTemp.substring(1, stringSize - 1);
+                rarityCheck = Objects.requireNonNull(input.getTag().get(JewelItem.NBT_RARITY)).getString().equals(rarity);
+            }
         }
         return this.stack.getItem() == input.getItem() && rarityCheck;
     }

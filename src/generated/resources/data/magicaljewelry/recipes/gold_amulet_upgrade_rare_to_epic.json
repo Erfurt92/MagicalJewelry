@@ -8,7 +8,7 @@
     }
   },
   "addition": {
-    "item": "minecraft:nether_star"
+    "item": "minecraft:netherite_ingot"
   },
   "result": {
     "item": "magicaljewelry:gold_amulet",

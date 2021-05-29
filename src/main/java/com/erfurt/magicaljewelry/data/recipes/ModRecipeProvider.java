@@ -32,7 +32,7 @@ public class ModRecipeProvider extends RecipeProvider
     private void upgradeRecipe(Consumer<IFinishedRecipe> consumer, Item upgradeableItem)
     {
         JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.DIAMOND_BLOCK, UNCOMMON.getName(), RARE.getName()).build(consumer, upgradeableItem.toString());
-        JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.NETHER_STAR, RARE.getName(), EPIC.getName()).build(consumer, upgradeableItem.toString());
-        JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.NETHERITE_INGOT, EPIC.getName(), LEGENDARY.getName()).build(consumer, upgradeableItem.toString());
+        JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.NETHERITE_INGOT, RARE.getName(), EPIC.getName()).build(consumer, upgradeableItem.toString());
+        JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.NETHERITE_BLOCK, EPIC.getName(), LEGENDARY.getName()).build(consumer, upgradeableItem.toString());
     }
 }

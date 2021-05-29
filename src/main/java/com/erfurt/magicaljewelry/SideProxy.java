@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry;
 
+import com.erfurt.magicaljewelry.command.JewelGiveCommand;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
@@ -9,9 +10,13 @@ import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
@@ -42,6 +47,7 @@ public class SideProxy
 
         modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
         modEventBus.addGenericListener(IRecipeSerializer.class, SideProxy::registerRecipeSerializers);
+        MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);
         modEventBus.addListener(SideProxy::enqueue);
     }
 
@@ -66,6 +72,12 @@ public class SideProxy
 
         r.registerAll(JewelUpgradeRecipe.Serializer.SERIALIZER);
         MagicalJewelry.LOGGER.info("registerRecipeSerializers method registered.");
+    }
+
+    public static void registerCommands(RegisterCommandsEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        JewelGiveCommand.register(dispatcher);
     }
 
     static class Client extends SideProxy

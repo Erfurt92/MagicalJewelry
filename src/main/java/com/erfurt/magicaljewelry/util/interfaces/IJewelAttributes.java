@@ -34,7 +34,7 @@ public interface IJewelAttributes
         descriptionAttributesList.add(index, description);
     }
 
-    default int getAttributes()
+    static int getAttributes()
     {
         return rand.nextInt(attributesList.size());
     }

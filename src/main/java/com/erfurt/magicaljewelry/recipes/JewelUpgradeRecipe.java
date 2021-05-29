@@ -41,17 +41,9 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
         ItemStack stackIn = inv.getStackInSlot(0);
         ItemStack stackOut = this.result.copy();
         boolean rarityInCheck = false;
+        if(stackIn.getItem() instanceof JewelItem) rarityInCheck = JewelRarity.containsRarity(JewelItem.getJewelRarity(stackIn));
         boolean rarityOutCheck = false;
-        if(stackIn.hasTag())
-        {
-            String rarityIn = stackIn.getTag().get(JewelItem.NBT_RARITY).getString();
-            rarityInCheck = JewelRarity.containsRarity(rarityIn);
-        }
-        if(stackOut.hasTag())
-        {
-            String rarityOut = stackOut.getTag().get(JewelItem.NBT_RARITY).getString();
-            rarityOutCheck = JewelRarity.containsRarity(rarityOut);
-        }
+        if(stackOut.getItem() instanceof JewelItem) rarityOutCheck = JewelRarity.containsRarity(JewelItem.getJewelRarity(stackOut));
         boolean upgradeEnabled = MagicalJewelryConfigBuilder.JEWEL_UPGRADE_DISABLE.get();
         return this.base.test(stackIn) && this.addition.test(inv.getStackInSlot(1)) && rarityInCheck && rarityOutCheck && !upgradeEnabled;
     }
@@ -71,7 +63,7 @@ public class JewelUpgradeRecipe extends SmithingRecipe implements IRecipe<IInven
 
             stackOut.setTag(nbtIn.copy());
             JewelItem.setJewelRarity(stackOut, rarityOut);
-            stackOut.setDamage(0);
+            stackOut.getTag().remove("Damage");
         }
 
         return stackOut;

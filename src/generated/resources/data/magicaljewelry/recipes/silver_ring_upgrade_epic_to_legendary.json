@@ -8,7 +8,7 @@
     }
   },
   "addition": {
-    "item": "minecraft:netherite_ingot"
+    "item": "minecraft:netherite_block"
   },
   "result": {
     "item": "magicaljewelry:silver_ring",

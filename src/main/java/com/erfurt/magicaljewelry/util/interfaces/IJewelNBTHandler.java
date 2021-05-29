@@ -11,19 +11,19 @@ public interface IJewelNBTHandler extends IJewelEffects, IJewelRarity, IJewelAtt
 {
     Random rand = new Random();
 
-    default ItemStack setJewelNBTData(ItemStack stack, String rarityID)
+    static ItemStack setJewelNBTData(ItemStack stack, String rarityID)
     {
         JewelItem.setJewelRarity(stack, rarityID);
 
-        JewelItem.setJewelEffects(stack, getEffects(rarityID, JewelItem.jewelEffects));
+        JewelItem.setJewelEffects(stack, IJewelEffects.getEffects(rarityID, JewelItem.jewelEffects));
 
         JewelItem.setJewelLegendaryEffect(stack, rand.nextInt(legendaryEffectsList.size()));
 
-        JewelItem.setJewelAttributes(stack, getAttributes());
+        JewelItem.setJewelAttributes(stack, IJewelAttributes.getAttributes());
 
         JewelItem.setJewelUUID(stack, UUID.randomUUID().toString());
 
-        int colorID = new Random().nextInt(DyeColor.values().length);
+        int colorID = rand.nextInt(DyeColor.values().length);
         String gemColor = DyeColor.byId(colorID).getString();
         JewelItem.setGemColor(stack, gemColor);
 

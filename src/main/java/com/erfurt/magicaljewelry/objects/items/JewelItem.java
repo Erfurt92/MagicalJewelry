@@ -77,7 +77,7 @@ public class JewelItem extends Item implements IJewel
 	@Override
 	public boolean isDamageable(ItemStack stack)
 	{
-		return MagicalJewelryConfigBuilder.JEWEL_DURABILITY.get() && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName());
+		return MagicalJewelryConfigBuilder.JEWEL_DURABILITY.get() && JewelRarity.containsRarity(getJewelRarity(stack)) && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName());
 	}
 
 	@Override
@@ -457,6 +457,7 @@ public class JewelItem extends Item implements IJewel
 			tooltip.add(new StringTextComponent("This item have no effects").deepCopy().mergeStyle(TextFormatting.RED));
 			tooltip.add(new StringTextComponent("or attributes attached to it,").deepCopy().mergeStyle(TextFormatting.RED));
 			tooltip.add(new StringTextComponent("and therefore does nothing!").deepCopy().mergeStyle(TextFormatting.RED));
+			tooltip.add(new StringTextComponent("This item can't be upgraded!").deepCopy().mergeStyle(TextFormatting.RED));
 		}
 	}
 	

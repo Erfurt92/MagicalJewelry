@@ -34,7 +34,7 @@ public interface IJewelEffects
 		legendaryEffectsList.add(3, Effects.NIGHT_VISION);
 	}
 	
-	default List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
+	static List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
 	{
 		List<Effect> effectsForComparing = new ArrayList<>();
 		List<Integer> tempIntArray = new ArrayList<>();
