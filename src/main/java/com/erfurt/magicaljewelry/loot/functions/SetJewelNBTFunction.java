@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.loot.functions;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelNBTHandler;
+import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -23,9 +24,9 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelNBTHandle
 	@Override
 	public ItemStack doApply(ItemStack stack, LootContext context)
 	{
-		rarityID = getRarity();
+		rarityID = IJewelRarity.getRarity();
 
-		setJewelNBTData(stack, rarityID);
+		IJewelNBTHandler.setJewelNBTData(stack, rarityID);
 
 		return stack;
 	}

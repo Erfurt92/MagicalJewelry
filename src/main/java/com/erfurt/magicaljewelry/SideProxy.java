@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry;
 
+import com.erfurt.magicaljewelry.command.JewelGiveCommand;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
@@ -11,8 +12,12 @@ import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
@@ -21,6 +26,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import top.theillusivec4.curios.api.CuriosAPI;
 import top.theillusivec4.curios.api.imc.CurioIMCMessage;
@@ -41,6 +47,7 @@ public class SideProxy
         ItemInit.ITEMS.register(modEventBus);
 
         modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
+        MinecraftForge.EVENT_BUS.addListener(SideProxy::serverStarting);
         modEventBus.addListener(SideProxy::enqueue);
     }
 
@@ -61,6 +68,12 @@ public class SideProxy
 
         event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
         MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");
+    }
+
+    public static void serverStarting(FMLServerStartingEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
+        JewelGiveCommand.register(dispatcher);
     }
 
     static class Client extends SideProxy

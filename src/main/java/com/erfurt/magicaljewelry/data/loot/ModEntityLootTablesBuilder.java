@@ -19,14 +19,14 @@ public class ModEntityLootTablesBuilder extends EntityLootTables implements IMod
     {
         builder.accept(MagicalJewelry.getId("entities/jewel_drops_hostile"),  LootTable.builder().addLootPool(jewelHostileLootTable("hostile", SetJewelNBTFunction.builder())
                 .acceptCondition(KilledByPlayer.builder())
-                .acceptCondition(RandomChanceWithLooting.builder(0.01F, 0.01F))));
+                .acceptCondition(RandomChanceWithLooting.builder(hostileDropRate, lootingMultiplier))));
         builder.accept(MagicalJewelry.getId("entities/jewel_drops_boss"), LootTable.builder().addLootPool(jewelHostileLootTable("boss", SetJewelNBTBossFunction.builder())
                 .acceptCondition(KilledByPlayer.builder())
-                .acceptCondition(RandomChanceWithLooting.builder(0.25F, 0.01F))));
+                .acceptCondition(RandomChanceWithLooting.builder(bossDropRate, lootingMultiplier))));
         builder.accept(MagicalJewelry.getId("entities/jewel_drops_water"), LootTable.builder().addLootPool(jewelWaterLootTable("water")
                 .acceptCondition(KilledByPlayer.builder())
-                .acceptCondition(RandomChanceWithLooting.builder(0.001F, 0.001F))));
-        builder.accept(MagicalJewelry.getId("entities/jewel_drops_water_hostile"), jewelWaterHostileLootTable("water_hostile", SetJewelNBTFunction.builder(), 0.001F,0.01F));
+                .acceptCondition(RandomChanceWithLooting.builder(waterDropRate, waterLootingMultiplier))));
+        builder.accept(MagicalJewelry.getId("entities/jewel_drops_water_hostile"), jewelWaterHostileLootTable("water_hostile", SetJewelNBTFunction.builder(), waterDropRate,hostileDropRate));
     }
 
     private LootTable.Builder jewelWaterHostileLootTable(String type, ILootFunction.IBuilder function, float chanceWater, float chanceHostile)
@@ -34,9 +34,9 @@ public class ModEntityLootTablesBuilder extends EntityLootTables implements IMod
         return LootTable.builder()
                 .addLootPool(jewelWaterLootTable(type + "1")
                         .acceptCondition(KilledByPlayer.builder())
-                        .acceptCondition(RandomChanceWithLooting.builder(chanceWater, 0.001F)))
+                        .acceptCondition(RandomChanceWithLooting.builder(chanceWater, waterLootingMultiplier)))
                 .addLootPool(jewelHostileLootTable(type + "2", function)
                         .acceptCondition(KilledByPlayer.builder())
-                        .acceptCondition(RandomChanceWithLooting.builder(chanceHostile, 0.01F)));
+                        .acceptCondition(RandomChanceWithLooting.builder(chanceHostile, lootingMultiplier)));
     }
 }

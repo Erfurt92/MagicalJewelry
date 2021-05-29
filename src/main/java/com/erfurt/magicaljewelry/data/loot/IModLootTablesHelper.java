@@ -9,6 +9,14 @@ import net.minecraft.world.storage.loot.functions.ILootFunction;
 
 public interface IModLootTablesHelper
 {
+    float hostileDropRate = 0.01F;
+    float bossDropRate = 0.25F;
+    float lootingMultiplier = 0.01F;
+
+    float waterDropRate = 0.001F;
+    float waterLootingMultiplier = 0.001F;
+
+
     default LootPool.Builder jewelHostileLootTable(String type, ILootFunction.IBuilder function)
     {
         return LootPool.builder()
