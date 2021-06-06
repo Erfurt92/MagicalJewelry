@@ -14,28 +14,40 @@ import java.util.function.BiConsumer;
 
 public class ModEntityLootTablesBuilder extends EntityLootTables implements IModLootTablesHelper
 {
+    public static float hostileDropRate = 0.01F;
+    public static float bossDropRate = 0.25F;
+    public static float lootingMultiplier = 0.01F;
+
+    public static String hostileLootTable = "jewel_drops_hostile";
+    public static String bossLootTable = "jewel_drops_boss";
+    public static String waterLootTable = "jewel_drops_water";
+    public static String waterHostileLootTable = "jewel_drops_water_hostile";
+
+    float waterDropRate = 0.001F;
+    float waterLootingMultiplier = 0.001F;
+
     @Override
     public void accept(BiConsumer<ResourceLocation, LootTable.Builder> builder)
     {
-        builder.accept(MagicalJewelry.getId("entities/jewel_drops_hostile"),  LootTable.builder().addLootPool(jewelHostileLootTable("hostile", SetJewelNBTFunction.builder())
+        builder.accept(MagicalJewelry.getId("entities/" + hostileLootTable),  LootTable.builder().addLootPool(jewelDefaultLootTable("hostile", SetJewelNBTFunction.builder())
                 .acceptCondition(KilledByPlayer.builder())
                 .acceptCondition(RandomChanceWithLooting.builder(hostileDropRate, lootingMultiplier))));
-        builder.accept(MagicalJewelry.getId("entities/jewel_drops_boss"), LootTable.builder().addLootPool(jewelHostileLootTable("boss", SetJewelNBTBossFunction.builder())
+        builder.accept(MagicalJewelry.getId("entities/" + bossLootTable), LootTable.builder().addLootPool(jewelDefaultLootTable("boss", SetJewelNBTBossFunction.builder())
                 .acceptCondition(KilledByPlayer.builder())
                 .acceptCondition(RandomChanceWithLooting.builder(bossDropRate, lootingMultiplier))));
-        builder.accept(MagicalJewelry.getId("entities/jewel_drops_water"), LootTable.builder().addLootPool(jewelWaterLootTable("water")
+        builder.accept(MagicalJewelry.getId("entities/" + waterLootTable), LootTable.builder().addLootPool(jewelWaterLootTable("water")
                 .acceptCondition(KilledByPlayer.builder())
                 .acceptCondition(RandomChanceWithLooting.builder(waterDropRate, waterLootingMultiplier))));
-        builder.accept(MagicalJewelry.getId("entities/jewel_drops_water_hostile"), jewelWaterHostileLootTable("water_hostile", SetJewelNBTFunction.builder(), waterDropRate,hostileDropRate));
+        builder.accept(MagicalJewelry.getId("entities/" + waterHostileLootTable), jewelWaterHostileLootTable(SetJewelNBTFunction.builder(), waterDropRate,hostileDropRate));
     }
 
-    private LootTable.Builder jewelWaterHostileLootTable(String type, ILootFunction.IBuilder function, float chanceWater, float chanceHostile)
+    private LootTable.Builder jewelWaterHostileLootTable(ILootFunction.IBuilder function, float chanceWater, float chanceHostile)
     {
         return LootTable.builder()
-                .addLootPool(jewelWaterLootTable(type + "1")
+                .addLootPool(jewelWaterLootTable("water_hostile1")
                         .acceptCondition(KilledByPlayer.builder())
                         .acceptCondition(RandomChanceWithLooting.builder(chanceWater, waterLootingMultiplier)))
-                .addLootPool(jewelHostileLootTable(type + "2", function)
+                .addLootPool(jewelDefaultLootTable("water_hostile2", function)
                         .acceptCondition(KilledByPlayer.builder())
                         .acceptCondition(RandomChanceWithLooting.builder(chanceHostile, lootingMultiplier)));
     }

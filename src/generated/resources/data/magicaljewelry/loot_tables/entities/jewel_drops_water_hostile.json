@@ -2,7 +2,7 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "name": "magicaljewelry_jewels_water_hostile1",
+      "name": "magicaljewelry_jewel_water_hostile1",
       "rolls": 1,
       "entries": [
         {

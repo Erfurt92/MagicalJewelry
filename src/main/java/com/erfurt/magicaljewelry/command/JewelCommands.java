@@ -1,6 +1,7 @@
 package com.erfurt.magicaljewelry.command;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.data.loot.ModChestLootTablesBuilder;
 import com.erfurt.magicaljewelry.data.loot.ModEntityLootTablesBuilder;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
@@ -28,12 +29,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
 import static com.erfurt.magicaljewelry.util.enums.JewelRarity.*;
 
-public final class JewelGiveCommand implements IJewelNBTHandler
+public final class JewelCommands implements IJewelNBTHandler
 {
     private static final String jewelTestLoot = "jewelTestLoot";
     private static final String jewelGive = "jewelGive";
@@ -42,9 +44,10 @@ public final class JewelGiveCommand implements IJewelNBTHandler
     private static final String rarityId = "rarity";
     private static final String randomRarity = "random";
     private static final String lootTableSettings = "lootTable";
-    private static final String hostileLootDrop = "hostileLootTable";
-    private static final String bossLootDrop = "bossLootTable";
-    private static final String bothLootDrop = "bothLootTable";
+    private static final String hostileLootDrop = ModEntityLootTablesBuilder.hostileLootTable;
+    private static final String bossLootDrop = ModEntityLootTablesBuilder.bossLootTable;
+    private static final String chestLootDrop = ModChestLootTablesBuilder.chestLootTable;
+    private static final String allLootTables = "allLootTable";
 
     private static final String[] rarities = {
             UNCOMMON.getName(),
@@ -56,7 +59,8 @@ public final class JewelGiveCommand implements IJewelNBTHandler
     private static final String[] testLootTables = {
             hostileLootDrop,
             bossLootDrop,
-            bothLootDrop
+            chestLootDrop,
+            allLootTables
     };
 
     private static final SuggestionProvider<CommandSource> itemIdSuggestions =
@@ -67,7 +71,7 @@ public final class JewelGiveCommand implements IJewelNBTHandler
     private static final SuggestionProvider<CommandSource> testLootSuggestions =
             (context, builder) -> ISuggestionProvider.suggest(testLootTables, builder);
 
-    private JewelGiveCommand() {}
+    private JewelCommands() {}
 
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
@@ -99,7 +103,7 @@ public final class JewelGiveCommand implements IJewelNBTHandler
 
         builderTestLoot.executes(context -> testLoot(
                 context.getSource(),
-                bothLootDrop))
+                allLootTables))
                 .then(Commands.argument(lootTableSettings, StringArgumentType.string())
                         .suggests(testLootSuggestions)
                         .executes(context -> testLoot(
@@ -182,74 +186,78 @@ public final class JewelGiveCommand implements IJewelNBTHandler
         return targets.size();
     }
 
-    private static int testLoot(CommandSource source, String testLootTables)
+    private static int testLoot(CommandSource source, String lootTable)
     {
-        float hostileDropRate = ModEntityLootTablesBuilder.hostileDropRate;
-        float bossDropRate = ModEntityLootTablesBuilder.bossDropRate;
-        float lootingMultiplier = ModEntityLootTablesBuilder.lootingMultiplier;
+        String[] def = { jewelTestLoot, "default" };
+        String[] looting = { jewelTestLoot, "looting" };
+        String[] config1 = { jewelTestLoot, "config1" };
+        String[] config2 = { jewelTestLoot, "config2" };
 
         ITextComponent hostile = translationTextComponent(jewelTestLoot, "hostile");
         ITextComponent boss = translationTextComponent(jewelTestLoot, "boss");
+        ITextComponent chest = translationTextComponent(jewelTestLoot, "chest");
 
-        ITextComponent hostileDropRatePercent = translationTextComponent(jewelTestLoot, "default", floatToDeci(hostileDropRate * 100)).applyTextStyle(TextFormatting.GREEN);
-        ITextComponent hostileDropRateLooting = translationTextComponent(jewelTestLoot, "looting", floatToDeci(dropRateWithLootingPercent(hostileDropRate, lootingMultiplier))).applyTextStyle(TextFormatting.GREEN);
+        // float hostileDropRate = ModEntityLootTablesBuilder.hostileDropRate;
+        // float bossDropRate = ModEntityLootTablesBuilder.bossDropRate;
+        // float hostileLootingMultiplier = ModEntityLootTablesBuilder.lootingMultiplier;
+        // float bossLootingMultiplier = ModEntityLootTablesBuilder.lootingMultiplier;
+        // float chestDropRate = ModChestLootTablesBuilder.chestDropRate;
 
-        ITextComponent bossDropRatePercent = translationTextComponent(jewelTestLoot, "default", floatToDeci(bossDropRate * 100)).applyTextStyle(TextFormatting.GREEN);
-        ITextComponent bossDropRateLooting = translationTextComponent(jewelTestLoot, "looting", floatToDeci(dropRateWithLootingPercent(bossDropRate, lootingMultiplier))).applyTextStyle(TextFormatting.GREEN);
+        // ITextComponent hostileDropRatePercent = translationTextComponent(def, floatToDeci(hostileDropRate * 100)).applyTextStyle(TextFormatting.GREEN);
+        // ITextComponent hostileDropRateLooting = translationTextComponent(looting, dropRateWithLootingPercent(hostileDropRate, hostileLootingMultiplier)).applyTextStyle(TextFormatting.GREEN);
 
-        ITextComponent oneRarityDropTrue = oneRarityDrop(String.valueOf(true));
-        ITextComponent oneRarityDropFalse = oneRarityDrop(String.valueOf(false));
+        // ITextComponent bossDropRatePercent = translationTextComponent(def, floatToDeci(bossDropRate * 100)).applyTextStyle(TextFormatting.GREEN);
+        // ITextComponent bossDropRateLooting = translationTextComponent(looting, dropRateWithLootingPercent(bossDropRate, bossLootingMultiplier)).applyTextStyle(TextFormatting.GREEN);
+
+        // ITextComponent chestDropRatePercent = translationTextComponent(def, floatToDeci(chestDropRate * 100)).applyTextStyle(TextFormatting.GREEN);
+
+        ITextComponent hostileDropRatePercent = null;
+        ITextComponent hostileDropRateLooting = null;
+
+        ITextComponent bossDropRatePercent = null;
+        ITextComponent bossDropRateLooting = null;
+
+        ITextComponent chestDropRatePercent = null;
+
+        ITextComponent oneRarityDrop = translationTextComponent(config1, "'oneRarityDrop'", "" + true).applyTextStyle(TextFormatting.YELLOW);
+        ITextComponent bothConfigOptions = translationTextComponent(config2, "'legendaryUpgradeOnly'", "'oneRarityDrop'", "" + false).applyTextStyle(TextFormatting.YELLOW);
+        ITextComponent chestDisable = translationTextComponent(config1, "'jewelsInChest'", "" + false).applyTextStyle(TextFormatting.YELLOW);
 
         float legendaryRate = (float) MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
         float epicRate = (float) MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
         float rareRate = (float) MagicalJewelryConfigBuilder.JEWEL_RARE_DROP_RATE.get();
+        float uncommonRate = 100 - legendaryRate - epicRate - rareRate;
 
-        if(!testLootTables.equals(hostileLootDrop) && !testLootTables.equals(bossLootDrop) && !testLootTables.equals(bothLootDrop))
+        if(!Arrays.asList(testLootTables).contains(lootTable))
         {
-            source.sendErrorMessage(translationTextComponent(jewelTestLoot, "failure", testLootTables));
+            source.sendErrorMessage(translationTextComponent(jewelTestLoot, "failure", lootTable));
         }
-        if(testLootTables.equals(hostileLootDrop) || testLootTables.equals(bothLootDrop))
+        if(lootTable.equals(hostileLootDrop) || lootTable.equals(allLootTables))
         {
             source.sendFeedback(hostile, true);
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
-                source.sendFeedback(oneRarityDropTrue, true);
-                source.sendFeedback(hostileDropRatePercent, true);
-                source.sendFeedback(hostileDropRateLooting, true);
-                JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
-                source.sendFeedback(oneRarity(rarity), true);
+                oneRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, oneRarityDrop);
             }
             else
             {
-                float uncommonDropRate = 100 - legendaryRate - epicRate - rareRate;
-
-                source.sendFeedback(oneRarityDropFalse, true);
-                source.sendFeedback(hostileDropRatePercent, true);
-                source.sendFeedback(hostileDropRateLooting, true);
-                source.sendFeedback(new StringTextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).applyTextStyle(LEGENDARY.getFormat()), true);
-                source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).applyTextStyle(EPIC.getFormat()), true);
-                source.sendFeedback(new StringTextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).applyTextStyle(RARE.getFormat()), true);
-                source.sendFeedback(new StringTextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).applyTextStyle(UNCOMMON.getFormat()), true);
+                defaultRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, bothConfigOptions, legendaryRate, epicRate, rareRate, uncommonRate);
             }
         }
-        if(testLootTables.equals(bossLootDrop) || testLootTables.equals(bothLootDrop))
+        if(lootTable.equals(bossLootDrop) || lootTable.equals(allLootTables))
         {
             source.sendFeedback(boss, true);
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
-                source.sendFeedback(oneRarityDropTrue, true);
-                source.sendFeedback(bossDropRatePercent, true);
-                source.sendFeedback(bossDropRateLooting, true);
-                JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
-                source.sendFeedback(oneRarity(rarity), true);
+                oneRarityDrop(source, bossDropRatePercent, bossDropRateLooting, oneRarityDrop);
             }
             else
             {
-                source.sendFeedback(oneRarityDropFalse, true);
-                source.sendFeedback(bossDropRatePercent, true);
-                source.sendFeedback(bossDropRateLooting, true);
+                source.sendFeedback(bothConfigOptions, true);
+                if(bossDropRatePercent != null) source.sendFeedback(bossDropRatePercent, true);
+                if(bossDropRateLooting != null) source.sendFeedback(bossDropRateLooting, true);
 
                 float totalDropRate = legendaryRate + epicRate;
                 float legendaryDropRate = legendaryRate / totalDropRate * 100;
@@ -259,18 +267,59 @@ public final class JewelGiveCommand implements IJewelNBTHandler
                 source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).applyTextStyle(EPIC.getFormat()), true);
             }
         }
+        if(lootTable.equals(chestLootDrop) || lootTable.equals(allLootTables))
+        {
+            source.sendFeedback(chest, true);
+
+            if(!MagicalJewelryConfigBuilder.JEWELS_IN_CHESTS.get())
+            {
+                source.sendFeedback(chestDisable, true);
+            }
+            else if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
+            {
+                oneRarityDrop(source, chestDropRatePercent, null, oneRarityDrop);
+            }
+            else
+            {
+                defaultRarityDrop(source, chestDropRatePercent, null, bothConfigOptions, legendaryRate, epicRate, rareRate, uncommonRate);
+            }
+        }
 
         return 0;
     }
 
-    private static float dropRateWithLootingPercent(float dropRate, float lootingMultiplier)
+    private static void oneRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent oneRarityDrop)
     {
-        return (dropRate + (3 * lootingMultiplier)) * 100;
+        source.sendFeedback(oneRarityDrop, true);
+        if(dropRatePercent != null) source.sendFeedback(dropRatePercent, true);
+        if(dropRateLooting != null) source.sendFeedback(dropRateLooting, true);
+        JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
+        source.sendFeedback(oneRarity(rarity), true);
     }
 
-    private static String floatToDeci(float floatIn)
+    private static void defaultRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
     {
-        return String.format("%.2f", floatIn) + "%";
+        source.sendFeedback(bothConfigOptions, true);
+        if(dropRatePercent != null) source.sendFeedback(dropRatePercent, true);
+        if(dropRateLooting != null) source.sendFeedback(dropRateLooting, true);
+        source.sendFeedback(new StringTextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).applyTextStyle(LEGENDARY.getFormat()), true);
+        source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).applyTextStyle(EPIC.getFormat()), true);
+        source.sendFeedback(new StringTextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).applyTextStyle(RARE.getFormat()), true);
+        source.sendFeedback(new StringTextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).applyTextStyle(UNCOMMON.getFormat()), true);
+    }
+
+    private static String dropRateWithLootingPercent(float dropRate, float lootingMultiplier)
+    {
+        if(dropRate < 0.0001F && lootingMultiplier < 0.0001F) return "<0,01%";
+        else if(dropRate < 0.0001F) return "~" + String.format("%.2f", (3 * lootingMultiplier) * 100) + "%";
+        else if(lootingMultiplier < 0.0001F) return "~" + String.format("%.2f", dropRate * 100) + "%";
+        else return String.format("%.2f", (dropRate + (3 * lootingMultiplier)) * 100) + "%";
+    }
+
+    private static String floatToDeci(float dropRate)
+    {
+        if(dropRate < 0.01F) return "<0,01%";
+        else return String.format("%.2f", dropRate) + "%";
     }
 
     private static ITextComponent oneRarity(JewelRarity rarityIn)
@@ -278,9 +327,19 @@ public final class JewelGiveCommand implements IJewelNBTHandler
         return translationTextComponent(jewelTestLoot, "onerarity", rarityIn.getDisplayName()).applyTextStyle(rarityIn.getFormat());
     }
 
-    private static ITextComponent oneRarityDrop(String stringIn)
+    private static TranslationTextComponent translationTextComponent(String[] strings, String stringIn)
     {
-        return translationTextComponent(jewelTestLoot, "config1", "'oneRarityDrop'", stringIn).applyTextStyle(TextFormatting.YELLOW);
+        return translationTextComponent(strings, stringIn, null);
+    }
+
+    private static TranslationTextComponent translationTextComponent(String[] strings, String string1In, String string2In)
+    {
+        return translationTextComponent(strings, string1In, string2In, null);
+    }
+
+    private static TranslationTextComponent translationTextComponent(String[] strings, String string1In, String string2In, String string3In)
+    {
+        return translationTextComponent(strings[0], strings[1], string1In, string2In, string3In);
     }
 
     private static TranslationTextComponent translationTextComponent(String type, String nameIn)
@@ -290,11 +349,11 @@ public final class JewelGiveCommand implements IJewelNBTHandler
 
     private static TranslationTextComponent translationTextComponent(String type, String nameIn, String stringIn)
     {
-        return translationTextComponent(type, nameIn, stringIn, null);
+        return translationTextComponent(type, nameIn, stringIn, null, null);
     }
 
-    private static TranslationTextComponent translationTextComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In)
+    private static TranslationTextComponent translationTextComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
     {
-        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type.toLowerCase(Locale.ROOT) + "." + nameIn, string1In, string2In);
+        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type.toLowerCase(Locale.ROOT) + "." + nameIn, string1In, string2In, string3In);
     }
 }

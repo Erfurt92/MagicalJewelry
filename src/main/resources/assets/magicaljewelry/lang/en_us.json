@@ -18,6 +18,7 @@
 	"commands.magicaljewelry.jewelgive.failure.rarity": "Rarity '%s' is not valid!",
 	"commands.magicaljewelry.jeweltestloot.hostile": "Rarity Drop Setting for Hostiles mobs",
 	"commands.magicaljewelry.jeweltestloot.boss": "Rarity Drop Setting for Boss mobs",
+	"commands.magicaljewelry.jeweltestloot.chest": "Rarity Drop Setting for Chests",
 	"commands.magicaljewelry.jeweltestloot.default": "Default drop rate: %s",
 	"commands.magicaljewelry.jeweltestloot.looting": "Default drop rate with looting 3: %s",
 	"commands.magicaljewelry.jeweltestloot.onerarity": "The only rarity that can drop is: %s",
@@ -26,5 +27,6 @@
 
 	"itemGroup.magicaljewelryGroup": "Magical Jewelry",
 
-	"curios.identifier.bracelet": "Bracelet"
+	"curios.identifier.bracelet": "Bracelet",
+	"curios.modifiers.bracelet": "When worn as bracelet:"
 }
