@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.SlotContext;
@@ -454,10 +455,11 @@ public class JewelItem extends Item implements IJewel
 		}
 		else
 		{
-			tooltip.add(new StringTextComponent("This item have no effects").deepCopy().mergeStyle(TextFormatting.RED));
-			tooltip.add(new StringTextComponent("or attributes attached to it,").deepCopy().mergeStyle(TextFormatting.RED));
-			tooltip.add(new StringTextComponent("and therefore does nothing!").deepCopy().mergeStyle(TextFormatting.RED));
-			tooltip.add(new StringTextComponent("This item can't be upgraded!").deepCopy().mergeStyle(TextFormatting.RED));
+			String creativeJewelTooltip = new TranslationTextComponent("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
+			for(String s : creativeJewelTooltip.split("(?<=\\G.{25,}\\s)"))
+			{
+				tooltip.add(new StringTextComponent(s).deepCopy().mergeStyle(TextFormatting.RED));
+			}
 		}
 	}
 	
