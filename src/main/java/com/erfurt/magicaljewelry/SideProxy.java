@@ -1,6 +1,6 @@
 package com.erfurt.magicaljewelry;
 
-import com.erfurt.magicaljewelry.command.JewelGiveCommand;
+import com.erfurt.magicaljewelry.command.JewelCommands;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
@@ -77,7 +77,7 @@ public class SideProxy
     public static void registerCommands(RegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
-        JewelGiveCommand.register(dispatcher);
+        JewelCommands.register(dispatcher);
     }
 
     static class Client extends SideProxy

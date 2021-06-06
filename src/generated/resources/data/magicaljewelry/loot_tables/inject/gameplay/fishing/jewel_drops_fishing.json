@@ -2,7 +2,7 @@
   "type": "minecraft:fishing",
   "pools": [
     {
-      "name": "magicaljewelry_jewels_fishing_treasure",
+      "name": "magicaljewelry_jewel_fishing_treasure",
       "rolls": 1,
       "entries": [
         {

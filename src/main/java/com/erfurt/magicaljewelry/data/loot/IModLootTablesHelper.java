@@ -9,10 +9,11 @@ import net.minecraft.loot.functions.ILootFunction;
 
 public interface IModLootTablesHelper
 {
-    default LootPool.Builder jewelHostileLootTable(String type, ILootFunction.IBuilder function)
+    String poolName = MagicalJewelry.MOD_ID + "_jewel_";
+    default LootPool.Builder jewelDefaultLootTable(String type, ILootFunction.IBuilder function)
     {
         return LootPool.builder()
-                .name(MagicalJewelry.MOD_ID + "_jewel_" + type)
+                .name(poolName + type)
                 .rolls(ConstantRange.of(1))
                 .addEntry(ItemLootEntry.builder(ItemInit.GOLD_AMULET.get())
                         .weight(1)
@@ -37,7 +38,7 @@ public interface IModLootTablesHelper
     default LootPool.Builder jewelWaterLootTable(String type)
     {
         return LootPool.builder()
-                .name(MagicalJewelry.MOD_ID + "_jewels_" + type)
+                .name(poolName + type)
                 .rolls(ConstantRange.of(1))
                 .addEntry(ItemLootEntry.builder(ItemInit.THE_ONE_RING.get())
                         .weight(1));

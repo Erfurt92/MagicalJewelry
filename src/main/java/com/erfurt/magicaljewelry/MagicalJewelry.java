@@ -23,8 +23,8 @@ public class MagicalJewelry
 		instance = this;
 
 		DistExecutor.runForDist(
-				() -> () -> new SideProxy.Client(),
-				() -> () -> new SideProxy.Server()
+				() -> SideProxy.Client::new,
+				() -> SideProxy.Server::new
 		);
 	}
 
