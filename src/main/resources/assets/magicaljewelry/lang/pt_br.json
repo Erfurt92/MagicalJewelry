@@ -8,6 +8,8 @@
 
 	"item.magicaljewelry.the_one_ring": "O Um Anel",
 
+	"item.magicaljewelry.tooltip.creative": "This item have no effects or attributes attached to it, and therefore does nothing!",
+
 	"rarity.magicaljewelry.uncommon": "Incomum",
 	"rarity.magicaljewelry.rare": "Raro",
 	"rarity.magicaljewelry.epic": "Épico",
@@ -20,7 +22,7 @@
 	"commands.magicaljewelry.jeweltestloot.boss": "Rarity Drop Setting for Boss mobs",
 	"commands.magicaljewelry.jeweltestloot.chest": "Rarity Drop Setting for Chests",
 	"commands.magicaljewelry.jeweltestloot.default": "Default drop rate: %s",
-	"commands.magicaljewelry.jeweltestloot.looting": "Default drop rate with looting 3: %s",
+	"commands.magicaljewelry.jeweltestloot.looting": "Default drop rate with Looting III: %s",
 	"commands.magicaljewelry.jeweltestloot.onerarity": "The only rarity that can drop is: %s",
 	"commands.magicaljewelry.jeweltestloot.config1": "Config option %s is set to %s",
 	"commands.magicaljewelry.jeweltestloot.failure": "Loot Table '%s' is not valid for testing!",

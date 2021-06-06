@@ -14,7 +14,11 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -55,6 +59,7 @@ public class SideProxy
         InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("necklace"));
         InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring").setSize(2));
         InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("bracelet").setSize(2));
+        InterModComms.sendTo(CuriosAPI.MODID, CuriosAPI.IMC.REGISTER_ICON, () -> new Tuple<>("bracelet", MagicalJewelry.getId("item/empty_bracelet_slot")));
         MagicalJewelry.LOGGER.info("enqueue method registered.");
     }
 
@@ -83,9 +88,18 @@ public class SideProxy
 
             modEventBus.addListener(Client::clientSetup);
             modEventBus.addListener(ModColorHandler::registerItemColor);
+            modEventBus.addListener(this::stitchTextures);
         }
 
         private static void clientSetup(FMLClientSetupEvent event) { }
+
+        private void stitchTextures(TextureStitchEvent.Pre event)
+        {
+            if(event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+            {
+                event.addSprite(MagicalJewelry.getId("item/empty_bracelet_slot"));
+            }
+        }
     }
 
     static class Server extends SideProxy

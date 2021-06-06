@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.capability.ICurio;
@@ -448,9 +449,11 @@ public class JewelItem extends Item implements IJewel
 		}
 		else
 		{
-			tooltip.add(new StringTextComponent("This item have no effects").applyTextStyle(TextFormatting.RED));
-			tooltip.add(new StringTextComponent("or attributes attached to it,").applyTextStyle(TextFormatting.RED));
-			tooltip.add(new StringTextComponent("and therefore does nothing!").applyTextStyle(TextFormatting.RED));
+			String creativeJewelTooltip = new TranslationTextComponent("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
+			for(String s : creativeJewelTooltip.split("(?<=\\G.{25,}\\s)"))
+			{
+				tooltip.add(new StringTextComponent(s).applyTextStyle(TextFormatting.RED));
+			}
 		}
 	}
 	
