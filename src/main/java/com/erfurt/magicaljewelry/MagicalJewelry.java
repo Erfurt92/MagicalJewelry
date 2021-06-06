@@ -22,7 +22,7 @@ public class MagicalJewelry
 	{
 		instance = this;
 
-		DistExecutor.runForDist(
+		DistExecutor.safeRunForDist(
 				() -> SideProxy.Client::new,
 				() -> SideProxy.Server::new
 		);
