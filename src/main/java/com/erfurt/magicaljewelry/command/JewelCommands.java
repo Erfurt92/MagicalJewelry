@@ -1,8 +1,8 @@
 package com.erfurt.magicaljewelry.command;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
-import com.erfurt.magicaljewelry.data.loot.ModChestLootTablesBuilder;
-import com.erfurt.magicaljewelry.data.loot.ModEntityLootTablesBuilder;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModChestLootTablesBuilder;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModEntityLootTablesBuilder;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
@@ -50,6 +50,7 @@ public final class JewelCommands implements IJewelNBTHandler
     private static final String allLootTables = "allLootTable";
 
     private static final String[] rarities = {
+            randomRarity,
             UNCOMMON.getName(),
             RARE.getName(),
             EPIC.getName(),
@@ -191,7 +192,6 @@ public final class JewelCommands implements IJewelNBTHandler
         String[] def = { jewelTestLoot, "default" };
         String[] looting = { jewelTestLoot, "looting" };
         String[] config1 = { jewelTestLoot, "config1" };
-        String[] config2 = { jewelTestLoot, "config2" };
 
         ITextComponent hostile = translationTextComponent(jewelTestLoot, "hostile");
         ITextComponent boss = translationTextComponent(jewelTestLoot, "boss");
@@ -219,8 +219,8 @@ public final class JewelCommands implements IJewelNBTHandler
 
         ITextComponent chestDropRatePercent = null;
 
-        ITextComponent oneRarityDrop = translationTextComponent(config1, "'oneRarityDrop'", "" + true).applyTextStyle(TextFormatting.YELLOW);
-        ITextComponent bothConfigOptions = translationTextComponent(config2, "'legendaryUpgradeOnly'", "'oneRarityDrop'", "" + false).applyTextStyle(TextFormatting.YELLOW);
+        ITextComponent oneRarityDropTrue = translationTextComponent(config1, "'oneRarityDrop'", "" + true).applyTextStyle(TextFormatting.YELLOW);
+        ITextComponent oneRarityDropFalse = translationTextComponent(config1, "'oneRarityDrop'", "" + false).applyTextStyle(TextFormatting.YELLOW);
         ITextComponent chestDisable = translationTextComponent(config1, "'jewelsInChest'", "" + false).applyTextStyle(TextFormatting.YELLOW);
 
         float legendaryRate = (float) MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
@@ -238,11 +238,11 @@ public final class JewelCommands implements IJewelNBTHandler
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
-                oneRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, oneRarityDrop);
+                oneRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, oneRarityDropTrue);
             }
             else
             {
-                defaultRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, bothConfigOptions, legendaryRate, epicRate, rareRate, uncommonRate);
+                defaultRarityDrop(source, hostileDropRatePercent, hostileDropRateLooting, oneRarityDropFalse, legendaryRate, epicRate, rareRate, uncommonRate);
             }
         }
         if(lootTable.equals(bossLootDrop) || lootTable.equals(allLootTables))
@@ -251,11 +251,11 @@ public final class JewelCommands implements IJewelNBTHandler
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
-                oneRarityDrop(source, bossDropRatePercent, bossDropRateLooting, oneRarityDrop);
+                oneRarityDrop(source, bossDropRatePercent, bossDropRateLooting, oneRarityDropTrue);
             }
             else
             {
-                source.sendFeedback(bothConfigOptions, true);
+                source.sendFeedback(oneRarityDropFalse, true);
                 if(bossDropRatePercent != null) source.sendFeedback(bossDropRatePercent, true);
                 if(bossDropRateLooting != null) source.sendFeedback(bossDropRateLooting, true);
 
@@ -277,29 +277,29 @@ public final class JewelCommands implements IJewelNBTHandler
             }
             else if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
-                oneRarityDrop(source, chestDropRatePercent, null, oneRarityDrop);
+                oneRarityDrop(source, chestDropRatePercent, null, oneRarityDropTrue);
             }
             else
             {
-                defaultRarityDrop(source, chestDropRatePercent, null, bothConfigOptions, legendaryRate, epicRate, rareRate, uncommonRate);
+                defaultRarityDrop(source, chestDropRatePercent, null, oneRarityDropFalse, legendaryRate, epicRate, rareRate, uncommonRate);
             }
         }
 
         return 0;
     }
 
-    private static void oneRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent oneRarityDrop)
+    private static void oneRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent oneRarityDropTrue)
     {
-        source.sendFeedback(oneRarityDrop, true);
+        source.sendFeedback(oneRarityDropTrue, true);
         if(dropRatePercent != null) source.sendFeedback(dropRatePercent, true);
         if(dropRateLooting != null) source.sendFeedback(dropRateLooting, true);
         JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
         source.sendFeedback(oneRarity(rarity), true);
     }
 
-    private static void defaultRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
+    private static void defaultRarityDrop(CommandSource source, @Nullable ITextComponent dropRatePercent, @Nullable ITextComponent dropRateLooting, ITextComponent oneRarityDropFalse, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
     {
-        source.sendFeedback(bothConfigOptions, true);
+        source.sendFeedback(oneRarityDropFalse, true);
         if(dropRatePercent != null) source.sendFeedback(dropRatePercent, true);
         if(dropRateLooting != null) source.sendFeedback(dropRateLooting, true);
         source.sendFeedback(new StringTextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).applyTextStyle(LEGENDARY.getFormat()), true);
@@ -354,6 +354,6 @@ public final class JewelCommands implements IJewelNBTHandler
 
     private static TranslationTextComponent translationTextComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
     {
-        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type.toLowerCase(Locale.ROOT) + "." + nameIn, string1In, string2In, string3In);
+        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
     }
 }

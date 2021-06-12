@@ -14,7 +14,7 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
 public class HostileEntityCondition implements ILootCondition
 {
-    private HostileEntityCondition() { }
+    public HostileEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)

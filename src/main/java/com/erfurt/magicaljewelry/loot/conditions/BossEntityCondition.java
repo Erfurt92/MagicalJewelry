@@ -12,7 +12,7 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
 public class BossEntityCondition implements ILootCondition
 {
-    private BossEntityCondition() { }
+    public BossEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)

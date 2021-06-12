@@ -48,6 +48,7 @@ public class SideProxy
         LootInit.init();
 
         ItemInit.ITEMS.register(modEventBus);
+        LootInit.GLM.register(modEventBus);
 
         modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
         MinecraftForge.EVENT_BUS.addListener(SideProxy::serverStarting);
@@ -69,8 +70,6 @@ public class SideProxy
         LootConditionManager.registerCondition(new BossEntityCondition.Serializer());
         LootConditionManager.registerCondition(new WaterEntityCondition.Serializer());
         LootConditionManager.registerCondition(new WaterHostileEntityCondition.Serializer());
-
-        event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
         MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");
     }
 

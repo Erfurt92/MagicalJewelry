@@ -12,7 +12,7 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
 public class WaterEntityCondition implements ILootCondition
 {
-    private WaterEntityCondition() { }
+    public WaterEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)
