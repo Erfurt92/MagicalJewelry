@@ -1,4 +1,4 @@
-package com.erfurt.magicaljewelry.data.loot;
+package com.erfurt.magicaljewelry.data.loot.loottable;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;

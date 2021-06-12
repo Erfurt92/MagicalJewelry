@@ -16,7 +16,7 @@ public class BossEntityCondition implements ILootCondition
 {
     public static final Serializer SERIALIZER = new Serializer();
 
-    private BossEntityCondition() { }
+    public BossEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)

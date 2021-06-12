@@ -44,8 +44,8 @@ public class SideProxy
         LootInit.init();
 
         ItemInit.ITEMS.register(modEventBus);
+        LootInit.GLM.register(modEventBus);
 
-        modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
         modEventBus.addGenericListener(IRecipeSerializer.class, SideProxy::registerRecipeSerializers);
         MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);
         modEventBus.addListener(SideProxy::enqueue);
@@ -57,12 +57,6 @@ public class SideProxy
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("ring").size(2).build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("bracelet").size(2).build());
         MagicalJewelry.LOGGER.info("enqueue method registered.");
-    }
-
-    private static void lootModifierRegistries(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event)
-    {
-        event.getRegistry().register(new JewelModifier.Serializer().setRegistryName(MagicalJewelry.getId("jewel_modifier")));
-        MagicalJewelry.LOGGER.info("lootModifierRegistries method registered.");
     }
 
     public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event)

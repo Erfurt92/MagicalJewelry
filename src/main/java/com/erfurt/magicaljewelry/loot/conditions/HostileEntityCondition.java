@@ -18,7 +18,7 @@ public class HostileEntityCondition implements ILootCondition
 {
     public static final Serializer SERIALIZER = new Serializer();
 
-    private HostileEntityCondition() { }
+    public HostileEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)

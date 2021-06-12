@@ -1,0 +1,9 @@
+{
+  "conditions": [
+    {
+      "condition": "magicaljewelry:is_water_hostile_entity"
+    }
+  ],
+  "add_loot_table": "magicaljewelry:entities/jewel_drops_water_hostile",
+  "type": "magicaljewelry:jewel_modifier"
+}
