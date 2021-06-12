@@ -1,18 +1,29 @@
 package com.erfurt.magicaljewelry.init;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterHostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTFunction;
+import com.erfurt.magicaljewelry.objects.items.JewelAmuletItem;
+import net.minecraft.item.Item;
 import net.minecraft.loot.LootConditionType;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.util.registry.Registry;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class LootInit
 {
+	public static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MagicalJewelry.MOD_ID);
+
+	public static final RegistryObject<JewelModifier.Serializer> JEWEL_MODIFIER = GLM.register("jewel_modifier", JewelModifier.Serializer::new);
+
 	public static final LootConditionType HOSTILE_ENTITY_CONDITION = new LootConditionType(HostileEntityCondition.SERIALIZER);
 	public static final LootConditionType BOSS_ENTITY_CONDITION = new LootConditionType(BossEntityCondition.SERIALIZER);
 	public static final LootConditionType WATER_ENTITY_CONDITION = new LootConditionType(WaterEntityCondition.SERIALIZER);

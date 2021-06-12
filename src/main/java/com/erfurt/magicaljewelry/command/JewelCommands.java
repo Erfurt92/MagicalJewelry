@@ -1,8 +1,8 @@
 package com.erfurt.magicaljewelry.command;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
-import com.erfurt.magicaljewelry.data.loot.ModChestLootTablesBuilder;
-import com.erfurt.magicaljewelry.data.loot.ModEntityLootTablesBuilder;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModChestLootTablesBuilder;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModEntityLootTablesBuilder;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
@@ -386,6 +386,6 @@ public final class JewelCommands implements IJewelNBTHandler
 
     private static TranslationTextComponent translationTextComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
     {
-        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type.toLowerCase(Locale.ROOT) + "." + nameIn, string1In, string2In, string3In);
+        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
     }
 }

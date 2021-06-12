@@ -15,9 +15,9 @@ import net.minecraft.loot.conditions.ILootCondition;
 
 public class WaterHostileEntityCondition implements ILootCondition
 {
-    public static final WaterHostileEntityCondition.Serializer SERIALIZER = new WaterHostileEntityCondition.Serializer();
+    public static final Serializer SERIALIZER = new WaterHostileEntityCondition.Serializer();
 
-    private WaterHostileEntityCondition() { }
+    public WaterHostileEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)
@@ -30,7 +30,7 @@ public class WaterHostileEntityCondition implements ILootCondition
     @Override
     public LootConditionType getConditionType()
     {
-        return LootInit.WATER_ENTITY_CONDITION;
+        return LootInit.WATER_HOSTILE_ENTITY_CONDITION;
     }
 
     public static class Serializer implements ILootSerializer<WaterHostileEntityCondition>

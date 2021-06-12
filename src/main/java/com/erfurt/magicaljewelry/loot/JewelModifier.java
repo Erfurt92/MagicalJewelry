@@ -42,17 +42,21 @@ public class JewelModifier extends LootModifier
 
     public static class Serializer extends GlobalLootModifierSerializer<JewelModifier>
     {
+        String add_loot_table = "add_loot_table";
+
         @Override
         public JewelModifier read(ResourceLocation location, JsonObject object, ILootCondition[] iLootCondition)
         {
-            ResourceLocation lootTable = new ResourceLocation(JSONUtils.getString(object, "add_loot_table"));
+            ResourceLocation lootTable = new ResourceLocation(JSONUtils.getString(object, add_loot_table));
             return new JewelModifier(iLootCondition, lootTable);
         }
 
         @Override
         public JsonObject write(JewelModifier instance)
         {
-            return makeConditions(instance.conditions);
+            JsonObject json = makeConditions(instance.conditions);
+            json.addProperty(add_loot_table, instance.lootTable.toString());
+            return json;
         }
     }
 }

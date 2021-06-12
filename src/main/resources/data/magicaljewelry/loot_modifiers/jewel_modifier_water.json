@@ -1,9 +1,0 @@
-{
-  "type": "magicaljewelry:jewel_modifier",
-  "conditions": [
-    {
-      "condition": "magicaljewelry:is_water_entity"
-    }
-  ],
-  "add_loot_table": "magicaljewelry:entities/jewel_drops_water"
-}

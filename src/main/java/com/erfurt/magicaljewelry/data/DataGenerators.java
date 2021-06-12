@@ -2,7 +2,9 @@ package com.erfurt.magicaljewelry.data;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.data.client.ModItemModelProvider;
-import com.erfurt.magicaljewelry.data.loot.ModLootTablesProvider;
+import com.erfurt.magicaljewelry.data.client.ModLangProvider;
+import com.erfurt.magicaljewelry.data.loot.lootmodifier.ModGlobalLootModifierProvider;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModLootTablesProvider;
 import com.erfurt.magicaljewelry.data.recipes.ModRecipeProvider;
 import com.erfurt.magicaljewelry.data.tags.ModItemTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -22,9 +24,17 @@ public final class DataGenerators
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        gen.addProvider(new ModItemModelProvider(gen, existingFileHelper));
-        gen.addProvider(new ModItemTagsProvider(gen, existingFileHelper));
-        gen.addProvider(new ModLootTablesProvider(gen));
-        gen.addProvider(new ModRecipeProvider(gen));
+        if(event.includeClient())
+        {
+            gen.addProvider(new ModItemModelProvider(gen, existingFileHelper));
+            gen.addProvider(new ModLangProvider(gen));
+        }
+        if(event.includeServer())
+        {
+            gen.addProvider(new ModItemTagsProvider(gen, existingFileHelper));
+            gen.addProvider(new ModLootTablesProvider(gen));
+            gen.addProvider(new ModGlobalLootModifierProvider(gen));
+            gen.addProvider(new ModRecipeProvider(gen));
+        }
     }
 }

@@ -16,7 +16,7 @@ public class WaterEntityCondition implements ILootCondition
 {
     public static final Serializer SERIALIZER = new Serializer();
 
-    private WaterEntityCondition() { }
+    public WaterEntityCondition() { }
 
     @Override
     public boolean test(LootContext context)

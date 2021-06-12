@@ -1,4 +1,4 @@
-package com.erfurt.magicaljewelry.data.loot;
+package com.erfurt.magicaljewelry.data.loot.loottable;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
