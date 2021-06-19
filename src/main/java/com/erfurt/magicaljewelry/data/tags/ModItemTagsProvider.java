@@ -22,5 +22,7 @@ public class ModItemTagsProvider extends ItemTagsProvider
         getOrCreateBuilder(ModTagsBuilder.Items.NECKLACE).add(ItemInit.GOLD_AMULET.get(), ItemInit.SILVER_AMULET.get());
         getOrCreateBuilder(ModTagsBuilder.Items.RING).add(ItemInit.GOLD_RING.get(), ItemInit.SILVER_RING.get(), ItemInit.THE_ONE_RING.get());
         getOrCreateBuilder(ModTagsBuilder.Items.BRACELET).add(ItemInit.GOLD_BRACELET.get(), ItemInit.SILVER_BRACELET.get());
+
+        getOrCreateBuilder(ModTagsBuilder.Items.PIGLIN_LOVED).add(ItemInit.GOLD_AMULET.get(), ItemInit.GOLD_BRACELET.get(), ItemInit.GOLD_RING.get(), ItemInit.THE_ONE_RING.get());
     }
 }

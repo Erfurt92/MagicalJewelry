@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "magicaljewelry:gold_amulet",
+    "magicaljewelry:gold_bracelet",
+    "magicaljewelry:gold_ring",
+    "magicaljewelry:the_one_ring"
+  ]
+}
