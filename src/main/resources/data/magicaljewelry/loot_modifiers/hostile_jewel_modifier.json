@@ -5,5 +5,5 @@
       "condition": "magicaljewelry:is_hostile_entity"
     }
   ],
-  "add_loot_table": "magicaljewelry:entities/jewel_drops_hostile"
+  "add_loot_table": "magicaljewelry:entities/hostile_jewel_drops"
 }
