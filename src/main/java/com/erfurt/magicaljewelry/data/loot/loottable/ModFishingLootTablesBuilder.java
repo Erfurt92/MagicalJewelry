@@ -13,7 +13,7 @@ public class ModFishingLootTablesBuilder extends FishingLootTables implements IM
     @Override
     public void accept(BiConsumer<ResourceLocation, LootTable.Builder> builder)
     {
-        builder.accept(MagicalJewelry.getId("inject/gameplay/fishing/jewel_drops_fishing"), LootTable.builder()
+        builder.accept(MagicalJewelry.getId("inject/gameplay/fishing/fishing_jewel_drops"), LootTable.builder()
                 .addLootPool(jewelWaterLootTable("fishing_treasure")
                         .acceptCondition(RandomChance.builder(0.001F))));
     }
