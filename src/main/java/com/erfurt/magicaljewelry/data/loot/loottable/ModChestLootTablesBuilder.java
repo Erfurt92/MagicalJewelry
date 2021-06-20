@@ -13,7 +13,7 @@ public class ModChestLootTablesBuilder extends ChestLootTables implements IModLo
 {
     public static float chestDropRate = 0.01F;
 
-    public static String chestLootTable = "jewel_drops_chests";
+    public static String chestLootTable = "chests_jewel_drops";
 
     @Override
     public void accept(BiConsumer<ResourceLocation, LootTable.Builder> builder)

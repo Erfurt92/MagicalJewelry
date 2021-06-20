@@ -1,6 +1,7 @@
 package com.erfurt.magicaljewelry.data.loot.lootmodifier;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.data.loot.loottable.ModEntityLootTablesBuilder;
 import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
@@ -21,29 +22,29 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
     @Override
     protected void start()
     {
-        add("jewel_modifier_hostile", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+        add("hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
                 new ILootCondition[] {
                         new HostileEntityCondition()
                 },
-                MagicalJewelry.getId("entities/jewel_drops_hostile")
+                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.hostileLootTable)
         ));
-        add("jewel_modifier_boss", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+        add("boss_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
                 new ILootCondition[] {
                         new BossEntityCondition()
                 },
-                MagicalJewelry.getId("entities/jewel_drops_boss")
+                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.bossLootTable)
         ));
-       add("jewel_modifier_water", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+       add("water_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
                new ILootCondition[] {
                        new WaterEntityCondition()
                },
-               MagicalJewelry.getId("entities/jewel_drops_water")
+               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterLootTable)
        ));
-       add("jewel_modifier_water_hostile", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+       add("water_hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
                new ILootCondition[] {
                        new WaterHostileEntityCondition()
                },
-               MagicalJewelry.getId("entities/jewel_drops_water_hostile")
+               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterHostileLootTable)
        ));
     }
 }

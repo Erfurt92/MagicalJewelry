@@ -18,10 +18,10 @@ public class ModEntityLootTablesBuilder extends EntityLootTables implements IMod
     public static float bossDropRate = 0.25F;
     public static float lootingMultiplier = 0.01F;
 
-    public static String hostileLootTable = "jewel_drops_hostile";
-    public static String bossLootTable = "jewel_drops_boss";
-    public static String waterLootTable = "jewel_drops_water";
-    public static String waterHostileLootTable = "jewel_drops_water_hostile";
+    public static String hostileLootTable = "hostile_jewel_drops";
+    public static String bossLootTable = "boss_jewel_drops";
+    public static String waterLootTable = "water_jewel_drops";
+    public static String waterHostileLootTable = "water_hostile_jewel_drops";
 
     float waterDropRate = 0.001F;
     float waterLootingMultiplier = 0.001F;

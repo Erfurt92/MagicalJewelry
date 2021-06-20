@@ -4,6 +4,6 @@
       "condition": "magicaljewelry:is_boss_entity"
     }
   ],
-  "add_loot_table": "magicaljewelry:entities/jewel_drops_boss",
+  "add_loot_table": "magicaljewelry:entities/boss_jewel_drops",
   "type": "magicaljewelry:jewel_modifier"
 }
