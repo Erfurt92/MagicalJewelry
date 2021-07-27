@@ -37,11 +37,12 @@ public class ModLangProvider extends LanguageProvider
         add(jewelGiveFailureCommand("item"), "Item '%s' is not valid!");
         add(jewelGiveFailureCommand("rarity"), "Rarity '%s' is not valid!");
 
-        add(jewelTestLootCommand("hostile"), "Rarity Drop Setting for Hostiles mobs");
-        add(jewelTestLootCommand("boss"), "Rarity Drop Setting for Boss mobs");
-        add(jewelTestLootCommand("chest"), "Rarity Drop Setting for Chests");
-        add(jewelTestLootCommand("default"), "Default drop rate: %s");
-        add(jewelTestLootCommand("looting"), "Default drop rate with Looting III: %s");
+        add(jewelTestLootCommand("settings"), "Rarity Drop Setting for %s");
+        add(jewelTestLootCommand("type.hostile"), "Hostile mobs");
+        add(jewelTestLootCommand("type.boss"), "Boss mobs");
+        add(jewelTestLootCommand("type.chest"), "Chests");
+        add(jewelTestLootCommand("droprate"), "Default drop rate: %s");
+        add(jewelTestLootCommand("dropratewith"), "Default drop rate with %s: %s");
         add(jewelTestLootCommand("onerarity"), "The only rarity that can drop is: %s");
         add(jewelTestLootCommand("config1"), "Config option %s is set to %s");
         add(jewelTestLootCommand("failure"), "Loot Table '%s' is not valid for testing!");
