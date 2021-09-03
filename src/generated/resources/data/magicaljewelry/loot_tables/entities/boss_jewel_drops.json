@@ -7,60 +7,30 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:gold_amulet"
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:silver_amulet"
         },
         {
           "type": "minecraft:item",
           "weight": 2,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:gold_ring"
         },
         {
           "type": "minecraft:item",
           "weight": 2,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:silver_ring"
         },
         {
           "type": "minecraft:item",
           "weight": 2,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:gold_bracelet"
         },
         {
           "type": "minecraft:item",
           "weight": 2,
-          "functions": [
-            {
-              "function": "magicaljewelry:set_jewel_nbt_boss"
-            }
-          ],
           "name": "magicaljewelry:silver_bracelet"
         }
       ],
@@ -72,6 +42,11 @@
           "condition": "minecraft:random_chance_with_looting",
           "chance": 0.25,
           "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+        {
+          "function": "magicaljewelry:set_jewel_nbt_boss"
         }
       ]
     }

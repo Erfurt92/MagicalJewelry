@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry.objects.items;
 
+import com.erfurt.magicaljewelry.capability.JewelItemCapability;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -20,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-import top.theillusivec4.curios.common.capability.CurioItemCapability;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public class TheOneRingItem extends Item
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
     {
-        return CurioItemCapability.createProvider(new ICurio()
+        return JewelItemCapability.createProvider(new ICurio()
         {
             @Override
             public void curioTick(String identifier, int index, LivingEntity livingEntity)

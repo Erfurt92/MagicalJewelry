@@ -6,11 +6,10 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.IRandomRange;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.*;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.SetCount;
 
@@ -28,7 +27,8 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelNBTHandle
 	@Override
 	public ItemStack doApply(ItemStack stack, LootContext context)
 	{
-		rarityID = IJewelRarity.getRarity();
+		Entity entity = context.get(LootParameters.KILLER_ENTITY);
+		rarityID = IJewelRarity.getRarity((LivingEntity) entity);
 
 		IJewelNBTHandler.setJewelNBTData(stack, rarityID);
 
