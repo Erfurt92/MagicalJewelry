@@ -38,7 +38,7 @@ public class ModEntityLootTablesBuilder extends EntityLootTables implements IMod
         builder.accept(MagicalJewelry.getId("entities/" + waterLootTable), LootTable.builder().addLootPool(jewelWaterLootTable("water")
                 .acceptCondition(KilledByPlayer.builder())
                 .acceptCondition(RandomChanceWithLooting.builder(waterDropRate, waterLootingMultiplier))));
-        builder.accept(MagicalJewelry.getId("entities/" + waterHostileLootTable), jewelWaterHostileLootTable(SetJewelNBTFunction.builder(), waterDropRate,hostileDropRate));
+        builder.accept(MagicalJewelry.getId("entities/" + waterHostileLootTable), jewelWaterHostileLootTable(SetJewelNBTFunction.builder(), waterDropRate, hostileDropRate));
     }
 
     private LootTable.Builder jewelWaterHostileLootTable(ILootFunction.IBuilder function, float chanceWater, float chanceHostile)

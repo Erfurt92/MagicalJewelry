@@ -1,6 +1,7 @@
 package com.erfurt.magicaljewelry.objects.items;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
+import com.erfurt.magicaljewelry.capability.JewelItemCapability;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
@@ -32,7 +33,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.capability.ICurio;
-import top.theillusivec4.curios.common.capability.CapCurioItem;
 
 import java.util.*;
 
@@ -80,7 +80,7 @@ public class JewelItem extends Item implements IJewel
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
-		return CapCurioItem.createProvider(new ICurio()
+		return JewelItemCapability.createProvider(new ICurio()
 		{
 			private Object amuletModel;
 

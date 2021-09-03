@@ -2,6 +2,8 @@ package com.erfurt.magicaljewelry.util.interfaces;
 
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.potion.Effects;
 
 import java.util.Random;
 
@@ -9,15 +11,38 @@ public interface IJewelRarity
 {
 	Random rand = new Random();
 
-	static String getRarity()
+	int legendaryLuckIncrease = 3;
+	int epicLuckIncrease = 2;
+	int rareLuckIncrease = 1;
+
+	static String getRarity(LivingEntity livingEntity)
 	{
 		String rarity;
 
 		if(!MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
 		{
-			int legendaryDropRate = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
-			int epicDropRate = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
-			int rareDropRate = MagicalJewelryConfigBuilder.JEWEL_RARE_DROP_RATE.get();
+			int legendaryDRConfig = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
+			int epicDRConfig = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
+			int rareDRConfig = MagicalJewelryConfigBuilder.JEWEL_RARE_DROP_RATE.get();
+
+			int legendaryDropRate;
+			int epicDropRate;
+			int rareDropRate;
+
+			if(!(livingEntity == null) && livingEntity.getActivePotionMap().containsKey(Effects.LUCK))
+			{
+				int luckLevel = livingEntity.getActivePotionEffect(Effects.LUCK).getAmplifier() + 1;
+
+				legendaryDropRate = legendaryDRConfig + (legendaryLuckIncrease * luckLevel);
+				epicDropRate = epicDRConfig + (epicLuckIncrease * luckLevel);
+				rareDropRate = rareDRConfig + (rareLuckIncrease * luckLevel);
+			}
+			else
+			{
+				legendaryDropRate = legendaryDRConfig;
+				epicDropRate = epicDRConfig;
+				rareDropRate = rareDRConfig;
+			}
 
 			int totalEpicDropRate = epicDropRate + legendaryDropRate;
 			int totalRareDropRate = rareDropRate + totalEpicDropRate;
@@ -36,15 +61,31 @@ public interface IJewelRarity
 		return rarity;
 	}
 
-	static String getRarityBoss()
+	static String getRarityBoss(LivingEntity livingEntity)
 	{
 		String rarity;
 
 		if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get()) rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get().getName();
 		else
 		{
-			int legendaryDropRate = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
-			int epicDropRate = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
+			int legendaryDRConfig = MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
+			int epicDRConfig = MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
+
+			int legendaryDropRate;
+			int epicDropRate;
+
+			if(!(livingEntity == null) && livingEntity.getActivePotionMap().containsKey(Effects.LUCK))
+			{
+				int luckLevel = livingEntity.getActivePotionEffect(Effects.LUCK).getAmplifier() + 1;
+
+				legendaryDropRate = legendaryDRConfig + (legendaryLuckIncrease * luckLevel);
+				epicDropRate = epicDRConfig + (epicLuckIncrease * luckLevel);
+			}
+			else
+			{
+				legendaryDropRate = legendaryDRConfig;
+				epicDropRate = epicDRConfig;
+			}
 
 			int totalEpicDropRate = epicDropRate + legendaryDropRate;
 
