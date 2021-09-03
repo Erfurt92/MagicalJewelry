@@ -2,8 +2,8 @@ package com.erfurt.magicaljewelry.util.interfaces;
 
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Random;
 
@@ -29,9 +29,9 @@ public interface IJewelRarity
 			int epicDropRate;
 			int rareDropRate;
 
-			if(!(livingEntity == null) && livingEntity.getActivePotionMap().containsKey(Effects.LUCK))
+			if(!(livingEntity == null) && livingEntity.getActiveEffectsMap().containsKey(MobEffects.LUCK))
 			{
-				int luckLevel = livingEntity.getActivePotionEffect(Effects.LUCK).getAmplifier() + 1;
+				int luckLevel = livingEntity.getEffect(MobEffects.LUCK).getAmplifier() + 1;
 
 				legendaryDropRate = legendaryDRConfig + (legendaryLuckIncrease * luckLevel);
 				epicDropRate = epicDRConfig + (epicLuckIncrease * luckLevel);
@@ -80,9 +80,9 @@ public interface IJewelRarity
 			int legendaryDropRate;
 			int epicDropRate;
 
-			if(!(livingEntity == null) && livingEntity.getActivePotionMap().containsKey(Effects.LUCK))
+			if(!(livingEntity == null) && livingEntity.getActiveEffectsMap().containsKey(MobEffects.LUCK))
 			{
-				int luckLevel = livingEntity.getActivePotionEffect(Effects.LUCK).getAmplifier() + 1;
+				int luckLevel = livingEntity.getEffect(MobEffects.LUCK).getAmplifier() + 1;
 
 				legendaryDropRate = legendaryDRConfig + (legendaryLuckIncrease * luckLevel);
 				epicDropRate = epicDRConfig + (epicLuckIncrease * luckLevel);

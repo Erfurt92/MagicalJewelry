@@ -1,26 +1,26 @@
 package com.erfurt.magicaljewelry.util.enums;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public enum JewelRarity
 {
-	UNCOMMON("uncommon", TextFormatting.DARK_GREEN),
-	RARE("rare", TextFormatting.DARK_AQUA),
-	EPIC("epic", TextFormatting.DARK_PURPLE),
-	LEGENDARY("legendary", TextFormatting.GOLD);
+	UNCOMMON("uncommon", ChatFormatting.DARK_GREEN),
+	RARE("rare", ChatFormatting.DARK_AQUA),
+	EPIC("epic", ChatFormatting.DARK_PURPLE),
+	LEGENDARY("legendary", ChatFormatting.GOLD);
 
 	private final String name;
-	private final TextFormatting format;
-	private final ITextComponent displayName;
+	private final ChatFormatting format;
+	private final Component displayName;
 	
-	JewelRarity(String nameIn, TextFormatting formatIn)
+	JewelRarity(String nameIn, ChatFormatting formatIn)
 	{
 		this.name = nameIn;
 		this.format = formatIn;
-		this.displayName = new TranslationTextComponent("rarity." + MagicalJewelry.MOD_ID + "." + nameIn);
+		this.displayName = new TranslatableComponent("rarity." + MagicalJewelry.MOD_ID + "." + nameIn);
 	}
 	
 	public String getName()
@@ -33,7 +33,7 @@ public enum JewelRarity
 		return displayName.getString();
 	}
 	
-	public TextFormatting getFormat()
+	public ChatFormatting getFormat()
 	{
 		return this.format;
 	}

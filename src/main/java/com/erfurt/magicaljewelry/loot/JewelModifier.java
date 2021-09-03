@@ -1,12 +1,12 @@
 package com.erfurt.magicaljewelry.loot;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 
@@ -17,7 +17,7 @@ public class JewelModifier extends LootModifier
 {
     private final ResourceLocation lootTable;
 
-    public JewelModifier(ILootCondition[] lootConditions, ResourceLocation lootTable)
+    public JewelModifier(LootItemCondition[] lootConditions, ResourceLocation lootTable)
     {
         super(lootConditions);
         this.lootTable = lootTable;
@@ -33,7 +33,7 @@ public class JewelModifier extends LootModifier
 
         doubleEntryPrevention = true;
         LootTable lootTable = context.getLootTable(this.lootTable);
-        List<ItemStack> loot = lootTable.generate(context);
+        List<ItemStack> loot = lootTable.getRandomItems(context);
         generatedLoot.addAll(loot);
         doubleEntryPrevention = false;
 
@@ -45,9 +45,9 @@ public class JewelModifier extends LootModifier
         String add_loot_table = "add_loot_table";
 
         @Override
-        public JewelModifier read(ResourceLocation location, JsonObject object, ILootCondition[] iLootCondition)
+        public JewelModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] iLootCondition)
         {
-            ResourceLocation lootTable = new ResourceLocation(JSONUtils.getString(object, add_loot_table));
+            ResourceLocation lootTable = new ResourceLocation(GsonHelper.getAsString(object, add_loot_table));
             return new JewelModifier(iLootCondition, lootTable);
         }
 

@@ -4,24 +4,25 @@ import com.erfurt.magicaljewelry.capability.JewelItemCapability;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,32 +34,40 @@ public class TheOneRingItem extends Item
 
     public TheOneRingItem()
     {
-        super(new Item.Properties().maxStackSize(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
+    @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
     {
         return JewelItemCapability.createProvider(new ICurio()
         {
             @Override
-            public void curioTick(String identifier, int index, LivingEntity livingEntity)
+            public void curioTick(SlotContext slotContext)
             {
-                if(!livingEntity.getEntityWorld().isRemote && livingEntity.ticksExisted % 199 == 0) livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+                LivingEntity livingEntity = slotContext.entity();
+                if(!livingEntity.getCommandSenderWorld().isClientSide && livingEntity.tickCount % 199 == 0) livingEntity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+            }
+
+            @Override
+            public ItemStack getStack()
+            {
+                return stack;
             }
 
             @Override
             public void onEquip(SlotContext slotContext, ItemStack prevStack)
             {
-                LivingEntity livingEntity = slotContext.getWearer();
-                livingEntity.addPotionEffect(new EffectInstance(Effects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+                LivingEntity livingEntity = slotContext.entity();
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
             }
 
             @Override
             public void onUnequip(SlotContext slotContext, ItemStack newStack)
             {
-                LivingEntity livingEntity = slotContext.getWearer();
-                livingEntity.removePotionEffect(Effects.INVISIBILITY);
+                LivingEntity livingEntity = slotContext.entity();
+                livingEntity.removeEffect(MobEffects.INVISIBILITY);
             }
 
             @Override
@@ -80,18 +89,18 @@ public class TheOneRingItem extends Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
     {
-        tooltip.set(0, tooltip.get(0).deepCopy().mergeStyle(TextFormatting.GOLD));
+        tooltip.set(0, tooltip.get(0).copy().withStyle(ChatFormatting.GOLD));
 
-        tooltip.add(new StringTextComponent(TextFormatting.ITALIC + "Ash nazg durbatul\u00FBk.").deepCopy().mergeStyle(TextFormatting.DARK_RED));
-        tooltip.add(new StringTextComponent(TextFormatting.ITALIC + "Ash nazg gimbatul.").deepCopy().mergeStyle(TextFormatting.DARK_RED));
-        tooltip.add(new StringTextComponent(TextFormatting.ITALIC + "Ash nazg thrakatul\u00FBk").deepCopy().mergeStyle(TextFormatting.DARK_RED));
-        tooltip.add(new StringTextComponent(TextFormatting.ITALIC + "agh burzum-ishi krimpatul.").deepCopy().mergeStyle(TextFormatting.DARK_RED));
+        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg durbatul\u00FBk.").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg gimbatul.").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg thrakatul\u00FBk").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "agh burzum-ishi krimpatul.").copy().withStyle(ChatFormatting.DARK_RED));
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack)
+    public boolean isFoil(ItemStack stack)
     {
         return true;
     }

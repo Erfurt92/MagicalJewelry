@@ -8,13 +8,11 @@ import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterHostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTFunction;
-import com.erfurt.magicaljewelry.objects.items.JewelAmuletItem;
-import net.minecraft.item.Item;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -24,13 +22,13 @@ public class LootInit
 
 	public static final RegistryObject<JewelModifier.Serializer> JEWEL_MODIFIER = GLM.register("jewel_modifier", JewelModifier.Serializer::new);
 
-	public static final LootConditionType HOSTILE_ENTITY_CONDITION = new LootConditionType(HostileEntityCondition.SERIALIZER);
-	public static final LootConditionType BOSS_ENTITY_CONDITION = new LootConditionType(BossEntityCondition.SERIALIZER);
-	public static final LootConditionType WATER_ENTITY_CONDITION = new LootConditionType(WaterEntityCondition.SERIALIZER);
-	public static final LootConditionType WATER_HOSTILE_ENTITY_CONDITION = new LootConditionType(WaterHostileEntityCondition.SERIALIZER);
+	public static final LootItemConditionType HOSTILE_ENTITY_CONDITION = new LootItemConditionType(HostileEntityCondition.SERIALIZER);
+	public static final LootItemConditionType BOSS_ENTITY_CONDITION = new LootItemConditionType(BossEntityCondition.SERIALIZER);
+	public static final LootItemConditionType WATER_ENTITY_CONDITION = new LootItemConditionType(WaterEntityCondition.SERIALIZER);
+	public static final LootItemConditionType WATER_HOSTILE_ENTITY_CONDITION = new LootItemConditionType(WaterHostileEntityCondition.SERIALIZER);
 
-	public static final LootFunctionType SET_JEWEL_NBT_FUNCTION = new LootFunctionType(SetJewelNBTFunction.SERIALIZER);
-	public static final LootFunctionType SET_JEWEL_NBT_BOSS_FUNCTION = new LootFunctionType(SetJewelNBTBossFunction.SERIALIZER);
+	public static final LootItemFunctionType SET_JEWEL_NBT_FUNCTION = new LootItemFunctionType(SetJewelNBTFunction.SERIALIZER);
+	public static final LootItemFunctionType SET_JEWEL_NBT_BOSS_FUNCTION = new LootItemFunctionType(SetJewelNBTBossFunction.SERIALIZER);
 
 	public static void init()
 	{

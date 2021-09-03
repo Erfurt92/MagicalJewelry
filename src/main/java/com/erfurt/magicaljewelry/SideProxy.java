@@ -3,19 +3,21 @@ package com.erfurt.magicaljewelry;
 import com.erfurt.magicaljewelry.command.JewelCommands;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
-import com.erfurt.magicaljewelry.loot.JewelModifier;
+import com.erfurt.magicaljewelry.objects.items.JewelAmuletItem;
 import com.erfurt.magicaljewelry.recipes.JewelUpgradeRecipe;
 import com.erfurt.magicaljewelry.recipes.UpgradeNBTIngredient;
+import com.erfurt.magicaljewelry.render.JewelLayerDefinitions;
+import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfig;
 import com.erfurt.magicaljewelry.util.handlers.ModColorHandler;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.CommandSource;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 public class SideProxy
 {
@@ -46,7 +49,7 @@ public class SideProxy
         ItemInit.ITEMS.register(modEventBus);
         LootInit.GLM.register(modEventBus);
 
-        modEventBus.addGenericListener(IRecipeSerializer.class, SideProxy::registerRecipeSerializers);
+        modEventBus.addGenericListener(RecipeSerializer.class, SideProxy::registerRecipeSerializers);
         MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);
         modEventBus.addListener(SideProxy::enqueue);
     }
@@ -59,10 +62,10 @@ public class SideProxy
         MagicalJewelry.LOGGER.info("enqueue method registered.");
     }
 
-    public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event)
+    public static void registerRecipeSerializers(final RegistryEvent.Register<RecipeSerializer<?>> event)
     {
         CraftingHelper.register(MagicalJewelry.getId("upgrade"), UpgradeNBTIngredient.Serializer.INSTANCE);
-        IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
+        IForgeRegistry<RecipeSerializer<?>> r = event.getRegistry();
 
         r.registerAll(JewelUpgradeRecipe.Serializer.SERIALIZER);
         MagicalJewelry.LOGGER.info("registerRecipeSerializers method registered.");
@@ -70,7 +73,7 @@ public class SideProxy
 
     public static void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         JewelCommands.register(dispatcher);
     }
 
@@ -81,10 +84,20 @@ public class SideProxy
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
             modEventBus.addListener(Client::clientSetup);
+            modEventBus.addListener(Client::registerLayers);
             modEventBus.addListener(ModColorHandler::registerItemColor);
         }
 
-        private static void clientSetup(FMLClientSetupEvent event) { }
+        private static void clientSetup(FMLClientSetupEvent event)
+        {
+            CuriosRendererRegistry.register(ItemInit.GOLD_AMULET.get(), () -> (JewelAmuletItem) ItemInit.GOLD_AMULET.get());
+            CuriosRendererRegistry.register(ItemInit.SILVER_AMULET.get(), () -> (JewelAmuletItem) ItemInit.SILVER_AMULET.get());
+        }
+
+        private static void registerLayers(final EntityRenderersEvent.RegisterLayerDefinitions event)
+        {
+            event.registerLayerDefinition(JewelLayerDefinitions.AMULET, JewelAmuletModel::createLayer);
+        }
     }
 
     static class Server extends SideProxy

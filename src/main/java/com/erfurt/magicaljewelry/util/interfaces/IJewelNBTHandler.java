@@ -1,8 +1,8 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Random;
 import java.util.UUID;
@@ -24,7 +24,7 @@ public interface IJewelNBTHandler extends IJewelEffects, IJewelRarity, IJewelAtt
         JewelItem.setJewelUUID(stack, UUID.randomUUID().toString());
 
         int colorID = rand.nextInt(DyeColor.values().length);
-        String gemColor = DyeColor.byId(colorID).getString();
+        String gemColor = DyeColor.byId(colorID).getSerializedName();
         JewelItem.setGemColor(stack, gemColor);
 
         return stack;

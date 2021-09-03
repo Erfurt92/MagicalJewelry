@@ -3,7 +3,8 @@
   "pools": [
     {
       "name": "magicaljewelry_jewel_chests",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",

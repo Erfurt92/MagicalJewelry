@@ -2,40 +2,40 @@ package com.erfurt.magicaljewelry.data.loot.loottable;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.functions.ILootFunction;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public interface IModLootTablesHelper
 {
     String poolName = MagicalJewelry.MOD_ID + "_jewel_";
-    default LootPool.Builder jewelDefaultLootTable(String type, ILootFunction.IBuilder function)
+    default LootPool.Builder jewelDefaultLootTable(String type, LootItemFunction.Builder function)
     {
-        return LootPool.builder()
+        return LootPool.lootPool()
                 .name(poolName + type)
-                .rolls(ConstantRange.of(1))
-                .addEntry(ItemLootEntry.builder(ItemInit.GOLD_AMULET.get())
-                        .weight(1))
-                .addEntry(ItemLootEntry.builder(ItemInit.SILVER_AMULET.get())
-                        .weight(1))
-                .addEntry(ItemLootEntry.builder(ItemInit.GOLD_RING.get())
-                        .weight(2))
-                .addEntry(ItemLootEntry.builder(ItemInit.SILVER_RING.get())
-                        .weight(2))
-                .addEntry(ItemLootEntry.builder(ItemInit.GOLD_BRACELET.get())
-                        .weight(2))
-                .addEntry(ItemLootEntry.builder(ItemInit.SILVER_BRACELET.get())
-                        .weight(2))
-                .acceptFunction(function);
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(ItemInit.GOLD_AMULET.get())
+                        .setWeight(1))
+                .add(LootItem.lootTableItem(ItemInit.SILVER_AMULET.get())
+                        .setWeight(1))
+                .add(LootItem.lootTableItem(ItemInit.GOLD_RING.get())
+                        .setWeight(2))
+                .add(LootItem.lootTableItem(ItemInit.SILVER_RING.get())
+                        .setWeight(2))
+                .add(LootItem.lootTableItem(ItemInit.GOLD_BRACELET.get())
+                        .setWeight(2))
+                .add(LootItem.lootTableItem(ItemInit.SILVER_BRACELET.get())
+                        .setWeight(2))
+                .apply(function);
     }
 
     default LootPool.Builder jewelWaterLootTable(String type)
     {
-        return LootPool.builder()
+        return LootPool.lootPool()
                 .name(poolName + type)
-                .rolls(ConstantRange.of(1))
-                .addEntry(ItemLootEntry.builder(ItemInit.THE_ONE_RING.get())
-                        .weight(1));
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(ItemInit.THE_ONE_RING.get())
+                        .setWeight(1));
     }
 }

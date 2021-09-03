@@ -9,7 +9,7 @@ import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterHostileEntityCondition;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 
 public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
@@ -23,25 +23,25 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
     protected void start()
     {
         add("hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
-                new ILootCondition[] {
+                new LootItemCondition[] {
                         new HostileEntityCondition()
                 },
                 MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.hostileLootTable)
         ));
         add("boss_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
-                new ILootCondition[] {
+                new LootItemCondition[] {
                         new BossEntityCondition()
                 },
                 MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.bossLootTable)
         ));
        add("water_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
-               new ILootCondition[] {
+               new LootItemCondition[] {
                        new WaterEntityCondition()
                },
                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterLootTable)
        ));
        add("water_hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
-               new ILootCondition[] {
+               new LootItemCondition[] {
                        new WaterHostileEntityCondition()
                },
                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterHostileLootTable)

@@ -1,30 +1,48 @@
 package com.erfurt.magicaljewelry.render.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.LivingEntity;
 
 public class JewelAmuletModel<T extends LivingEntity> extends EntityModel<T>
 {
-    public ModelRenderer jewelAmulet;
+    private static final String AMULET = "amulet";
 
-    public JewelAmuletModel()
+    public ModelPart jewelAmulet;
+
+    public JewelAmuletModel(ModelPart part)
     {
-        this.textureWidth = 16;
-        this.textureHeight = 16;
-        this.jewelAmulet = new ModelRenderer(this, 0, 0);
-        this.jewelAmulet.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.jewelAmulet.addBox(-2.0F, 2.0F, -3.125F, 4.0F, 4.0F, 1.0F, 0.0F);
+        super(RenderType::entityCutoutNoCull);
+        this.jewelAmulet = part.getChild(AMULET);
+        this.jewelAmulet.setRotation(0.0F, 0.0F, 0.0F);
+    }
+
+    public static LayerDefinition createLayer()
+    {
+        MeshDefinition meshDefinition = new MeshDefinition();
+        PartDefinition partDefinition = meshDefinition.getRoot();
+        partDefinition.addOrReplaceChild(AMULET, CubeListBuilder.create()
+                .texOffs(0,0)
+                .addBox(-2.0F, 2.0F, -3.125F, 4.0F, 4.0F, 1.0F), PartPose.ZERO);
+
+        return LayerDefinition.create(meshDefinition, 16, 16);
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) { }
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) { }
+
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
+    public void renderToBuffer(PoseStack poseStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
     {
-        this.jewelAmulet.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.jewelAmulet.render(poseStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 }

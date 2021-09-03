@@ -4,9 +4,9 @@ import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -19,14 +19,14 @@ public class UpgradeNBTIngredient extends Ingredient
     private final ItemStack stack;
     protected UpgradeNBTIngredient(ItemStack stack)
     {
-        super(Stream.of(new Ingredient.SingleItemList(stack)));
+        super(Stream.of(new Ingredient.ItemValue(stack)));
         this.stack = stack;
     }
 
     @Override
     public boolean test(@Nullable ItemStack input)
     {
-        JsonObject json = serialize().getAsJsonObject();
+        JsonObject json = toJson().getAsJsonObject();
         boolean rarityCheck = false;
         if(input != null && input.hasTag() && input.getItem() instanceof JewelItem)
         {
@@ -36,7 +36,7 @@ public class UpgradeNBTIngredient extends Ingredient
                 String rarityTemp = json.get("nbt").getAsString();
                 int stringSize = rarityTemp.length();
                 String rarity = rarityTemp.substring(1, stringSize - 1);
-                rarityCheck = Objects.requireNonNull(input.getTag().get(JewelItem.NBT_RARITY)).getString().equals(rarity);
+                rarityCheck = Objects.requireNonNull(input.getTag().get(JewelItem.NBT_RARITY)).getAsString().equals(rarity);
             }
         }
         return this.stack.getItem() == input.getItem() && rarityCheck;
@@ -55,7 +55,7 @@ public class UpgradeNBTIngredient extends Ingredient
     }
 
     @Override
-    public JsonElement serialize()
+    public JsonElement toJson()
     {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(UpgradeNBTIngredient.Serializer.INSTANCE).toString());
@@ -69,9 +69,9 @@ public class UpgradeNBTIngredient extends Ingredient
         public static final UpgradeNBTIngredient.Serializer INSTANCE = new UpgradeNBTIngredient.Serializer();
 
         @Override
-        public UpgradeNBTIngredient parse(PacketBuffer buffer)
+        public UpgradeNBTIngredient parse(FriendlyByteBuf buffer)
         {
-            return new UpgradeNBTIngredient(buffer.readItemStack());
+            return new UpgradeNBTIngredient(buffer.readItem());
         }
 
         @Override
@@ -81,9 +81,9 @@ public class UpgradeNBTIngredient extends Ingredient
         }
 
         @Override
-        public void write(PacketBuffer buffer, UpgradeNBTIngredient ingredient)
+        public void write(FriendlyByteBuf buffer, UpgradeNBTIngredient ingredient)
         {
-            buffer.writeItemStack(ingredient.stack);
+            buffer.writeItem(ingredient.stack);
         }
     }
 }

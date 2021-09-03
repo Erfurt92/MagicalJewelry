@@ -2,9 +2,9 @@ package com.erfurt.magicaljewelry.data.tags;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -17,12 +17,12 @@ public class ModItemTagsProvider extends ItemTagsProvider
     }
 
     @Override
-    protected void registerTags()
+    protected void addTags()
     {
-        getOrCreateBuilder(ModTagsBuilder.Items.NECKLACE).add(ItemInit.GOLD_AMULET.get(), ItemInit.SILVER_AMULET.get());
-        getOrCreateBuilder(ModTagsBuilder.Items.RING).add(ItemInit.GOLD_RING.get(), ItemInit.SILVER_RING.get(), ItemInit.THE_ONE_RING.get());
-        getOrCreateBuilder(ModTagsBuilder.Items.BRACELET).add(ItemInit.GOLD_BRACELET.get(), ItemInit.SILVER_BRACELET.get());
+        tag(ModTagsBuilder.Items.NECKLACE).add(ItemInit.GOLD_AMULET.get(), ItemInit.SILVER_AMULET.get());
+        tag(ModTagsBuilder.Items.RING).add(ItemInit.GOLD_RING.get(), ItemInit.SILVER_RING.get(), ItemInit.THE_ONE_RING.get());
+        tag(ModTagsBuilder.Items.BRACELET).add(ItemInit.GOLD_BRACELET.get(), ItemInit.SILVER_BRACELET.get());
 
-        getOrCreateBuilder(ModTagsBuilder.Items.PIGLIN_LOVED).add(ItemInit.GOLD_AMULET.get(), ItemInit.GOLD_BRACELET.get(), ItemInit.GOLD_RING.get(), ItemInit.THE_ONE_RING.get());
+        tag(ModTagsBuilder.Items.PIGLIN_LOVED).add(ItemInit.GOLD_AMULET.get(), ItemInit.GOLD_BRACELET.get(), ItemInit.GOLD_RING.get(), ItemInit.THE_ONE_RING.get());
     }
 }

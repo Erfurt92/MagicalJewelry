@@ -2,40 +2,29 @@ package com.erfurt.magicaljewelry.objects.items;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.capability.JewelItemCapability;
-import com.erfurt.magicaljewelry.init.ItemInit;
-import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.erfurt.magicaljewelry.util.interfaces.IJewel;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class JewelItem extends Item implements IJewel
@@ -48,17 +37,13 @@ public class JewelItem extends Item implements IJewel
 	public static final String NBT_COLOR = "GemColor";
 
 	public static List<Integer> jewelEffects = new ArrayList<>();
-	public static Map<LivingEntity, Map<Effect, Integer>> totalJewelEffectsPlayer = new LinkedHashMap<>();
+	public static Map<LivingEntity, Map<MobEffect, Integer>> totalJewelEffectsPlayer = new LinkedHashMap<>();
 
 	public static Multimap<Attribute, AttributeModifier> jewelAttributesForRemoval = HashMultimap.create();
 
-	public static final ResourceLocation GOLD_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/gold_amulet.png");
-	public static final ResourceLocation SILVER_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/silver_amulet.png");
-	public static final ResourceLocation GEM_AMULET_TEXTURE = MagicalJewelry.getId( "textures/models/amulet/gem_amulet.png");
-
 	public JewelItem()
 	{
-		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP));
+		super(new Item.Properties().stacksTo(1).tab(MagicalJewelry.GROUP));
 	}
 
 	@Override
@@ -81,60 +66,39 @@ public class JewelItem extends Item implements IJewel
 		return MagicalJewelryConfigBuilder.JEWEL_DURABILITY.get() && JewelRarity.containsRarity(getJewelRarity(stack)) && !getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName());
 	}
 
+	@Nullable
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
 	{
 		return JewelItemCapability.createProvider(new ICurio()
 		{
-			private Object amuletModel;
-
 			@Override
-			public boolean canRender(String identifier, int index, LivingEntity livingEntity)
+			public void curioTick(SlotContext slotContext)
 			{
-				return stack.getItem() instanceof JewelAmuletItem;
-			}
-
-			@Override
-			public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
-			{
-				RenderHelper.translateIfSneaking(matrixStack, livingEntity);
-				RenderHelper.rotateIfSneaking(matrixStack, livingEntity);
-
-				if(!(this.amuletModel instanceof JewelAmuletModel)) this.amuletModel = new JewelAmuletModel();
-
-				JewelAmuletModel<?> jewelAmuletModel = (JewelAmuletModel)this.amuletModel;
-				IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(renderTypeBuffer, jewelAmuletModel.getRenderType(getRenderType(stack)), false, stack.hasEffect());
-				jewelAmuletModel.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-				float[] i = DyeColor.byTranslationKey(getGemColor(stack), DyeColor.WHITE).getColorComponentValues();
-				float red = i[0];
-				float green = i[1];
-				float blue = i[2];
-
-				IVertexBuilder vertexBuilderGem = ItemRenderer.getBuffer(renderTypeBuffer, jewelAmuletModel.getRenderType(GEM_AMULET_TEXTURE), false, stack.hasEffect());
-				jewelAmuletModel.render(matrixStack, vertexBuilderGem, light, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
-			}
-
-			@Override
-			public void curioTick(String identifier, int index, LivingEntity livingEntity)
-			{
-				if(!livingEntity.getEntityWorld().isRemote && stack.getItem() instanceof JewelItem)
+				LivingEntity livingEntity = slotContext.entity();
+				if(!livingEntity.getCommandSenderWorld().isClientSide && stack.getItem() instanceof JewelItem)
 				{
-					if(livingEntity.ticksExisted % 19 == 0) stack.damageItem(1, livingEntity, (livingEntity1) -> { });
+					if(livingEntity.tickCount % 19 == 0) stack.hurtAndBreak(1, livingEntity, (livingEntity1) -> { });
 
-					if(livingEntity.ticksExisted % 199 == 0 && totalJewelEffectsPlayer.containsKey(livingEntity) && !totalJewelEffectsPlayer.get(livingEntity).isEmpty())
+					if(livingEntity.tickCount % 199 == 0 && totalJewelEffectsPlayer.containsKey(livingEntity) && !totalJewelEffectsPlayer.get(livingEntity).isEmpty())
 					{
 						updateJewelEffects(stack, livingEntity, false);
 
-						if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributeManager().removeModifiers(jewelAttributesForRemoval);
+						if(!MagicalJewelryConfigBuilder.JEWEL_ATTRIBUTES.get()) livingEntity.getAttributes().removeAttributeModifiers(jewelAttributesForRemoval);
 					}
 				}
 			}
 
 			@Override
+			public ItemStack getStack()
+			{
+				return stack;
+			}
+
+			@Override
 			public void onEquip(SlotContext slotContext, ItemStack prevStack)
 			{
-				LivingEntity livingEntity = slotContext.getWearer();
+				LivingEntity livingEntity = slotContext.entity();
 				if(stack.getItem() instanceof JewelItem)
 				{
 					getTotalJewelEffects(stack, livingEntity);
@@ -145,7 +109,7 @@ public class JewelItem extends Item implements IJewel
 			@Override
 			public void onUnequip(SlotContext slotContext, ItemStack newStack)
 			{
-				LivingEntity livingEntity = slotContext.getWearer();
+				LivingEntity livingEntity = slotContext.entity();
 				if(stack.getItem() instanceof JewelItem) updateJewelEffects(stack, livingEntity, true);
 			}
 
@@ -165,12 +129,6 @@ public class JewelItem extends Item implements IJewel
 		});
 	}
 
-	private static ResourceLocation getRenderType(ItemStack stack)
-	{
-		if(stack.getItem() == ItemInit.GOLD_AMULET.get().getItem()) return GOLD_AMULET_TEXTURE;
-		return SILVER_AMULET_TEXTURE;
-	}
-
 	/** This method is used to update the mapped effects for the player
 	 *
 	 * @param stack ItemStack in - Used to check what rarity and effects are stored in the NBT for the ItemStack
@@ -184,7 +142,7 @@ public class JewelItem extends Item implements IJewel
 			if(legendaryEffectsEnabled(stack))
 			{
 				int j = getJewelLegendaryEffect(stack);
-				Effect effect = (Effect) legendaryEffectsList.toArray()[j];
+				MobEffect effect = (MobEffect) legendaryEffectsList.toArray()[j];
 
 				updateJewelEffects(player, effect);
 			}
@@ -192,7 +150,7 @@ public class JewelItem extends Item implements IJewel
 			for(int i = 0; i < effectsLength(stack); i++)
 			{
 				int j = getJewelEffects(stack)[i];
-				Effect effect = (Effect) defaultEffectsList.toArray()[j];
+				MobEffect effect = (MobEffect) defaultEffectsList.toArray()[j];
 
 				updateJewelEffects(player, effect);
 			}
@@ -205,7 +163,7 @@ public class JewelItem extends Item implements IJewel
 			{
 				for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 				{
-					Effect effect = (Effect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
+					MobEffect effect = (MobEffect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
 					int level = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
 
 					int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
@@ -227,7 +185,7 @@ public class JewelItem extends Item implements IJewel
 
 					if(legendaryFlag) level = 0;
 
-					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+					player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 
 					if(rarity.equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 				}
@@ -241,7 +199,7 @@ public class JewelItem extends Item implements IJewel
 	 * @param player LivingEntity in - should always be a player
 	 * @param effect Effect in - the effect that are being updated
 	 */
-	private void updateJewelEffects(LivingEntity player, Effect effect)
+	private void updateJewelEffects(LivingEntity player, MobEffect effect)
 	{
 		int length = totalJewelEffectsPlayer.get(player).size();
 
@@ -256,7 +214,7 @@ public class JewelItem extends Item implements IJewel
 				if(newValue < 1)
 				{
 					totalJewelEffectsPlayer.get(player).remove(effect);
-					player.removePotionEffect(effect);
+					player.removeEffect(effect);
 					break;
 				}
 				else
@@ -266,8 +224,8 @@ public class JewelItem extends Item implements IJewel
 					{
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
-							player.removePotionEffect(effect);
-							player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+							player.removeEffect(effect);
+							player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 						}
 					}
 				}
@@ -285,15 +243,15 @@ public class JewelItem extends Item implements IJewel
 		if(!legendaryEffectsEnabled(stack))
 		{
 			int j = getJewelLegendaryEffect(stack);
-			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
+			MobEffect effect = (MobEffect) legendaryEffectsList.toArray()[j];
 
-			boolean effectIsActive = player.getActivePotionMap().containsKey(effect);
+			boolean effectIsActive = player.getActiveEffectsMap().containsKey(effect);
 
 			if(effectIsActive)
 			{
-				boolean effectDuration = player.getActivePotionEffect(effect).getDuration() > 10000;
+				boolean effectDuration = player.getEffect(effect).getDuration() > 10000;
 
-				if(effectDuration) player.removePotionEffect(effect);
+				if(effectDuration) player.removeEffect(effect);
 			}
 		}
 	}
@@ -308,7 +266,7 @@ public class JewelItem extends Item implements IJewel
 		if(legendaryEffectsEnabled(stack))
 		{
 			int j = getJewelLegendaryEffect(stack);
-			Effect effect = (Effect) legendaryEffectsList.toArray()[j];
+			MobEffect effect = (MobEffect) legendaryEffectsList.toArray()[j];
 
 			updateTotalJewelEffects(effect, player);
 		}
@@ -316,7 +274,7 @@ public class JewelItem extends Item implements IJewel
 		for(int i = 0; i < effectsLength(stack); i++)
 		{
 			int j = getJewelEffects(stack)[i];
-			Effect effect = (Effect) defaultEffectsList.toArray()[j];
+			MobEffect effect = (MobEffect) defaultEffectsList.toArray()[j];
 
 			updateTotalJewelEffects(effect, player);
 		}
@@ -328,7 +286,7 @@ public class JewelItem extends Item implements IJewel
 	 * @param effect Effect in - the effect that are being updated
 	 * @param player LivingEntity in - should always be a player
 	 */
-	private void updateTotalJewelEffects(Effect effect, LivingEntity player)
+	private void updateTotalJewelEffects(MobEffect effect, LivingEntity player)
 	{
 		if(totalJewelEffectsPlayer.containsKey(player))
 		{
@@ -420,25 +378,25 @@ public class JewelItem extends Item implements IJewel
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		String rarity = getJewelRarity(stack);
 
 		if(JewelRarity.containsRarity(rarity))
 		{
-			tooltip.set(0, tooltip.get(0).deepCopy().mergeStyle(JewelRarity.byName(rarity).getFormat()));
+			tooltip.set(0, tooltip.get(0).copy().withStyle(JewelRarity.byName(rarity).getFormat()));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).deepCopy().appendString(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).copy().append(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new StringTextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new TextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
 
 			if(legendaryEffectsEnabled(stack) && stack.getTag().contains(NBT_LEGENDARY_EFFECT))
 			{
 				int j = getJewelLegendaryEffect(stack);
-				Effect effect = (Effect) legendaryEffectsList.toArray()[j];
+				MobEffect effect = (MobEffect) legendaryEffectsList.toArray()[j];
 				String effectName = effect.getDisplayName().getString();
 
-				tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
+				tooltip.add(new TextComponent(ChatFormatting.BLUE + effectName));
 			}
 
 			if(stack.getTag().contains(NBT_EFFECTS))
@@ -446,25 +404,25 @@ public class JewelItem extends Item implements IJewel
 				for (int i = 0; i < effectsLength(stack); i++)
 				{
 					int j = getJewelEffects(stack)[i];
-					Effect effect = (Effect) defaultEffectsList.toArray()[j];
+					MobEffect effect = (MobEffect) defaultEffectsList.toArray()[j];
 					String effectName = effect.getDisplayName().getString();
 
-					tooltip.add(new StringTextComponent(TextFormatting.BLUE + effectName));
+					tooltip.add(new TextComponent(ChatFormatting.BLUE + effectName));
 				}
 			}
 		}
 		else
 		{
-			String creativeJewelTooltip = new TranslationTextComponent("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
+			String creativeJewelTooltip = new TranslatableComponent("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
 			for(String s : creativeJewelTooltip.split("(?<=\\G.{25,}\\s)"))
 			{
-				tooltip.add(new StringTextComponent(s).deepCopy().mergeStyle(TextFormatting.RED));
+				tooltip.add(new TextComponent(s).copy().withStyle(ChatFormatting.RED));
 			}
 		}
 	}
 	
 	@Override
-	public boolean hasEffect(ItemStack stack)
+	public boolean isFoil(ItemStack stack)
 	{
 		return getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName());
 	}
@@ -535,21 +493,32 @@ public class JewelItem extends Item implements IJewel
 		return stack;
 	}
 
+	private static int getColorValue(ItemStack stack)
+	{
+		float[] textureDiffuseColors = DyeColor.byName(getGemColor(stack), DyeColor.WHITE).getTextureDiffuseColors();
+		int i = (int) (textureDiffuseColors[0] * 255.0F);
+		int j = (int) (textureDiffuseColors[1] * 255.0F);
+		int k = (int) (textureDiffuseColors[2] * 255.0F);
+		int color = (i << 8) + j;
+		color = (color << 8) + k;
+		return color;
+	}
+
 	public static int getItemColor(ItemStack stack, int tintIndex)
 	{
-		if(tintIndex == 0) return DyeColor.byTranslationKey(getGemColor(stack), DyeColor.WHITE).getColorValue();
+		if(tintIndex == 0) return getColorValue(stack);
 		return 0xFFFFFF;
 	}
-	
+
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
-		if(isInGroup(group))
+		if(allowdedIn(group))
 		{
 			for(DyeColor color : DyeColor.values())
 			{
 				ItemStack stack = new ItemStack(this);
-				setGemColor(stack, color.getString());
+				setGemColor(stack, color.getSerializedName());
 				items.add(stack);
 			}
 		}

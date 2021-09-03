@@ -1,8 +1,6 @@
 package com.erfurt.magicaljewelry.capability;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -17,25 +15,13 @@ public class JewelItemCapability
 {
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(ICurio.class, new Capability.IStorage<ICurio>() {
-            @Nullable
-            @Override
-            public INBT writeNBT(Capability<ICurio> capability, ICurio instance, Direction side)
-            {
-                return new CompoundNBT();
-            }
-
-            @Override
-            public void readNBT(Capability<ICurio> capability, ICurio instance, Direction side, INBT nbt) { }
-        }, JewelItemWrapper::new);
+        CapabilityManager.INSTANCE.register(ICurio.class);
     }
 
     public static ICapabilityProvider createProvider(final ICurio curio)
     {
         return new Provider(curio);
     }
-
-    public static class JewelItemWrapper implements ICurio { }
 
     public static class Provider implements ICapabilityProvider
     {

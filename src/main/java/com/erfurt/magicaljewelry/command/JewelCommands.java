@@ -12,21 +12,24 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ResourceLocationArgument;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -70,29 +73,29 @@ public final class JewelCommands implements IJewelNBTHandler
             allLootTables
     };
 
-    private static final SuggestionProvider<CommandSource> itemIdSuggestions =
-            (context, builder) -> ISuggestionProvider.func_212476_a(ForgeRegistries.ITEMS.getValues().stream()
+    private static final SuggestionProvider<CommandSourceStack> itemIdSuggestions =
+            (context, builder) -> SharedSuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getValues().stream()
                     .filter(item -> item instanceof JewelItem).map(ForgeRegistryEntry::getRegistryName), builder);
-    private static final SuggestionProvider<CommandSource> raritySuggestions =
-            (context, builder) -> ISuggestionProvider.suggest(rarities, builder);
-    private static final SuggestionProvider<CommandSource> testLootSuggestions =
-            (context, builder) -> ISuggestionProvider.suggest(testLootTables, builder);
+    private static final SuggestionProvider<CommandSourceStack> raritySuggestions =
+            (context, builder) -> SharedSuggestionProvider.suggest(rarities, builder);
+    private static final SuggestionProvider<CommandSourceStack> testLootSuggestions =
+            (context, builder) -> SharedSuggestionProvider.suggest(testLootTables, builder);
 
     private JewelCommands() {}
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher)
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        LiteralArgumentBuilder<CommandSource> builderJewelGive = Commands.literal(jewelGive)
-                .requires(source -> source.hasPermissionLevel(2));
+        LiteralArgumentBuilder<CommandSourceStack> builderJewelGive = Commands.literal(jewelGive)
+                .requires(source -> source.hasPermission(2));
 
-        LiteralArgumentBuilder<CommandSource> builderTestLoot = Commands.literal(jewelTestLoot);
+        LiteralArgumentBuilder<CommandSourceStack> builderTestLoot = Commands.literal(jewelTestLoot);
 
         builderJewelGive.then(Commands.argument(targets, EntityArgument.players())
-                .then(Commands.argument(itemId, ResourceLocationArgument.resourceLocation())
+                .then(Commands.argument(itemId, ResourceLocationArgument.id())
                         .suggests(itemIdSuggestions)
                                 .executes(context -> giveJewel(
                                         context.getSource(),
-                                        ResourceLocationArgument.getResourceLocation(context, itemId),
+                                        ResourceLocationArgument.getId(context, itemId),
                                         EntityArgument.getPlayers(context, targets),
                                         randomRarity)
                                 )
@@ -100,7 +103,7 @@ public final class JewelCommands implements IJewelNBTHandler
                                 .suggests(raritySuggestions)
                                 .executes(context -> giveJewel(
                                         context.getSource(),
-                                        ResourceLocationArgument.getResourceLocation(context, itemId),
+                                        ResourceLocationArgument.getId(context, itemId),
                                         EntityArgument.getPlayers(context, targets),
                                         StringArgumentType.getString(context, rarityId).toLowerCase(Locale.ROOT))
                                 )
@@ -123,78 +126,78 @@ public final class JewelCommands implements IJewelNBTHandler
         dispatcher.register(builderTestLoot);
     }
 
-    private static int giveJewel(CommandSource source, ResourceLocation itemId, Collection<ServerPlayerEntity> targets, String rarity)
+    private static int giveJewel(CommandSourceStack source, ResourceLocation itemId, Collection<ServerPlayer> targets, String rarity)
     {
         Item item = ForgeRegistries.ITEMS.getValue(itemId);
 
         if(item == null)
         {
-            source.sendErrorMessage(translationTextComponent(jewelGive, "failure.exist", itemId.toString()));
+            source.sendFailure(TranslatableComponent(jewelGive, "failure.exist", itemId.toString()));
             return 0;
         }
 
         if(!(item instanceof JewelItem))
         {
-            source.sendErrorMessage(translationTextComponent(jewelGive, "failure.item", itemId.toString()));
+            source.sendFailure(TranslatableComponent(jewelGive, "failure.item", itemId.toString()));
             return 0;
         }
 
         ItemStack stack = new ItemStack(item, 1);
 
-        for(ServerPlayerEntity player : targets)
+        for(ServerPlayer player : targets)
         {
             if(rarity.equals(randomRarity)) rarity = IJewelRarity.getRarityCommand();
             else if(!containsRarity(rarity))
             {
-                source.sendErrorMessage(translationTextComponent(jewelGive, "failure.rarity", rarity));
+                source.sendFailure(TranslatableComponent(jewelGive, "failure.rarity", rarity));
                 return 0;
             }
 
             IJewelNBTHandler.setJewelNBTData(stack, rarity);
 
-            boolean addedToInventory = player.inventory.addItemStackToInventory(stack);
+            boolean addedToInventory = player.getInventory().add(stack);
             if(addedToInventory && stack.isEmpty())
             {
                 stack.setCount(1);
-                ItemEntity entityItem = player.dropItem(stack, false);
+                ItemEntity entityItem = player.drop(stack, false);
                 if(entityItem != null)
                 {
                     entityItem.makeFakeItem();
                 }
 
-                player.world.playSound(
-                        null, player.getPosX(), player.getPosY(), player.getPosZ(),
-                        SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS,
+                player.level.playSound(
+                        null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
                         0.2F,
-                        ((player.getRNG().nextFloat() - player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                player.container.detectAndSendChanges();
+                        ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                player.containerMenu.broadcastChanges();
             }
             else
             {
-                ItemEntity entityItem = player.dropItem(stack, false);
+                ItemEntity entityItem = player.drop(stack, false);
                 if(entityItem != null)
                 {
-                    entityItem.setNoPickupDelay();
-                    entityItem.setOwnerId(player.getUniqueID());
+                    entityItem.setNoPickUpDelay();
+                    entityItem.setOwner(player.getUUID());
                 }
             }
         }
 
-        ITextComponent itemText = stack.getTextComponent().deepCopy().mergeStyle(JewelRarity.byName(rarity).getFormat());
+        MutableComponent itemText = stack.getDisplayName().copy().withStyle(JewelRarity.byName(rarity).getFormat());
 
         if(targets.size() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(new TranslatableComponent("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendFeedback(new TranslationTextComponent("commands.give.success.single", 1, itemText, targets.size()), true);
+            source.sendSuccess(new TranslatableComponent("commands.give.success.single", 1, itemText, targets.size()), true);
         }
 
         return targets.size();
     }
 
-    private static int testLoot(CommandSource source, String lootTable)
+    private static int testLoot(CommandSourceStack source, String lootTable)
     {
         MinecraftServer server = source.getServer();
 
@@ -204,16 +207,16 @@ public final class JewelCommands implements IJewelNBTHandler
         String[] config1 = { jewelTestLoot, "config1" };
         String[] config2 = { jewelTestLoot, "config2" };
 
-        String looting = Enchantments.LOOTING.getDisplayName(3).getString();
+        String looting = Enchantments.MOB_LOOTING.getFullname(3).getString();
 
-        IFormattableTextComponent typeHostile = translationTextComponent(jewelTestLoot, "type.hostile");
-        IFormattableTextComponent typeBoss = translationTextComponent(jewelTestLoot, "type.boss");
-        IFormattableTextComponent typeChest = translationTextComponent(jewelTestLoot, "type.chest");
+        MutableComponent typeHostile = TranslatableComponent(jewelTestLoot, "type.hostile");
+        MutableComponent typeBoss = TranslatableComponent(jewelTestLoot, "type.boss");
+        MutableComponent typeChest = TranslatableComponent(jewelTestLoot, "type.chest");
 
-        IFormattableTextComponent hostile = translationTextComponent(settings, typeHostile.getString());
-        IFormattableTextComponent chest = translationTextComponent(settings, typeChest.getString());
-        IFormattableTextComponent boss = translationTextComponent(settings, typeBoss.getString());
-        IFormattableTextComponent chestHostile = translationTextComponent(settings, typeChest.getString() + " & " + typeHostile.getString());
+        MutableComponent hostile = TranslatableComponent(settings, typeHostile.getString());
+        MutableComponent chest = TranslatableComponent(settings, typeChest.getString());
+        MutableComponent boss = TranslatableComponent(settings, typeBoss.getString());
+        MutableComponent chestHostile = TranslatableComponent(settings, typeChest.getString() + " & " + typeHostile.getString());
 
         float hostileDropRate = getChance((MagicalJewelry.getId("entities/" + hostileLootDrop)), server);
         float hostileLootingMultiplier = getLootingMultiplier((MagicalJewelry.getId("entities/" + hostileLootDrop)), server);
@@ -221,43 +224,43 @@ public final class JewelCommands implements IJewelNBTHandler
         float bossLootingMultiplier = getLootingMultiplier((MagicalJewelry.getId("entities/" + bossLootDrop)), server);
         float chestDropRate = getChance((MagicalJewelry.getId("inject/chests/" + chestLootDrop)), server);
 
-        IFormattableTextComponent hostileDropRatePercent = null;
-        IFormattableTextComponent hostileDropRateLooting = null;
+        MutableComponent hostileDropRatePercent = null;
+        MutableComponent hostileDropRateLooting = null;
 
-        IFormattableTextComponent bossDropRatePercent = null;
-        IFormattableTextComponent bossDropRateLooting = null;
+        MutableComponent bossDropRatePercent = null;
+        MutableComponent bossDropRateLooting = null;
 
-        IFormattableTextComponent chestDropRatePercent = null;
+        MutableComponent chestDropRatePercent = null;
         
         if(hostileLootingMultiplier >= 0F && hostileDropRate >= 0F)
         {
-            hostileDropRatePercent = new StringTextComponent(typeHostile.getString() + " - ").appendSibling(translationTextComponent(droprate, floatToDeci(hostileDropRate * 100))).mergeStyle(TextFormatting.GREEN);
-            hostileDropRateLooting = new StringTextComponent(typeHostile.getString() + " - ").appendSibling(translationTextComponent(dropratewith, looting, dropRateWithLootingPercent(hostileDropRate, hostileLootingMultiplier))).mergeStyle(TextFormatting.GREEN);
+            hostileDropRatePercent = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            hostileDropRateLooting = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(hostileDropRate, hostileLootingMultiplier))).withStyle(ChatFormatting.GREEN);
         }
         else if(hostileDropRate >= 0F)
         {
-            hostileDropRatePercent = new StringTextComponent(typeHostile.getString() + " - ").appendSibling(translationTextComponent(droprate, floatToDeci(hostileDropRate * 100))).mergeStyle(TextFormatting.GREEN);
+            hostileDropRatePercent = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
 
         if(bossLootingMultiplier >= 0F && bossDropRate >= 0F)
         {
-            bossDropRatePercent = new StringTextComponent(typeBoss.getString() + " - ").appendSibling(translationTextComponent(droprate, floatToDeci(bossDropRate * 100))).mergeStyle(TextFormatting.GREEN);
-            bossDropRateLooting = new StringTextComponent(typeBoss.getString() + " - ").appendSibling(translationTextComponent(dropratewith, looting, dropRateWithLootingPercent(bossDropRate, bossLootingMultiplier))).mergeStyle(TextFormatting.GREEN);
+            bossDropRatePercent = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            bossDropRateLooting = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(bossDropRate, bossLootingMultiplier))).withStyle(ChatFormatting.GREEN);
         }
         else if(bossDropRate >= 0F)
         {
-            bossDropRatePercent = new StringTextComponent(typeBoss.getString() + " - ").appendSibling(translationTextComponent(droprate, floatToDeci(bossDropRate * 100))).mergeStyle(TextFormatting.GREEN);
+            bossDropRatePercent = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
 
         if(chestDropRate >= 0F)
         {
-            chestDropRatePercent = new StringTextComponent(typeChest.getString() + " - ").appendSibling(translationTextComponent(droprate, floatToDeci(chestDropRate * 100))).mergeStyle(TextFormatting.GREEN);
+            chestDropRatePercent = new TextComponent(typeChest.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(chestDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
         
-        IFormattableTextComponent oneRarityDrop = translationTextComponent(config1, "'oneRarityDrop'", "" + true).mergeStyle(TextFormatting.YELLOW);
-        IFormattableTextComponent legendaryUpgradeOnly = translationTextComponent(config1, "'legendaryUpgradeOnly'", "" + true).mergeStyle(TextFormatting.YELLOW);
-        IFormattableTextComponent bothConfigOptions = translationTextComponent(config2, "'legendaryUpgradeOnly'", "'oneRarityDrop'", "" + false).mergeStyle(TextFormatting.YELLOW);
-        IFormattableTextComponent chestDisable = translationTextComponent(config1, "'jewelsInChest'", "" + false).mergeStyle(TextFormatting.YELLOW);
+        MutableComponent oneRarityDrop = TranslatableComponent(config1, "'oneRarityDrop'", "" + true).withStyle(ChatFormatting.YELLOW);
+        MutableComponent legendaryUpgradeOnly = TranslatableComponent(config1, "'legendaryUpgradeOnly'", "" + true).withStyle(ChatFormatting.YELLOW);
+        MutableComponent bothConfigOptions = TranslatableComponent(config2, "'legendaryUpgradeOnly'", "'oneRarityDrop'", "" + false).withStyle(ChatFormatting.YELLOW);
+        MutableComponent chestDisable = TranslatableComponent(config1, "'jewelsInChest'", "" + false).withStyle(ChatFormatting.YELLOW);
 
         float legendaryRate = (float) MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_DROP_RATE.get();
         float epicRate = (float) MagicalJewelryConfigBuilder.JEWEL_EPIC_DROP_RATE.get();
@@ -266,24 +269,24 @@ public final class JewelCommands implements IJewelNBTHandler
 
         if(!Arrays.asList(testLootTables).contains(lootTable))
         {
-            source.sendErrorMessage(translationTextComponent(jewelTestLoot, "failure", lootTable));
+            source.sendFailure(TranslatableComponent(jewelTestLoot, "failure", lootTable));
         }
         if(lootTable.equals(hostileLootDrop) || lootTable.equals(chestLootDrop) || lootTable.equals(chestHostileDrop) || lootTable.equals(allLootTables))
         {
             if(lootTable.equals(hostileLootDrop))
             {
-                source.sendFeedback(hostile, true);
+                source.sendSuccess(hostile, true);
                 chestDropRatePercent = null;
             }
             else if(lootTable.equals(chestLootDrop))
             {
-                source.sendFeedback(chest, true);
+                source.sendSuccess(chest, true);
                 hostileDropRatePercent = null;
                 hostileDropRateLooting = null;
             }
             else
             {
-                source.sendFeedback(chestHostile, true);
+                source.sendSuccess(chestHostile, true);
                 if(!MagicalJewelryConfigBuilder.JEWELS_IN_CHESTS.get())
                 {
                     chestDropRatePercent = chestDisable;
@@ -292,7 +295,7 @@ public final class JewelCommands implements IJewelNBTHandler
 
             if(lootTable.equals(chestLootDrop) && !MagicalJewelryConfigBuilder.JEWELS_IN_CHESTS.get())
             {
-                source.sendFeedback(chestDisable, false);
+                source.sendSuccess(chestDisable, false);
             }
             else if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
@@ -309,7 +312,7 @@ public final class JewelCommands implements IJewelNBTHandler
         }
         if(lootTable.equals(bossLootDrop) || lootTable.equals(allLootTables))
         {
-            source.sendFeedback(boss, true);
+            source.sendSuccess(boss, true);
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
@@ -317,70 +320,70 @@ public final class JewelCommands implements IJewelNBTHandler
             }
             else if(MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_UPGRADE_ONLY.get())
             {
-                source.sendFeedback(legendaryUpgradeOnly, false);
-                if(bossDropRatePercent != null) source.sendFeedback(bossDropRatePercent, false);
-                if(bossDropRateLooting != null) source.sendFeedback(bossDropRateLooting, false);
-                source.sendFeedback(oneRarity(EPIC), false);
+                source.sendSuccess(legendaryUpgradeOnly, false);
+                if(bossDropRatePercent != null) source.sendSuccess(bossDropRatePercent, false);
+                if(bossDropRateLooting != null) source.sendSuccess(bossDropRateLooting, false);
+                source.sendSuccess(oneRarity(EPIC), false);
             }
             else
             {
-                source.sendFeedback(bothConfigOptions, false);
-                if(bossDropRatePercent != null) source.sendFeedback(bossDropRatePercent, false);
-                if(bossDropRateLooting != null) source.sendFeedback(bossDropRateLooting, false);
+                source.sendSuccess(bothConfigOptions, false);
+                if(bossDropRatePercent != null) source.sendSuccess(bossDropRatePercent, false);
+                if(bossDropRateLooting != null) source.sendSuccess(bossDropRateLooting, false);
 
                 float totalDropRate = legendaryRate + epicRate;
                 float legendaryDropRate = legendaryRate / totalDropRate * 100;
                 float epicDropRate = epicRate / totalDropRate * 100;
 
-                source.sendFeedback(new StringTextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).mergeStyle(LEGENDARY.getFormat()), false);
-                source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).mergeStyle(EPIC.getFormat()), false);
+                source.sendSuccess(new TextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).withStyle(LEGENDARY.getFormat()), false);
+                source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
             }
         }
 
         return 0;
     }
 
-    private static void oneRarityDrop(CommandSource source, @Nullable IFormattableTextComponent dropRatePercent, @Nullable IFormattableTextComponent dropRateLooting, @Nullable IFormattableTextComponent chestDropRatePercent, IFormattableTextComponent oneRarityDrop)
+    private static void oneRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent oneRarityDrop)
     {
-        source.sendFeedback(oneRarityDrop, false);
-        if(chestDropRatePercent != null) source.sendFeedback(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendFeedback(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendFeedback(dropRateLooting, false);
+        source.sendSuccess(oneRarityDrop, false);
+        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
         JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
-        source.sendFeedback(oneRarity(rarity), false);
+        source.sendSuccess(oneRarity(rarity), false);
     }
 
-    private static void legendaryUpgradeRarityDrop(CommandSource source, @Nullable IFormattableTextComponent dropRatePercent, @Nullable IFormattableTextComponent dropRateLooting, @Nullable IFormattableTextComponent chestDropRatePercent, IFormattableTextComponent legendaryUpgradeOnly, float legendaryRate, float epicRate, float rareRate)
+    private static void legendaryUpgradeRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent legendaryUpgradeOnly, float legendaryRate, float epicRate, float rareRate)
     {
         float totalDropRate = 100 - legendaryRate;
         float epicDropRate = epicRate / totalDropRate * 100;
         float rareDropRate = rareRate / totalDropRate * 100;
         float uncommonDropRate = 100 - epicDropRate - rareDropRate;
 
-        source.sendFeedback(legendaryUpgradeOnly, false);
-        if(chestDropRatePercent != null) source.sendFeedback(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendFeedback(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendFeedback(dropRateLooting, false);
-        source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).mergeStyle(EPIC.getFormat()), false);
-        source.sendFeedback(new StringTextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).mergeStyle(RARE.getFormat()), false);
-        source.sendFeedback(new StringTextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).mergeStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(legendaryUpgradeOnly, false);
+        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
+        source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(new TextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(new TextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
-    private static void defaultRarityDrop(CommandSource source, @Nullable IFormattableTextComponent dropRatePercent, @Nullable IFormattableTextComponent dropRateLooting, @Nullable IFormattableTextComponent chestDropRatePercent, IFormattableTextComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
+    private static void defaultRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
     {
-        source.sendFeedback(bothConfigOptions, false);
-        if(chestDropRatePercent != null) source.sendFeedback(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendFeedback(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendFeedback(dropRateLooting, false);
-        source.sendFeedback(new StringTextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).mergeStyle(LEGENDARY.getFormat()), false);
-        source.sendFeedback(new StringTextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).mergeStyle(EPIC.getFormat()), false);
-        source.sendFeedback(new StringTextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).mergeStyle(RARE.getFormat()), false);
-        source.sendFeedback(new StringTextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).mergeStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(bothConfigOptions, false);
+        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
+        source.sendSuccess(new TextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).withStyle(LEGENDARY.getFormat()), false);
+        source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(new TextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(new TextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
     private static String dropRateWithLootingPercent(float dropRate, float lootingMultiplier)
     {
-        if(dropRate<= 0.0F && lootingMultiplier <= 0.0F) return "0,0F";
+        if(dropRate <= 0.0F && lootingMultiplier <= 0.0F) return "0,0F";
         else if(dropRate < 0.0001F && dropRate != 0.0F && lootingMultiplier < 0.0001F && lootingMultiplier != 0.0F) return "<0,01%";
         else if(dropRate < 0.0001F && dropRate != 0.0F) return "~" + String.format("%.2f", (3 * lootingMultiplier) * 100) + "%";
         else if(lootingMultiplier < 0.0001F && lootingMultiplier != 0.0F) return "~" + String.format("%.2f", dropRate * 100) + "%";
@@ -399,38 +402,38 @@ public final class JewelCommands implements IJewelNBTHandler
         else return String.format("%.2f", dropRate) + "%";
     }
 
-    private static IFormattableTextComponent oneRarity(JewelRarity rarityIn)
+    private static MutableComponent oneRarity(JewelRarity rarityIn)
     {
-        return translationTextComponent(jewelTestLoot, "onerarity", rarityIn.getDisplayName()).mergeStyle(rarityIn.getFormat());
+        return TranslatableComponent(jewelTestLoot, "onerarity", rarityIn.getDisplayName()).withStyle(rarityIn.getFormat());
     }
 
-    private static TranslationTextComponent translationTextComponent(String[] strings, String stringIn)
+    private static TranslatableComponent TranslatableComponent(String[] strings, String stringIn)
     {
-        return translationTextComponent(strings, stringIn, null);
+        return TranslatableComponent(strings, stringIn, null);
     }
 
-    private static TranslationTextComponent translationTextComponent(String[] strings, String string1In, String string2In)
+    private static TranslatableComponent TranslatableComponent(String[] strings, String string1In, String string2In)
     {
-        return translationTextComponent(strings, string1In, string2In, null);
+        return TranslatableComponent(strings, string1In, string2In, null);
     }
 
-    private static TranslationTextComponent translationTextComponent(String[] strings, String string1In, String string2In, String string3In)
+    private static TranslatableComponent TranslatableComponent(String[] strings, String string1In, String string2In, String string3In)
     {
-        return translationTextComponent(strings[0], strings[1], string1In, string2In, string3In);
+        return TranslatableComponent(strings[0], strings[1], string1In, string2In, string3In);
     }
 
-    private static TranslationTextComponent translationTextComponent(String type, String nameIn)
+    private static TranslatableComponent TranslatableComponent(String type, String nameIn)
     {
-        return translationTextComponent(type, nameIn, null);
+        return TranslatableComponent(type, nameIn, null);
     }
 
-    private static TranslationTextComponent translationTextComponent(String type, String nameIn, String stringIn)
+    private static TranslatableComponent TranslatableComponent(String type, String nameIn, String stringIn)
     {
-        return translationTextComponent(type, nameIn, stringIn, null, null);
+        return TranslatableComponent(type, nameIn, stringIn, null, null);
     }
 
-    private static TranslationTextComponent translationTextComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
+    private static TranslatableComponent TranslatableComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
     {
-        return new TranslationTextComponent("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
+        return new TranslatableComponent("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
     }
 }

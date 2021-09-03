@@ -1,9 +1,9 @@
 package com.erfurt.magicaljewelry;
 
 import com.erfurt.magicaljewelry.init.ItemInit;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -33,10 +33,10 @@ public class MagicalJewelry
 		return new ResourceLocation(MOD_ID, path);
 	}
 
-	public static final ItemGroup GROUP = new ItemGroup("magicaljewelryGroup")
+	public static final CreativeModeTab GROUP = new CreativeModeTab("magicaljewelryGroup")
 	{
 		@Override
-		public ItemStack createIcon()
+		public ItemStack makeIcon()
 		{
 			return new ItemStack(ItemInit.GOLD_RING.get());
 		}

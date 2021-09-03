@@ -6,30 +6,30 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelRarity;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class SetJewelNBTBossFunction extends LootFunction implements IJewelNBTHandler
+public class SetJewelNBTBossFunction extends LootItemConditionalFunction implements IJewelNBTHandler
 {
 	public static final Serializer SERIALIZER = new Serializer();
 
 	private static String rarityID;
 	
-	private SetJewelNBTBossFunction(ILootCondition[] conditionIn)
+	private SetJewelNBTBossFunction(LootItemCondition[] conditionIn)
 	{
 		super(conditionIn);
 	}
 
 	@Override
-	public ItemStack doApply(ItemStack stack, LootContext context)
+	public ItemStack run(ItemStack stack, LootContext context)
 	{
-		Entity entity = context.get(LootParameters.KILLER_ENTITY);
+		Entity entity = context.getParamOrNull(LootContextParams.KILLER_ENTITY);
 		rarityID = IJewelRarity.getRarityBoss((LivingEntity) entity);
 
 		IJewelNBTHandler.setJewelNBTData(stack, rarityID);
@@ -37,18 +37,18 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelNBTHa
 		return stack;
 	}
 
-	public static LootFunction.Builder<?> builder()
+	public static LootItemConditionalFunction.Builder<?> builder()
 	{
-		return builder(SetJewelNBTBossFunction::new);
+		return simpleBuilder(SetJewelNBTBossFunction::new);
 	}
 
 	@Override
-	public LootFunctionType getFunctionType()
+	public LootItemFunctionType getType()
 	{
 		return LootInit.SET_JEWEL_NBT_BOSS_FUNCTION;
 	}
 
-	public static class Serializer extends LootFunction.Serializer<SetJewelNBTBossFunction>
+	public static class Serializer extends LootItemConditionalFunction.Serializer<SetJewelNBTBossFunction>
 	{
         @Override
         public void serialize(JsonObject object, SetJewelNBTBossFunction functionClazz, JsonSerializationContext serializationContext)
@@ -57,7 +57,7 @@ public class SetJewelNBTBossFunction extends LootFunction implements IJewelNBTHa
         }
 
         @Override
-        public SetJewelNBTBossFunction deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn)
+        public SetJewelNBTBossFunction deserialize(JsonObject object, JsonDeserializationContext deserializationContext, LootItemCondition[] conditionsIn)
         {
             return new SetJewelNBTBossFunction(conditionsIn);
         }

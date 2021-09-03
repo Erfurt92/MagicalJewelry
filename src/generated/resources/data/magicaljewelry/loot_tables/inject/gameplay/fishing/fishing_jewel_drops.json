@@ -3,7 +3,8 @@
   "pools": [
     {
       "name": "magicaljewelry_jewel_fishing_treasure",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -15,7 +16,8 @@
           "condition": "minecraft:random_chance",
           "chance": 0.001
         }
-      ]
+      ],
+      "functions": []
     }
   ]
 }

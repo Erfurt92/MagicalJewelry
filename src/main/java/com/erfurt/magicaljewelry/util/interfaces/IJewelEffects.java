@@ -1,7 +1,8 @@
 package com.erfurt.magicaljewelry.util.interfaces;
 
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
+
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,8 @@ public interface IJewelEffects
 {
 	Random rand = new Random();
 	
-	List<Effect> defaultEffectsList = new ArrayList<>();
-	List<Effect> legendaryEffectsList = new ArrayList<>();
+	List<MobEffect> defaultEffectsList = new ArrayList<>();
+	List<MobEffect> legendaryEffectsList = new ArrayList<>();
 	
 	static void init()
 	{
@@ -21,22 +22,22 @@ public interface IJewelEffects
 	
 	static void Effects()
 	{
-		defaultEffectsList.add(0, Effects.SPEED);
-		defaultEffectsList.add(1, Effects.HASTE);
-		defaultEffectsList.add(2, Effects.STRENGTH);
-		defaultEffectsList.add(3, Effects.JUMP_BOOST);
-		defaultEffectsList.add(4, Effects.RESISTANCE);
-		defaultEffectsList.add(5, Effects.LUCK);
+		defaultEffectsList.add(0, MobEffects.MOVEMENT_SPEED);
+		defaultEffectsList.add(1, MobEffects.DIG_SPEED);
+		defaultEffectsList.add(2, MobEffects.DAMAGE_BOOST);
+		defaultEffectsList.add(3, MobEffects.JUMP);
+		defaultEffectsList.add(4, MobEffects.DAMAGE_RESISTANCE);
+		defaultEffectsList.add(5, MobEffects.LUCK);
 
-		legendaryEffectsList.add(0, Effects.REGENERATION);
-		legendaryEffectsList.add(1, Effects.FIRE_RESISTANCE);
-		legendaryEffectsList.add(2, Effects.WATER_BREATHING);
-		legendaryEffectsList.add(3, Effects.NIGHT_VISION);
+		legendaryEffectsList.add(0, MobEffects.REGENERATION);
+		legendaryEffectsList.add(1, MobEffects.FIRE_RESISTANCE);
+		legendaryEffectsList.add(2, MobEffects.WATER_BREATHING);
+		legendaryEffectsList.add(3, MobEffects.NIGHT_VISION);
 	}
 	
 	static List<Integer> getEffects(String rarity, List<Integer> effectsForJewel)
 	{
-		List<Effect> effectsForComparing = new ArrayList<>();
+		List<MobEffect> effectsForComparing = new ArrayList<>();
 		List<Integer> tempIntArray = new ArrayList<>();
 
 		for(int i = 1; i <= defaultEffectsList.size(); i++)

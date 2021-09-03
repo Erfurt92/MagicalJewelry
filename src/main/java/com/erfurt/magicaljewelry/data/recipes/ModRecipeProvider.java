@@ -2,10 +2,10 @@ package com.erfurt.magicaljewelry.data.recipes;
 
 import com.erfurt.magicaljewelry.init.ItemInit;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
 
@@ -19,7 +19,7 @@ public class ModRecipeProvider extends RecipeProvider
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer)
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer)
     {
         upgradeRecipe(consumer, ItemInit.GOLD_AMULET.get());
         upgradeRecipe(consumer, ItemInit.SILVER_AMULET.get());
@@ -29,7 +29,7 @@ public class ModRecipeProvider extends RecipeProvider
         upgradeRecipe(consumer, ItemInit.SILVER_BRACELET.get());
     }
 
-    private void upgradeRecipe(Consumer<IFinishedRecipe> consumer, Item upgradeableItem)
+    private void upgradeRecipe(Consumer<FinishedRecipe> consumer, Item upgradeableItem)
     {
         JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.DIAMOND_BLOCK, UNCOMMON.getName(), RARE.getName()).build(consumer, upgradeableItem.toString());
         JewelUpgradeRecipeBuilder.jewelUpgradeRecipe(upgradeableItem, Items.NETHERITE_INGOT, RARE.getName(), EPIC.getName()).build(consumer, upgradeableItem.toString());

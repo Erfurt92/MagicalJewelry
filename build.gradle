@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -15,11 +15,11 @@ version = "${mod_version}"
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: 'snapshot', version: "${version_mcp}"
-	
+    mappings channel: 'official', version: "${version_mc}"
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -65,7 +65,7 @@ minecraft {
 }
 
 sourceSets.main.resources {
-	srcDir 'src/generated/resources'
+    srcDir 'src/generated/resources'
 }
 
 repositories {
@@ -74,11 +74,26 @@ repositories {
     }
 }
 
+configurations {
+    runtimeMod { transitive = false }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${version_forge}"
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}")
+    runtimeMod fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}:api")
+}
+
+project.afterEvaluate {
+    task copyMods(type:Copy) {
+        from configurations.runtimeMod.files
+        into file("run/mods")
+    }
+    tasks.forEach {
+        if (it.name.startsWith("prepareRun"))
+            it.dependsOn copyMods
+    }
 }
 
 jar {
@@ -97,16 +112,32 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
+def replaceResources = tasks.register("replaceResources", Copy) {
+    it.outputs.upToDateWhen { false }
+    it.from(sourceSets.main.resources) {
+        include "META-INF/mods.toml"
+        expand 'version': project.version,
+                'mod_id' : mod_id,
+                'mod_name': mod_name,
+                'mod_url': mod_url,
+                'mod_author': mod_author,
+                'mod_description': mod_description,
+                'mod_icon': mod_icon,
+                'mod_loader_version': mod_loader_version,
+                'mod_version_range': mod_version_range,
+                'mod_issue_url': mod_issue_url
+    }
+    it.into "$buildDir/resources/main/"
+}
+
 processResources {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    exclude('META-INF/mods.toml')
+    configure { finalizedBy(replaceResources) }
+}
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-        expand 'version': project.version, 'mod_id' : mod_id, 'mod_name': mod_name, 'mod_url': mod_url, 'mod_author': mod_author, 'mod_description': mod_description, 'mod_icon': mod_icon, 'mod_loader_version': mod_loader_version, 'mod_version_range': mod_version_range, 'mod_issue_url': mod_issue_url
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
-    }
+classes.configure {
+    dependsOn(replaceResources)
 }
 
 publishing {
