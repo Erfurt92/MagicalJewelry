@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry;
 
+import com.erfurt.magicaljewelry.capability.JewelItemCapability;
 import com.erfurt.magicaljewelry.command.JewelCommands;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
@@ -17,6 +18,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -52,6 +54,7 @@ public class SideProxy
         modEventBus.addGenericListener(RecipeSerializer.class, SideProxy::registerRecipeSerializers);
         MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);
         modEventBus.addListener(SideProxy::enqueue);
+        modEventBus.addListener(SideProxy::registerCapabilities);
     }
 
     private static void enqueue(final InterModEnqueueEvent event)
@@ -75,6 +78,11 @@ public class SideProxy
     {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         JewelCommands.register(dispatcher);
+    }
+
+    public static void registerCapabilities(RegisterCapabilitiesEvent event)
+    {
+        event.register(JewelItemCapability.class);
     }
 
     static class Client extends SideProxy

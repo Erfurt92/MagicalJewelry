@@ -2,7 +2,6 @@ package com.erfurt.magicaljewelry.capability;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import top.theillusivec4.curios.api.CuriosCapability;
@@ -13,11 +12,6 @@ import javax.annotation.Nullable;
 
 public class JewelItemCapability
 {
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(ICurio.class);
-    }
-
     public static ICapabilityProvider createProvider(final ICurio curio)
     {
         return new Provider(curio);

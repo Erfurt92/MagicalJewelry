@@ -20,7 +20,7 @@ ${mod_description}
 [[dependencies.magicaljewelry]]
     modId="forge"
     mandatory=true
-    versionRange="${mod_loader_version}"
+    versionRange="${mod_loader_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.magicaljewelry]]
