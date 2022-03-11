@@ -2,27 +2,27 @@ package com.erfurt.magicaljewelry.data.tags;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class ModTagsBuilder
 {
     public static final class Items
     {
-        public static final Tag.Named<Item> NECKLACE = curios("necklace");
-        public static final Tag.Named<Item> RING = curios("ring");
-        public static final Tag.Named<Item> BRACELET = curios("bracelet");
+        public static final TagKey<Item> NECKLACE = curios("necklace");
+        public static final TagKey<Item> RING = curios("ring");
+        public static final TagKey<Item> BRACELET = curios("bracelet");
 
-        public static final Tag.Named<Item> PIGLIN_LOVED = minecraft("piglin_loved");
+        public static final TagKey<Item> PIGLIN_LOVED = minecraft("piglin_loved");
 
-        private static Tag.Named<Item> curios(String path)
+        private static TagKey<Item> curios(String path)
         {
-            return ItemTags.bind(new ResourceLocation("curios", path).toString());
+            return ItemTags.create(new ResourceLocation("curios", path));
         }
 
-        private static Tag.Named<Item> minecraft(String path)
+        private static TagKey<Item> minecraft(String path)
         {
-            return ItemTags.bind(new ResourceLocation("minecraft", path).toString());
+            return ItemTags.create(new ResourceLocation("minecraft", path));
         }
     }
 }

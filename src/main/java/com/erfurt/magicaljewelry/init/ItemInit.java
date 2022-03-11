@@ -6,9 +6,9 @@ import com.erfurt.magicaljewelry.objects.items.JewelBraceletItem;
 import com.erfurt.magicaljewelry.objects.items.JewelRingItem;
 import com.erfurt.magicaljewelry.objects.items.TheOneRingItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @SuppressWarnings("unused")
 public class ItemInit

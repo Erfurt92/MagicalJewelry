@@ -6,6 +6,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import static com.erfurt.magicaljewelry.init.ItemInit.*;
+import static com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder.*;
 import static com.erfurt.magicaljewelry.util.enums.JewelRarity.*;
 
 public class ModLangProvider extends LanguageProvider
@@ -47,6 +48,29 @@ public class ModLangProvider extends LanguageProvider
         add(jewelTestLootCommand("config1"), "Config option %s is set to %s");
         add(jewelTestLootCommand("config2"), "Config option %s and %s are both set to %s");
         add(jewelTestLootCommand("failure"), "Loot Table '%s' is not valid for testing!");
+
+        add(translatable(UNCOMMON_AMOUNT), "Uncommon effect amount");
+        add(translatable(RARE_AMOUNT), "Rare effect amount");
+        add(translatable(EPIC_AMOUNT), "Epic effect amount");
+        add(translatable(LEGENDARY_AMOUNT), "Legendary effect amount");
+        add(translatable(MAX_EFFECT_LEVEL), "Max stacked effect level");
+        add(translatable(EPIC_LEGENDARY_ATTRIBUTES), "Epic and Legendary have attributes");
+        add(translatable(LEGENDARY_EFFECTS), "Legendary have special effects");
+        add(translatable(DURABILITY), "Jewels have durability");
+        add(translatable(UNCOMMON_DURABILITY), "Uncommon durability amount");
+        add(translatable(RARE_DURABILITY), "Rare durability amount");
+        add(translatable(EPIC_DURABILITY), "Epic durability amount");
+        add(translatable(RARITY_TOOLTIPS), "Rarity displayed in tooltip");
+        add(translatable(RARITY_NAME), "Rarity displayed in name");
+        add(translatable(EFFECT_ICON_DISABLED), "Effect icons are disabled");
+        add(translatable(RARE_DROP), "Rare rarity drop rate");
+        add(translatable(EPIC_DROP), "Epic rarity drop rate");
+        add(translatable(LEGENDARY_DROP), "Legendary rarity drop rate");
+        add(translatable(ONE_RARITY_DROP), "Only one rarity drops");
+        add(translatable(RARITY_TO_DROP), "What rarity should drop");
+        add(translatable(LEGENDARY_UPGRADE_ONLY), "Legendary rarity is upgrade only");
+        add(translatable(UPGRADE_DISABLE), "Upgrading is disabled");
+        add(translatable(DROP_IN_CHESTS), "Jewels in chests");
 
         add("itemGroup.magicaljewelryGroup", "Magical Jewelry");
     }

@@ -29,3 +29,9 @@ ${mod_description}
     versionRange="${mod_version_range}"
     ordering="NONE"
     side="BOTH"
+[[dependencies.magicaljewelry]]
+    modId="curios"
+    mandatory=true
+    versionRange="${version_range_curios}"
+    ordering="NONE"
+    side="BOTH"

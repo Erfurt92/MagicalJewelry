@@ -15,7 +15,7 @@ version = "${mod_version}"
 group = "${mod_group}"
 archivesBaseName = "${mod_id}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: 'official', version: "${version_mc}"
@@ -26,6 +26,9 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+			
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             mods {
                 magicaljewelry {
@@ -39,6 +42,9 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+			
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             mods {
                 magicaljewelry {
@@ -52,6 +58,9 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+			
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             args '--mod', 'magicaljewelry', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
@@ -126,7 +135,8 @@ def replaceResources = tasks.register("replaceResources", Copy) {
                 'mod_loader_version': mod_loader_version,
                 'mod_loader_version_range': mod_loader_version_range,
                 'mod_version_range': mod_version_range,
-                'mod_issue_url': mod_issue_url
+                'mod_issue_url': mod_issue_url,
+                'version_range_curios': version_range_curios
     }
     it.into "$buildDir/resources/main/"
 }
