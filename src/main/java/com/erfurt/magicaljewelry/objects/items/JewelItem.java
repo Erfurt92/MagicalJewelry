@@ -58,7 +58,7 @@ public class JewelItem extends Item implements IJewel
 
 	public JewelItem()
 	{
-		super(new Item.Properties().maxStackSize(1).group(MagicalJewelry.GROUP));
+		super(new Item.Properties().maxDamage(21600).group(MagicalJewelry.GROUP));
 	}
 
 	@Override
@@ -135,11 +135,7 @@ public class JewelItem extends Item implements IJewel
 			public void onEquip(SlotContext slotContext, ItemStack prevStack)
 			{
 				LivingEntity livingEntity = slotContext.getWearer();
-				if(stack.getItem() instanceof JewelItem)
-				{
-					getTotalJewelEffects(stack, livingEntity);
-					updateJewelEffects(stack, livingEntity, false);
-				}
+				if(stack.getItem() instanceof JewelItem) getTotalJewelEffects(stack, livingEntity);
 			}
 
 			@Override
@@ -206,26 +202,9 @@ public class JewelItem extends Item implements IJewel
 				for(int i = 0; i < totalJewelEffectsPlayer.get(player).size(); i++)
 				{
 					Effect effect = (Effect) totalJewelEffectsPlayer.get(player).keySet().toArray()[i];
-					int level = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
+					int levelValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[i] - 1;
 
-					int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
-
-					switch (maxLevel)
-					{
-						case 1:
-							level = 0;
-							break;
-						case 2:
-							if (level > 1) level = 1;
-							break;
-						case 3:
-							if (level > 2) level = 2;
-							break;
-					}
-
-					boolean legendaryFlag = legendaryEffectsList.contains(effect);
-
-					if(legendaryFlag) level = 0;
+					int level = maxLevelJewelEffect(levelValue, effect);
 
 					player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 
@@ -344,24 +323,65 @@ public class JewelItem extends Item implements IJewel
 						int newValue = (int) totalJewelEffectsPlayer.get(player).values().toArray()[k] + 1;
 						totalJewelEffectsPlayer.get(player).replace(effect, oldValue, newValue);
 
+						int level = maxLevelJewelEffect(newValue - 1, effect);
+
+						player.removePotionEffect(effect);
+						player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+
 						break;
 					}
 					else if(k == (length - 1))
 					{
 						totalJewelEffectsPlayer.get(player).put(effect, 1);
+
+						player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 					}
 				}
 			}
 			else
 			{
 				totalJewelEffectsPlayer.get(player).put(effect, 1);
+
+				player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 			}
 		}
 		else
 		{
 			totalJewelEffectsPlayer.put(player, new HashMap<>());
 			totalJewelEffectsPlayer.get(player).put(effect, 1);
+
+			player.addPotionEffect(new EffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 		}
+	}
+
+	/** This method is used to get the max allowed effect level
+	 *
+	 * @param levelIn Level In - level that needs to be compared to the max allowed level
+	 * @param effect Effect In - checks if the effect is legendary or normal
+	 * @return The max allowed level for the effect, if the level is smaller than the max, levelIn gets returned
+	 */
+	private int maxLevelJewelEffect(int levelIn, Effect effect)
+	{
+		int maxLevel = MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get();
+
+		switch(maxLevel)
+		{
+			case 1:
+				levelIn = 0;
+				break;
+			case 2:
+				if (levelIn > 1) levelIn = 1;
+				break;
+			case 3:
+				if (levelIn > 2) levelIn = 2;
+				break;
+		}
+
+		boolean legendaryFlag = legendaryEffectsList.contains(effect);
+
+		if(legendaryFlag) levelIn = 0;
+
+		return levelIn;
 	}
 
 	public void updateJewelAttributes(ItemStack stack, Multimap<Attribute, AttributeModifier> jewelAttributes)
@@ -386,7 +406,7 @@ public class JewelItem extends Item implements IJewel
 					break;
 				// KNOCKBACK RESISTANCE
 				case 4:
-					amount = 1.0D;
+					amount = 0.1D;
 					break;
 			}
 
