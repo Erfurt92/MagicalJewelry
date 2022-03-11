@@ -126,7 +126,8 @@ def replaceResources = tasks.register("replaceResources", Copy) {
                 'mod_loader_version': mod_loader_version,
                 'mod_loader_version_range': mod_loader_version_range,
                 'mod_version_range': mod_version_range,
-                'mod_issue_url': mod_issue_url
+                'mod_issue_url': mod_issue_url,
+                'version_range_curios': version_range_curios
     }
     it.into "$buildDir/resources/main/"
 }

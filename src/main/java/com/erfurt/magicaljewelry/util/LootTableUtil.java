@@ -20,7 +20,7 @@ public class LootTableUtil
         return ObfuscationReflectionHelper.getPrivateValue(LootTable.class, table, "f_79109_");
     }
 
-    private static List<LootItemCondition> getLootConditions(LootPool pool)
+    private static LootItemCondition[] getLootConditions(LootPool pool)
     {
         // public net.minecraft.world.level.storage.loot.LootPool f_79024_ # conditions
         return ObfuscationReflectionHelper.getPrivateValue(LootPool.class, pool, "f_79024_");
@@ -51,22 +51,20 @@ public class LootTableUtil
         LootTables manager = server.getLootTables();
         LootTable table = manager.get(resource);
 
-        getPools(table).forEach(
-                pool -> {
-                    final List<LootItemCondition> poolConditions = getLootConditions(pool);
-                    poolConditions.forEach(condition -> {
-                            if(condition instanceof LootItemRandomChanceCondition)
-                            {
-                                chance[0] = getLootItemRandomChanceConditionValue((LootItemRandomChanceCondition) condition);
-                            }
-                            else if(condition instanceof LootItemRandomChanceWithLootingCondition)
-                            {
-                                chance[0] = getLootItemRandomChanceWithLootingConditionValue((LootItemRandomChanceWithLootingCondition) condition);
-                            }
-                        }
-                    );
+        for(LootPool pool : getPools(table))
+        {
+            for(LootItemCondition condition : getLootConditions(pool))
+            {
+                if(condition instanceof LootItemRandomChanceCondition)
+                {
+                    chance[0] = getLootItemRandomChanceConditionValue((LootItemRandomChanceCondition) condition);
                 }
-        );
+                else if(condition instanceof LootItemRandomChanceWithLootingCondition)
+                {
+                    chance[0] = getLootItemRandomChanceWithLootingConditionValue((LootItemRandomChanceWithLootingCondition) condition);
+                }
+            }
+        }
 
         return chance[0];
     }
@@ -78,18 +76,16 @@ public class LootTableUtil
         LootTables manager = server.getLootTables();
         LootTable table = manager.get(resource);
 
-        getPools(table).forEach(
-                pool -> {
-                    final List<LootItemCondition> poolConditions = getLootConditions(pool);
-                    poolConditions.forEach(condition -> {
-                            if(condition instanceof LootItemRandomChanceWithLootingCondition)
-                            {
-                                lootingMultiplier[0] = getLootingMultiplierValue((LootItemRandomChanceWithLootingCondition) condition);
-                            }
-                        }
-                    );
+        for(LootPool pool : getPools(table))
+        {
+            for(LootItemCondition condition : getLootConditions(pool))
+            {
+                if(condition instanceof LootItemRandomChanceWithLootingCondition)
+                {
+                    lootingMultiplier[0] = getLootingMultiplierValue((LootItemRandomChanceWithLootingCondition) condition);
                 }
-        );
+            }
+        }
 
         return lootingMultiplier[0];
     }
