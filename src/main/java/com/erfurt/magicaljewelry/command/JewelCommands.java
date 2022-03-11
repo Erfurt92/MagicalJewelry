@@ -350,7 +350,7 @@ public final class JewelCommands implements IJewelNBTHandler
 
     private static String dropRateWithLootingPercent(float dropRate, float lootingMultiplier)
     {
-        if(dropRate<= 0.0F && lootingMultiplier <= 0.0F) return "0,0F";
+        if(dropRate <= 0.0F && lootingMultiplier <= 0.0F) return "0,0F";
         else if(dropRate < 0.0001F && dropRate != 0.0F && lootingMultiplier < 0.0001F && lootingMultiplier != 0.0F) return "<0,01%";
         else if(dropRate < 0.0001F && dropRate != 0.0F) return "~" + String.format("%.2f", (3 * lootingMultiplier) * 100) + "%";
         else if(lootingMultiplier < 0.0001F && lootingMultiplier != 0.0F) return "~" + String.format("%.2f", dropRate * 100) + "%";

@@ -3,7 +3,6 @@ package com.erfurt.magicaljewelry;
 import com.erfurt.magicaljewelry.command.JewelCommands;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
-import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
@@ -15,7 +14,6 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -27,6 +25,7 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -43,16 +42,21 @@ public class SideProxy
 
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, MagicalJewelryConfig.COMMON_CONFIG);
         modLoadingContext.registerConfig(ModConfig.Type.CLIENT, MagicalJewelryConfig.CLIENT_CONFIG);
-        IJewelEffects.init();
-        IJewelAttributes.init();
-        LootInit.init();
 
         ItemInit.ITEMS.register(modEventBus);
         LootInit.GLM.register(modEventBus);
 
         modEventBus.addGenericListener(GlobalLootModifierSerializer.class, SideProxy::lootModifierRegistries);
         MinecraftForge.EVENT_BUS.addListener(SideProxy::serverStarting);
+        modEventBus.addListener(SideProxy::init);
         modEventBus.addListener(SideProxy::enqueue);
+    }
+
+    public static void init(FMLCommonSetupEvent event)
+    {
+        IJewelEffects.init();
+        IJewelAttributes.init();
+        LootInit.init();
     }
 
     private static void enqueue(final InterModEnqueueEvent event)

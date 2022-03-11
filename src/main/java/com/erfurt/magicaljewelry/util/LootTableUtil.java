@@ -51,23 +51,20 @@ public class LootTableUtil
         LootTableManager manager = server.getLootTableManager();
         LootTable table = manager.getLootTableFromLocation(resource);
 
-        getPools(table).forEach(
-                pool -> {
-                    System.out.println(pool.getName());
-                    final List<ILootCondition> poolConditions = getLootConditions(pool);
-                    poolConditions.forEach(condition -> {
-                            if(condition instanceof RandomChance)
-                            {
-                                chance[0] = getRandomChanceValue((RandomChance) condition);
-                            }
-                            else if(condition instanceof RandomChanceWithLooting)
-                            {
-                                chance[0] = getRandomChanceWithLootingValue((RandomChanceWithLooting) condition);
-                            }
-                        }
-                    );
+        for(LootPool pool : getPools(table))
+        {
+            for(ILootCondition condition : getLootConditions(pool))
+            {
+                if(condition instanceof RandomChance)
+                {
+                    chance[0] = getRandomChanceValue((RandomChance) condition);
                 }
-        );
+                else if(condition instanceof RandomChanceWithLooting)
+                {
+                    chance[0] = getRandomChanceWithLootingValue((RandomChanceWithLooting) condition);
+                }
+            }
+        }
 
         return chance[0];
     }
@@ -79,18 +76,16 @@ public class LootTableUtil
         LootTableManager manager = server.getLootTableManager();
         LootTable table = manager.getLootTableFromLocation(resource);
 
-        getPools(table).forEach(
-                pool -> {
-                    final List<ILootCondition> poolConditions = getLootConditions(pool);
-                    poolConditions.forEach(condition -> {
-                            if(condition instanceof RandomChanceWithLooting)
-                            {
-                                lootingMultiplier[0] = getLootingMultiplierValue((RandomChanceWithLooting) condition);
-                            }
-                        }
-                    );
+        for(LootPool pool : getPools(table))
+        {
+            for(ILootCondition condition : getLootConditions(pool))
+            {
+                if(condition instanceof RandomChanceWithLooting)
+                {
+                    lootingMultiplier[0] = getLootingMultiplierValue((RandomChanceWithLooting) condition);
                 }
-        );
+            }
+        }
 
         return lootingMultiplier[0];
     }

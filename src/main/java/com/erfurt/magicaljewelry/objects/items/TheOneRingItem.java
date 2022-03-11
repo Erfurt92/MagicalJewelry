@@ -63,7 +63,7 @@ public class TheOneRingItem extends Item
                 Multimap<String, AttributeModifier> attributes = HashMultimap.create();
                 attributes.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(ARMOR_TOUGHNESS_UUID, "Armor Toughness bonus", 2.0D, AttributeModifier.Operation.ADDITION));
                 attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_UUID, "Attack Damage bonus", 2.0D, AttributeModifier.Operation.ADDITION));
-                attributes.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(KNOCKBACK_RESISTANCE_UUID, "Knockback Resistance bonus", 1.0D, AttributeModifier.Operation.ADDITION));
+                attributes.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(KNOCKBACK_RESISTANCE_UUID, "Knockback Resistance bonus", 0.1D, AttributeModifier.Operation.ADDITION));
                 return attributes;
             }
 

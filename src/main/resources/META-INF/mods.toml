@@ -1,8 +1,8 @@
 modLoader="javafml"
 
-loaderVersion="[31,)"
+loaderVersion="${mod_loader_version}"
 
-issueTrackerURL="https://github.com/Erfurt92/MagicalJewelry/issues"
+issueTrackerURL="${mod_issue_url}"
 logoFile="${mod_icon}"
 
 [[mods]]
@@ -18,12 +18,18 @@ ${mod_description}
 [[dependencies.magicaljewelry]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="${mod_loader_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.magicaljewelry]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="${mod_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.magicaljewelry]]
+    modId="curios"
+    mandatory=true
+    versionRange="${version_range_curios}"
     ordering="NONE"
     side="BOTH"
