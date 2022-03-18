@@ -1,6 +1,7 @@
 package com.erfurt.magicaljewelry.objects.items;
 
 import com.erfurt.magicaljewelry.capability.JewelItemCapability;
+import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -84,6 +85,14 @@ public class TheOneRingItem extends Item
             public boolean canEquipFromUse(SlotContext slotContext)
             {
                 return true;
+            }
+
+            @Override
+            public boolean makesPiglinsNeutral(SlotContext slotContext)
+            {
+                Item jewel = stack.getItem();
+                if(!MagicalJewelryConfigBuilder.JEWEL_GOLD_NEUTRAL_PIGLINS.get() && jewel instanceof TheOneRingItem) return false;
+                else return jewel == ItemInit.THE_ONE_RING.get();
             }
         });
     }

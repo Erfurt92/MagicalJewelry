@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.objects.items;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.capability.JewelItemCapability;
+import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.erfurt.magicaljewelry.util.interfaces.IJewel;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -122,6 +124,14 @@ public class JewelItem extends Item implements IJewel
 			{
 				return true;
 			}
+
+			@Override
+			public boolean makesPiglinsNeutral(SlotContext slotContext)
+			{
+				Item jewel = stack.getItem();
+				if(!MagicalJewelryConfigBuilder.JEWEL_GOLD_NEUTRAL_PIGLINS.get() && jewel instanceof JewelItem) return false;
+				else return jewel == ItemInit.GOLD_AMULET.get() || jewel == ItemInit.GOLD_BRACELET.get() || jewel == ItemInit.GOLD_RING.get();
+			}
 		});
 	}
 
@@ -198,8 +208,7 @@ public class JewelItem extends Item implements IJewel
 				}
 				else
 				{
-					boolean legendaryFlag = legendaryEffectsList.contains(effect);
-					if(!legendaryFlag)
+					if(!legendaryEffectFlag(effect))
 					{
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
@@ -328,16 +337,15 @@ public class JewelItem extends Item implements IJewel
 				levelIn = 0;
 				break;
 			case 2:
-				if (levelIn > 1) levelIn = 1;
+				if(levelIn > 1) levelIn = 1;
 				break;
 			case 3:
-				if (levelIn > 2) levelIn = 2;
+				if(levelIn > 1 && effect == MobEffects.REGENERATION) levelIn = 1;
+				else if(levelIn > 2) levelIn = 2;
 				break;
 		}
 
-		boolean legendaryFlag = legendaryEffectsList.contains(effect);
-
-		if(legendaryFlag) levelIn = 0;
+		if(legendaryEffectFlag(effect)) levelIn = 0;
 
 		return levelIn;
 	}
@@ -380,6 +388,14 @@ public class JewelItem extends Item implements IJewel
 	public boolean legendaryEffectsEnabled(ItemStack stack)
 	{
 		return (MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()));
+	}
+
+	public boolean legendaryEffectFlag(MobEffect effect)
+	{
+		boolean legendaryFlag;
+		if(!MagicalJewelryConfigBuilder.JEWEL_REGENERATION_COMBINABLE.get()) legendaryFlag = legendaryEffectsList.contains(effect);
+		else legendaryFlag = legendaryEffectsList.contains(effect) && effect != MobEffects.REGENERATION;
+		return legendaryFlag;
 	}
 
 	public int effectsLength(ItemStack stack)

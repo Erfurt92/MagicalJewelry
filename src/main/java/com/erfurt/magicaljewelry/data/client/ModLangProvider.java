@@ -56,6 +56,8 @@ public class ModLangProvider extends LanguageProvider
         add(translatable(MAX_EFFECT_LEVEL), "Max stacked effect level");
         add(translatable(EPIC_LEGENDARY_ATTRIBUTES), "Epic and Legendary have attributes");
         add(translatable(LEGENDARY_EFFECTS), "Legendary have special effects");
+        add(translatable(REGENERATION_COMBINABLE), "Regeneration is combinable");
+        add(translatable(GOLD_NEUTRAL_PIGLINS), "Gold jewels makes piglins neutral");
         add(translatable(DURABILITY), "Jewels have durability");
         add(translatable(UNCOMMON_DURABILITY), "Uncommon durability amount");
         add(translatable(RARE_DURABILITY), "Rare durability amount");

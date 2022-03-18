@@ -18,7 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class LootInit
 {
-	public static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MagicalJewelry.MOD_ID);
+	public static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MagicalJewelry.MOD_ID);
 
 	public static final RegistryObject<JewelModifier.Serializer> JEWEL_MODIFIER = GLM.register("jewel_modifier", JewelModifier.Serializer::new);
 
