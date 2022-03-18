@@ -20,6 +20,8 @@ public class MagicalJewelryConfigBuilder
 	public static String EPIC_LEGENDARY_ATTRIBUTES = "epicLegendaryAttributes";
 	public static ForgeConfigSpec.BooleanValue JEWEL_LEGENDARY_EFFECTS;
 	public static String LEGENDARY_EFFECTS = "legendaryEffects";
+	public static ForgeConfigSpec.BooleanValue JEWEL_REGENERATION_COMBINABLE;
+	public static String REGENERATION_COMBINABLE = "regenerationCombinable";
 	public static ForgeConfigSpec.BooleanValue JEWEL_DURABILITY;
 	public static String DURABILITY = "jewelDurability";
 	public static ForgeConfigSpec.IntValue JEWEL_UNCOMMON_DURABILITY;
@@ -60,7 +62,7 @@ public class MagicalJewelryConfigBuilder
 	{
 		CommonConfig(ForgeConfigSpec.Builder config_builder)
 		{
-			config_builder.comment("Misc Jewel Settings").push("effect_settings");
+			config_builder.comment("Effect Settings").push("effect_settings");
 			JEWEL_UNCOMMON_EFFECT_AMOUNT = config_builder.comment("Amount of effects for Uncommon rarity [default: 1]").translation(translatable(UNCOMMON_AMOUNT)).defineInRange(UNCOMMON_AMOUNT, 1, 0, 3);
 			JEWEL_RARE_EFFECT_AMOUNT = config_builder.comment("Amount of effects for Rare rarity [default: 2]").translation(translatable(RARE_AMOUNT)).defineInRange(RARE_AMOUNT, 2, 0, 4);
 			JEWEL_EPIC_EFFECT_AMOUNT = config_builder.comment("Amount of effects for Epic rarity [default: 2]").translation(translatable(EPIC_AMOUNT)).defineInRange(EPIC_AMOUNT, 2, 0, 5);
@@ -68,13 +70,14 @@ public class MagicalJewelryConfigBuilder
 			JEWEL_MAX_EFFECT_LEVEL = config_builder.comment("Max level for combined effects [default: 2]").translation(translatable(MAX_EFFECT_LEVEL)).defineInRange(MAX_EFFECT_LEVEL, 2, 1, 3);
 			JEWEL_ATTRIBUTES = config_builder.comment("Should Epic and Legendary rarity have attributes").translation(translatable(EPIC_LEGENDARY_ATTRIBUTES)).define(EPIC_LEGENDARY_ATTRIBUTES, true);
 			JEWEL_LEGENDARY_EFFECTS = config_builder.comment("Should Legendary rarity have special effects").translation(translatable(LEGENDARY_EFFECTS)).define(LEGENDARY_EFFECTS, true);
+			JEWEL_REGENERATION_COMBINABLE = config_builder.comment("Should Regeneration effect be combinable to level 2").translation(translatable(REGENERATION_COMBINABLE)).define(REGENERATION_COMBINABLE, false);
 			config_builder.pop();
 
-			config_builder.comment("Misc Jewel Settings").push("effect_icon_disabled");
+			config_builder.comment("Misc Jewel Settings").push("misc_jewel_settings");
 			JEWEL_EFFECT_ICON = config_builder.comment("Disable Effect Icons in the top right corner").translation(translatable(EFFECT_ICON_DISABLED)).define(EFFECT_ICON_DISABLED, false);
 			config_builder.pop();
 
-			config_builder.comment("Misc Jewel Settings").push("jewel_durability");
+			config_builder.comment("Durability Settings").push("jewel_durability");
 			JEWEL_DURABILITY = config_builder.comment("Should Jewels have durability, Legendary rarity is always unbreakable").translation(translatable(DURABILITY)).define(DURABILITY, true);
 			JEWEL_UNCOMMON_DURABILITY = config_builder.comment("Set the durability of Uncommon rarity [default: 7200]").translation(translatable(UNCOMMON_DURABILITY)).defineInRange(UNCOMMON_DURABILITY, 7200, 600, 21600);
 			JEWEL_RARE_DURABILITY = config_builder.comment("Set the durability of Rare rarity [default: 14400]").translation(translatable(RARE_DURABILITY)).defineInRange(RARE_DURABILITY, 14400, 600, 21600);
@@ -101,7 +104,7 @@ public class MagicalJewelryConfigBuilder
 	{
 		ClientConfig(ForgeConfigSpec.Builder config_builder)
 		{
-			config_builder.comment("Misc Jewel Settings").push("rarity_displayed");
+			config_builder.comment("Rarity Displayed Settings").push("rarity_displayed");
 			JEWEL_RARITY_TOOLTIP = config_builder.comment("Rarity is displayed in tooltips").translation(translatable(RARITY_TOOLTIPS)).define(RARITY_TOOLTIPS, true);
 			JEWEL_RARITY_NAME = config_builder.comment("Rarity is displayed in the name").translation(translatable(RARITY_NAME)).define(RARITY_NAME, true);
 			config_builder.pop();
