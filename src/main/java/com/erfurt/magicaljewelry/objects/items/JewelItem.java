@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -240,8 +241,7 @@ public class JewelItem extends Item implements IJewel
 				}
 				else
 				{
-					boolean legendaryFlag = legendaryEffectsList.contains(effect);
-					if(!legendaryFlag)
+					if(!legendaryEffectFlag(effect))
 					{
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
@@ -370,16 +370,15 @@ public class JewelItem extends Item implements IJewel
 				levelIn = 0;
 				break;
 			case 2:
-				if (levelIn > 1) levelIn = 1;
+				if(levelIn > 1) levelIn = 1;
 				break;
 			case 3:
-				if (levelIn > 2) levelIn = 2;
+				if(levelIn > 1 && effect == Effects.REGENERATION) levelIn = 1;
+				else if(levelIn > 2) levelIn = 2;
 				break;
 		}
 
-		boolean legendaryFlag = legendaryEffectsList.contains(effect);
-
-		if(legendaryFlag) levelIn = 0;
+		if(legendaryEffectFlag(effect)) levelIn = 0;
 
 		return levelIn;
 	}
@@ -422,6 +421,14 @@ public class JewelItem extends Item implements IJewel
 	public boolean legendaryEffectsEnabled(ItemStack stack)
 	{
 		return (MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_EFFECTS.get() && getJewelRarity(stack).equals(JewelRarity.LEGENDARY.getName()));
+	}
+
+	public boolean legendaryEffectFlag(Effect effect)
+	{
+		boolean legendaryFlag;
+		if(!MagicalJewelryConfigBuilder.JEWEL_REGENERATION_COMBINABLE.get()) legendaryFlag = legendaryEffectsList.contains(effect);
+		else legendaryFlag = legendaryEffectsList.contains(effect) && effect != Effects.REGENERATION;
+		return legendaryFlag;
 	}
 
 	public int effectsLength(ItemStack stack)
