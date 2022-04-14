@@ -2,6 +2,7 @@ package com.erfurt.magicaljewelry.util.interfaces;
 
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effects;
 
@@ -15,9 +16,12 @@ public interface IJewelRarity
 	int epicLuckIncrease = 2;
 	int rareLuckIncrease = 1;
 
-	static String getRarity(LivingEntity livingEntity)
+	static String getRarity(Entity entity)
 	{
 		String rarity;
+
+		LivingEntity livingEntity = null;
+		if(entity instanceof LivingEntity) livingEntity = (LivingEntity) entity;
 
 		if(!MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
 		{
@@ -61,9 +65,12 @@ public interface IJewelRarity
 		return rarity;
 	}
 
-	static String getRarityBoss(LivingEntity livingEntity)
+	static String getRarityBoss(Entity entity)
 	{
 		String rarity;
+
+		LivingEntity livingEntity = null;
+		if(entity instanceof LivingEntity) livingEntity = (LivingEntity) entity;
 
 		if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get()) rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get().getName();
 		else

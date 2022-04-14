@@ -7,7 +7,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootContext;
@@ -28,7 +27,7 @@ public class SetJewelNBTFunction extends LootFunction implements IJewelNBTHandle
 	public ItemStack doApply(ItemStack stack, LootContext context)
 	{
         Entity entity = context.get(LootParameters.KILLER_ENTITY);
-        rarityID = IJewelRarity.getRarity((LivingEntity) entity);
+        rarityID = IJewelRarity.getRarity(entity);
 
 		IJewelNBTHandler.setJewelNBTData(stack, rarityID);
 
