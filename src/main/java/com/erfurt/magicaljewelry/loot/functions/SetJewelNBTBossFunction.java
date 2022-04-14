@@ -30,7 +30,7 @@ public class SetJewelNBTBossFunction extends LootItemConditionalFunction impleme
 	public ItemStack run(ItemStack stack, LootContext context)
 	{
 		Entity entity = context.getParamOrNull(LootContextParams.KILLER_ENTITY);
-		rarityID = IJewelRarity.getRarityBoss((LivingEntity) entity);
+		rarityID = IJewelRarity.getRarityBoss(entity);
 
 		IJewelNBTHandler.setJewelNBTData(stack, rarityID);
 
