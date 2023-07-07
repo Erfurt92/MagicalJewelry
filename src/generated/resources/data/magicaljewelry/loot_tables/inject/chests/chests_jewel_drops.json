@@ -46,6 +46,24 @@
       ],
       "name": "magicaljewelry_jewel_chests",
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.05,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "magicaljewelry:jewel_upgrade_smithing_template"
+        }
+      ],
+      "name": "magicaljewelry_jewel_template_chest",
+      "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:inject/chests/chests_jewel_drops"
 }

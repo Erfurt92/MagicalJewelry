@@ -15,5 +15,8 @@
     "nbt": {
       "Rarity": "epic"
     }
+  },
+  "template": {
+    "item": "magicaljewelry:jewel_upgrade_smithing_template"
   }
 }

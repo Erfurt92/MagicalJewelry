@@ -52,7 +52,7 @@ public class SideProxy
         RecipeInit.SERIALIZERS.register(modEventBus);
         CraftingHelper.register(getId("upgrade"), UpgradeNBTIngredient.Serializer.INSTANCE);
 
-        modEventBus.addListener(CreativeTabInit::registerCreativeModeTabs);
+        CreativeTabInit.TABS.register(modEventBus);
         modEventBus.addListener(CreativeTabInit::addCreative);
 
         MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);

@@ -34,6 +34,12 @@ public class ModLangProvider extends LanguageProvider
         add(rarity(EPIC), "Epic");
         add(rarity(LEGENDARY), "Legendary");
 
+        add("upgrade.magicaljewelry.jewel_upgrade", "Jewel Upgrade");
+        add("item.magicaljewelry.smithing_template.jewel_upgrade.additions_slot_description", "Add ingot or block");
+        add("item.magicaljewelry.smithing_template.jewel_upgrade.applies_to", "Jewelry");
+        add("item.magicaljewelry.smithing_template.jewel_upgrade.base_slot_description", "Add amulet, bracelet, or ring");
+        add("item.magicaljewelry.smithing_template.jewel_upgrade.ingredients", "Block of Diamond, Netherite Ingot & Block of Netherite");
+
         add(jewelGiveFailureCommand("exist"), "Item '%s' does not exist?");
         add(jewelGiveFailureCommand("item"), "Item '%s' is not valid!");
         add(jewelGiveFailureCommand("rarity"), "Rarity '%s' is not valid!");

@@ -2,9 +2,9 @@ package com.erfurt.magicaljewelry.util;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
@@ -48,8 +48,8 @@ public class LootTableUtil
     {
         final float[] chance = {-0.1F};
 
-        LootTables manager = server.getLootTables();
-        LootTable table = manager.get(resource);
+        LootDataManager manager = server.getLootData();
+        LootTable table = manager.getLootTable(resource);
 
         for(LootPool pool : getPools(table))
         {
@@ -73,8 +73,8 @@ public class LootTableUtil
     {
         final float[] lootingMultiplier = {-0.1F};
 
-        LootTables manager = server.getLootTables();
-        LootTable table = manager.get(resource);
+        LootDataManager manager = server.getLootData();
+        LootTable table = manager.getLootTable(resource);
 
         for(LootPool pool : getPools(table))
         {

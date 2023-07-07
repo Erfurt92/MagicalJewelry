@@ -20,22 +20,24 @@ public class JewelUpgradeRecipeBuilder
 {
     private final Item addition;
     private final Item jewel;
+    private final Item template;
     private final String rarityIn;
     private final String rarityOut;
     private final RecipeSerializer<?> serializer;
 
-    public JewelUpgradeRecipeBuilder(RecipeSerializer<?> serializer, Item addition, Item jewel, String rarityIn, String rarityOut)
+    public JewelUpgradeRecipeBuilder(RecipeSerializer<?> serializer, Item template, Item addition, Item jewel, String rarityIn, String rarityOut)
     {
         this.serializer = serializer;
         this.addition = addition;
         this.jewel = jewel;
+        this.template = template;
         this.rarityIn = rarityIn;
         this.rarityOut = rarityOut;
     }
 
-    public static JewelUpgradeRecipeBuilder jewelUpgradeRecipe(Item jewel, Item addition, String rarityIn, String rarityOut)
+    public static JewelUpgradeRecipeBuilder jewelUpgradeRecipe(Item template, Item jewel, Item addition, String rarityIn, String rarityOut)
     {
-        return new JewelUpgradeRecipeBuilder(JewelUpgradeRecipe.Serializer.SERIALIZER, addition, jewel, rarityIn, rarityOut);
+        return new JewelUpgradeRecipeBuilder(JewelUpgradeRecipe.Serializer.SERIALIZER, template, addition, jewel, rarityIn, rarityOut);
     }
 
     public void build(Consumer<FinishedRecipe> consumer, String id)
@@ -45,7 +47,7 @@ public class JewelUpgradeRecipeBuilder
 
     public void build(Consumer<FinishedRecipe> recipe, ResourceLocation id)
     {
-        recipe.accept(new JewelUpgradeRecipeBuilder.Result(id, this.serializer, this.addition, this.jewel, this.rarityIn, this.rarityOut));
+        recipe.accept(new JewelUpgradeRecipeBuilder.Result(id, this.serializer, this.template, this.addition, this.jewel, this.rarityIn, this.rarityOut));
     }
 
     public static class Result implements FinishedRecipe
@@ -53,16 +55,18 @@ public class JewelUpgradeRecipeBuilder
         private final ResourceLocation id;
         private final Ingredient addition;
         private final Item jewel;
+        private final Ingredient template;
         private final String rarityIn;
         private final String rarityOut;
         private final RecipeSerializer<?> serializer;
 
-        public Result(ResourceLocation id, RecipeSerializer<?> serializer, Item addition, Item jewel, String rarityIn, String rarityOut)
+        public Result(ResourceLocation id, RecipeSerializer<?> serializer, Item template, Item addition, Item jewel, String rarityIn, String rarityOut)
         {
             this.id = id;
             this.serializer = serializer;
             this.addition = Ingredient.of(addition);
-            this.jewel = jewel;;
+            this.jewel = jewel;
+            this.template = Ingredient.of(template);
             this.rarityIn = rarityIn;
             this.rarityOut = rarityOut;
         }
@@ -77,6 +81,7 @@ public class JewelUpgradeRecipeBuilder
             jsonBase.add("nbt", jsonNBTin);
             json.add("base", jsonBase);
 
+            json.add("template", this.template.toJson());
             json.add("addition", this.addition.toJson());
 
             JsonObject jsonResult = new JsonObject();

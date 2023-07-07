@@ -30,6 +30,15 @@ public interface IModLootTablesHelper
                 .apply(function);
     }
 
+    default LootPool.Builder jewelChestLootTable(String type)
+    {
+        return LootPool.lootPool()
+                .name(poolName + type)
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(ItemInit.JEWEL_UPGRADE_SMITHING_TEMPLATE.get())
+                        .setWeight(1));
+    }
+
     default LootPool.Builder jewelWaterLootTable(String type)
     {
         return LootPool.lootPool()

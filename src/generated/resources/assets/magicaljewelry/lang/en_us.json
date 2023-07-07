@@ -42,11 +42,16 @@
   "item.magicaljewelry.silver_amulet": "Silver Amulet",
   "item.magicaljewelry.silver_bracelet": "Silver Bracelet",
   "item.magicaljewelry.silver_ring": "Silver Ring",
+  "item.magicaljewelry.smithing_template.jewel_upgrade.additions_slot_description": "Add ingot or block",
+  "item.magicaljewelry.smithing_template.jewel_upgrade.applies_to": "Jewelry",
+  "item.magicaljewelry.smithing_template.jewel_upgrade.base_slot_description": "Add amulet, bracelet, or ring",
+  "item.magicaljewelry.smithing_template.jewel_upgrade.ingredients": "Block of Diamond, Netherite Ingot & Block of Netherite",
   "item.magicaljewelry.the_one_ring": "The One Ring",
   "item.magicaljewelry.tooltip.creative": "This item have no effects or attributes attached to it, and therefore does nothing! This item can't be upgraded!",
   "itemGroup.magicaljewelry_group": "Magical Jewelry",
   "rarity.magicaljewelry.epic": "Epic",
   "rarity.magicaljewelry.legendary": "Legendary",
   "rarity.magicaljewelry.rare": "Rare",
-  "rarity.magicaljewelry.uncommon": "Uncommon"
+  "rarity.magicaljewelry.uncommon": "Uncommon",
+  "upgrade.magicaljewelry.jewel_upgrade": "Jewel Upgrade"
 }

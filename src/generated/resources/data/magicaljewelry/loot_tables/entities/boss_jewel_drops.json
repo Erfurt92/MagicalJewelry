@@ -51,5 +51,6 @@
       "name": "magicaljewelry_jewel_boss",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:entities/boss_jewel_drops"
 }

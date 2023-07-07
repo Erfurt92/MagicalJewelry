@@ -1,10 +1,7 @@
 package com.erfurt.magicaljewelry.init;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
-import com.erfurt.magicaljewelry.objects.items.JewelAmuletItem;
-import com.erfurt.magicaljewelry.objects.items.JewelBraceletItem;
-import com.erfurt.magicaljewelry.objects.items.JewelRingItem;
-import com.erfurt.magicaljewelry.objects.items.TheOneRingItem;
+import com.erfurt.magicaljewelry.objects.items.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,4 +19,6 @@ public class ItemInit
 	public static final RegistryObject<Item> GOLD_BRACELET = ITEMS.register("gold_bracelet", JewelBraceletItem::new);
 	public static final RegistryObject<Item> SILVER_BRACELET = ITEMS.register("silver_bracelet", JewelBraceletItem::new);
 	public static final RegistryObject<Item> THE_ONE_RING = ITEMS.register("the_one_ring", TheOneRingItem::new);
+
+	public static final RegistryObject<Item> JEWEL_UPGRADE_SMITHING_TEMPLATE = ITEMS.register("jewel_upgrade_smithing_template", JewelSmithingTemplate::createJewelUpgradeTemplate);
 }

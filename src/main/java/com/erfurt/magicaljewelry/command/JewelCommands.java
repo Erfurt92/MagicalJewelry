@@ -163,7 +163,7 @@ public final class JewelCommands implements IJewelNBTHandler
                     entityItem.makeFakeItem();
                 }
 
-                player.level.playSound(
+                player.level().playSound(
                         null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
                         0.2F,
@@ -185,11 +185,11 @@ public final class JewelCommands implements IJewelNBTHandler
 
         if(targets.size() == 1)
         {
-            source.sendSuccess(Component.translatable("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendSuccess(Component.translatable("commands.give.success.single", 1, itemText, targets.size()), true);
+            source.sendSuccess(() -> Component.translatable("commands.give.success.single", 1, itemText, targets.size()), true);
         }
 
         return targets.size();
@@ -273,18 +273,18 @@ public final class JewelCommands implements IJewelNBTHandler
         {
             if(lootTable.equals(hostileLootDrop))
             {
-                source.sendSuccess(hostile, true);
+                source.sendSuccess(() -> hostile, true);
                 chestDropRatePercent = null;
             }
             else if(lootTable.equals(chestLootDrop))
             {
-                source.sendSuccess(chest, true);
+                source.sendSuccess(() -> chest, true);
                 hostileDropRatePercent = null;
                 hostileDropRateLooting = null;
             }
             else
             {
-                source.sendSuccess(chestHostile, true);
+                source.sendSuccess(() -> chestHostile, true);
                 if(!MagicalJewelryConfigBuilder.JEWELS_IN_CHESTS.get())
                 {
                     chestDropRatePercent = chestDisable;
@@ -293,7 +293,7 @@ public final class JewelCommands implements IJewelNBTHandler
 
             if(lootTable.equals(chestLootDrop) && !MagicalJewelryConfigBuilder.JEWELS_IN_CHESTS.get())
             {
-                source.sendSuccess(chestDisable, false);
+                source.sendSuccess(() -> chestDisable, false);
             }
             else if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
@@ -310,7 +310,7 @@ public final class JewelCommands implements IJewelNBTHandler
         }
         if(lootTable.equals(bossLootDrop) || lootTable.equals(allLootTables))
         {
-            source.sendSuccess(boss, true);
+            source.sendSuccess(() -> boss, true);
 
             if(MagicalJewelryConfigBuilder.JEWEL_ONE_RARITY_DROP.get())
             {
@@ -318,23 +318,35 @@ public final class JewelCommands implements IJewelNBTHandler
             }
             else if(MagicalJewelryConfigBuilder.JEWEL_LEGENDARY_UPGRADE_ONLY.get())
             {
-                source.sendSuccess(legendaryUpgradeOnly, false);
-                if(bossDropRatePercent != null) source.sendSuccess(bossDropRatePercent, false);
-                if(bossDropRateLooting != null) source.sendSuccess(bossDropRateLooting, false);
-                source.sendSuccess(oneRarity(EPIC), false);
+                source.sendSuccess(() -> legendaryUpgradeOnly, false);
+                if(bossDropRatePercent != null) {
+                    MutableComponent finalBossDropRatePercent = bossDropRatePercent;
+                    source.sendSuccess(() -> finalBossDropRatePercent, false);
+                }
+                if(bossDropRateLooting != null) {
+                    MutableComponent finalBossDropRateLooting = bossDropRateLooting;
+                    source.sendSuccess(() -> finalBossDropRateLooting, false);
+                }
+                source.sendSuccess(() -> oneRarity(EPIC), false);
             }
             else
             {
-                source.sendSuccess(bothConfigOptions, false);
-                if(bossDropRatePercent != null) source.sendSuccess(bossDropRatePercent, false);
-                if(bossDropRateLooting != null) source.sendSuccess(bossDropRateLooting, false);
+                source.sendSuccess(() -> bothConfigOptions, false);
+                if(bossDropRatePercent != null) {
+                    MutableComponent finalBossDropRatePercent1 = bossDropRatePercent;
+                    source.sendSuccess(() -> finalBossDropRatePercent1, false);
+                }
+                if(bossDropRateLooting != null) {
+                    MutableComponent finalBossDropRateLooting1 = bossDropRateLooting;
+                    source.sendSuccess(() -> finalBossDropRateLooting1, false);
+                }
 
                 float totalDropRate = legendaryRate + epicRate;
                 float legendaryDropRate = legendaryRate / totalDropRate * 100;
                 float epicDropRate = epicRate / totalDropRate * 100;
 
-                source.sendSuccess(Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).withStyle(LEGENDARY.getFormat()), false);
-                source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
+                source.sendSuccess(() -> Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).withStyle(LEGENDARY.getFormat()), false);
+                source.sendSuccess(() -> Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
             }
         }
 
@@ -343,12 +355,12 @@ public final class JewelCommands implements IJewelNBTHandler
 
     private static void oneRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent oneRarityDrop)
     {
-        source.sendSuccess(oneRarityDrop, false);
-        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
+        source.sendSuccess(() -> oneRarityDrop, false);
+        if(chestDropRatePercent != null) source.sendSuccess(() -> chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(() -> dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(() -> dropRateLooting, false);
         JewelRarity rarity = MagicalJewelryConfigBuilder.JEWEL_RARITY_TO_DROP.get();
-        source.sendSuccess(oneRarity(rarity), false);
+        source.sendSuccess(() -> oneRarity(rarity), false);
     }
 
     private static void legendaryUpgradeRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent legendaryUpgradeOnly, float legendaryRate, float epicRate, float rareRate)
@@ -358,25 +370,25 @@ public final class JewelCommands implements IJewelNBTHandler
         float rareDropRate = rareRate / totalDropRate * 100;
         float uncommonDropRate = 100 - epicDropRate - rareDropRate;
 
-        source.sendSuccess(legendaryUpgradeOnly, false);
-        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
-        source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
-        source.sendSuccess(Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).withStyle(RARE.getFormat()), false);
-        source.sendSuccess(Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(() -> legendaryUpgradeOnly, false);
+        if(chestDropRatePercent != null) source.sendSuccess(() -> chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(() -> dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(() -> dropRateLooting, false);
+        source.sendSuccess(() -> Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(() -> Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(() -> Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
     private static void defaultRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
     {
-        source.sendSuccess(bothConfigOptions, false);
-        if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
-        if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
-        if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
-        source.sendSuccess(Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).withStyle(LEGENDARY.getFormat()), false);
-        source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).withStyle(EPIC.getFormat()), false);
-        source.sendSuccess(Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).withStyle(RARE.getFormat()), false);
-        source.sendSuccess(Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(() -> bothConfigOptions, false);
+        if(chestDropRatePercent != null) source.sendSuccess(() -> chestDropRatePercent, false);
+        if(dropRatePercent != null) source.sendSuccess(() -> dropRatePercent, false);
+        if(dropRateLooting != null) source.sendSuccess(() -> dropRateLooting, false);
+        source.sendSuccess(() -> Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).withStyle(LEGENDARY.getFormat()), false);
+        source.sendSuccess(() -> Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(() -> Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(() -> Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
     private static String dropRateWithLootingPercent(float dropRate, float lootingMultiplier)

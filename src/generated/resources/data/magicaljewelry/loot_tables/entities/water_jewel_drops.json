@@ -22,5 +22,6 @@
       "name": "magicaljewelry_jewel_water",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:entities/water_jewel_drops"
 }

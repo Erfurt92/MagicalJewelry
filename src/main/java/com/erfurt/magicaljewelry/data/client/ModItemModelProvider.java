@@ -28,10 +28,16 @@ public class ModItemModelProvider extends ItemModelProvider
         jewelItem(itemGenerated, ItemInit.SILVER_BRACELET.get().toString(), "bracelet");
 
         getBuilder(ItemInit.THE_ONE_RING.get().toString()).parent(itemGenerated).texture("layer0", "item/gold_ring");
+        addItem(itemGenerated, ItemInit.JEWEL_UPGRADE_SMITHING_TEMPLATE.get().toString());
     }
 
     private ItemModelBuilder jewelItem(ModelFile itemGenerated, String name, String jewelType)
     {
         return getBuilder(name).parent(itemGenerated).texture("layer0", "item/gem_" + jewelType).texture("layer1", "item/" + name);
+    }
+
+    private ItemModelBuilder addItem(ModelFile itemGenerated, String name)
+    {
+        return getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
     }
 }

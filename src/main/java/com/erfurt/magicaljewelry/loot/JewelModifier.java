@@ -13,7 +13,6 @@ import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class JewelModifier extends LootModifier
@@ -38,9 +37,8 @@ public class JewelModifier extends LootModifier
         if(doubleEntryPrevention) return generatedLoot;
 
         doubleEntryPrevention = true;
-        LootTable lootTable = context.getLootTable(this.lootTable);
-        List<ItemStack> loot = lootTable.getRandomItems(context);
-        generatedLoot.addAll(loot);
+        LootTable lootTable = context.getResolver().getLootTable(this.lootTable);
+        lootTable.getRandomItems(context, generatedLoot::add);
         doubleEntryPrevention = false;
 
         return generatedLoot;

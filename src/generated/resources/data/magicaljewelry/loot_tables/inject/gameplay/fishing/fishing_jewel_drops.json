@@ -18,5 +18,6 @@
       "name": "magicaljewelry_jewel_fishing_treasure",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:inject/gameplay/fishing/fishing_jewel_drops"
 }

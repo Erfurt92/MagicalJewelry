@@ -72,5 +72,6 @@
       "name": "magicaljewelry_jewel_water_hostile2",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:entities/water_hostile_jewel_drops"
 }

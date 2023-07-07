@@ -1,5 +1,6 @@
 package com.erfurt.magicaljewelry.data.tags;
 
+import com.erfurt.magicaljewelry.MagicalJewelry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;

@@ -51,5 +51,6 @@
       "name": "magicaljewelry_jewel_hostile",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "magicaljewelry:entities/hostile_jewel_drops"
 }

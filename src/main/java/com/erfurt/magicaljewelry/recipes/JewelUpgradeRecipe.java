@@ -15,18 +15,18 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-@SuppressWarnings("removal")
-public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Container>
+public class JewelUpgradeRecipe implements SmithingRecipe
 {
+    private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
     private final ItemStack result;
     private final ResourceLocation recipeId;
 
-    public JewelUpgradeRecipe(ResourceLocation recipeId, Ingredient base, Ingredient addition, ItemStack result)
+    public JewelUpgradeRecipe(ResourceLocation recipeId, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
     {
-        super(recipeId, base, addition, result);
         this.recipeId = recipeId;
+        this.template = template;
         this.base = base;
         this.addition = addition;
         this.result = result;
@@ -38,14 +38,14 @@ public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Co
     @Override
     public boolean matches(Container inv, Level worldIn)
     {
-        ItemStack stackIn = inv.getItem(0);
+        ItemStack stackIn = inv.getItem(1);
         ItemStack stackOut = this.result.copy();
         boolean rarityInCheck = false;
         if(stackIn.getItem() instanceof JewelItem) rarityInCheck = JewelRarity.containsRarity(JewelItem.getJewelRarity(stackIn));
         boolean rarityOutCheck = false;
         if(stackOut.getItem() instanceof JewelItem) rarityOutCheck = JewelRarity.containsRarity(JewelItem.getJewelRarity(stackOut));
         boolean upgradeEnabled = MagicalJewelryConfigBuilder.JEWEL_UPGRADE_DISABLE.get();
-        return this.base.test(stackIn) && this.addition.test(inv.getItem(1)) && rarityInCheck && rarityOutCheck && !upgradeEnabled;
+        return this.template.test(inv.getItem(0)) && this.base.test(stackIn) && this.addition.test(inv.getItem(2)) && rarityInCheck && rarityOutCheck && !upgradeEnabled;
     }
 
     /**
@@ -55,7 +55,7 @@ public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Co
     public ItemStack assemble(Container inv, RegistryAccess p_267165_)
     {
         ItemStack stackOut = this.result.copy();
-        ItemStack stackIn = inv.getItem(0);
+        ItemStack stackIn = inv.getItem(1);
         if(stackIn.hasTag() && stackOut.hasTag())
         {
             String rarityOut = stackOut.getTag().get(JewelItem.NBT_RARITY).getAsString();
@@ -88,6 +88,21 @@ public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Co
         return this.result;
     }
 
+    public boolean isTemplateIngredient(ItemStack stack)
+    {
+        return this.template.test(stack);
+    }
+
+    public boolean isBaseIngredient(ItemStack stack)
+    {
+        return this.base.test(stack);
+    }
+
+    public boolean isAdditionIngredient(ItemStack stack)
+    {
+        return this.addition.test(stack);
+    }
+
     @Override
     public ItemStack getToastSymbol()
     {
@@ -118,22 +133,25 @@ public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Co
 
         public JewelUpgradeRecipe fromJson(ResourceLocation recipeId, JsonObject json)
         {
-            Ingredient ingredient = UpgradeNBTIngredient.fromJson(GsonHelper.getAsJsonObject(json, "base"));
-            Ingredient ingredient1 = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "addition"));
+            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "template"));
+            Ingredient ingredient1 = UpgradeNBTIngredient.fromJson(GsonHelper.getAsJsonObject(json, "base"));
+            Ingredient ingredient2 = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "addition"));
             ItemStack stackOut = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, stackOut);
+            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, ingredient2, stackOut);
         }
 
         public JewelUpgradeRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
-            Ingredient ingredient = UpgradeNBTIngredient.fromNetwork(buffer);
-            Ingredient ingredient1 = Ingredient.fromNetwork(buffer);
+            Ingredient ingredient = Ingredient.fromNetwork(buffer);
+            Ingredient ingredient1 = UpgradeNBTIngredient.fromNetwork(buffer);
+            Ingredient ingredient2 = Ingredient.fromNetwork(buffer);
             ItemStack stackOut = buffer.readItem();
-            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, stackOut);
+            return new JewelUpgradeRecipe(recipeId, ingredient, ingredient1, ingredient2, stackOut);
         }
 
         public void toNetwork(FriendlyByteBuf buffer, JewelUpgradeRecipe recipe)
         {
+            recipe.template.toNetwork(buffer);
             recipe.base.toNetwork(buffer);
             recipe.addition.toNetwork(buffer);
             buffer.writeItem(recipe.result);

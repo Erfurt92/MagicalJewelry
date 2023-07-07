@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 public class ModChestLootTablesBuilder extends VanillaChestLoot implements IModLootTablesHelper
 {
     public static float chestDropRate = 0.01F;
+    public static float templateDropRate = 0.05F;
 
     public static String chestLootTable = "chests_jewel_drops";
 
@@ -20,6 +21,8 @@ public class ModChestLootTablesBuilder extends VanillaChestLoot implements IModL
     {
         builder.accept(MagicalJewelry.getId("inject/chests/" + chestLootTable), LootTable.lootTable()
                 .withPool(jewelDefaultLootTable("chests", SetJewelNBTFunction.builder())
-                        .when(LootItemRandomChanceCondition.randomChance(chestDropRate))));
+                        .when(LootItemRandomChanceCondition.randomChance(chestDropRate)))
+                .withPool(jewelChestLootTable("template_chest")
+                        .when(LootItemRandomChanceCondition.randomChance(templateDropRate))));
     }
 }
