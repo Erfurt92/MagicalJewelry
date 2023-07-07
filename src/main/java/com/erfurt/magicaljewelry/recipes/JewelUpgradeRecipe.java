@@ -1,10 +1,10 @@
 package com.erfurt.magicaljewelry.recipes;
 
-import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.objects.items.JewelItem;
 import com.erfurt.magicaljewelry.util.config.MagicalJewelryConfigBuilder;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -14,9 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class JewelUpgradeRecipe extends UpgradeRecipe implements Recipe<Container>
+@SuppressWarnings("removal")
+public class JewelUpgradeRecipe extends LegacyUpgradeRecipe implements Recipe<Container>
 {
     private final Ingredient base;
     private final Ingredient addition;
@@ -52,7 +52,7 @@ public class JewelUpgradeRecipe extends UpgradeRecipe implements Recipe<Containe
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(Container inv)
+    public ItemStack assemble(Container inv, RegistryAccess p_267165_)
     {
         ItemStack stackOut = this.result.copy();
         ItemStack stackIn = inv.getItem(0);
@@ -83,7 +83,7 @@ public class JewelUpgradeRecipe extends UpgradeRecipe implements Recipe<Containe
      * possible result (e.g. it's dynamic and depends on its inputs), then return an empty stack.
      */
     @Override
-    public ItemStack getResultItem()
+    public ItemStack getResultItem(RegistryAccess p_267165_)
     {
         return this.result;
     }
@@ -112,14 +112,9 @@ public class JewelUpgradeRecipe extends UpgradeRecipe implements Recipe<Containe
         return RecipeType.SMITHING;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<JewelUpgradeRecipe>
+    public static class Serializer implements RecipeSerializer<JewelUpgradeRecipe>
     {
         public static final Serializer SERIALIZER = new Serializer();
-
-        static
-        {
-            SERIALIZER.setRegistryName(MagicalJewelry.getId("jewel_upgrade"));
-        }
 
         public JewelUpgradeRecipe fromJson(ResourceLocation recipeId, JsonObject json)
         {

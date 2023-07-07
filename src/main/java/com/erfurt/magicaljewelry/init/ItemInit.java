@@ -21,6 +21,5 @@ public class ItemInit
 	public static final RegistryObject<Item> SILVER_RING = ITEMS.register("silver_ring", JewelRingItem::new);
 	public static final RegistryObject<Item> GOLD_BRACELET = ITEMS.register("gold_bracelet", JewelBraceletItem::new);
 	public static final RegistryObject<Item> SILVER_BRACELET = ITEMS.register("silver_bracelet", JewelBraceletItem::new);
-
 	public static final RegistryObject<Item> THE_ONE_RING = ITEMS.register("the_one_ring", TheOneRingItem::new);
 }

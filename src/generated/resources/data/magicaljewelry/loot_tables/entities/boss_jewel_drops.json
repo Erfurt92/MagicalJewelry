@@ -2,9 +2,17 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "name": "magicaljewelry_jewel_boss",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "chance": 0.25,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -16,40 +24,32 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:gold_ring"
+          "name": "magicaljewelry:gold_ring",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:silver_ring"
+          "name": "magicaljewelry:silver_ring",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:gold_bracelet"
+          "name": "magicaljewelry:gold_bracelet",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:silver_bracelet"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        },
-        {
-          "condition": "minecraft:random_chance_with_looting",
-          "chance": 0.25,
-          "looting_multiplier": 0.01
+          "name": "magicaljewelry:silver_bracelet",
+          "weight": 2
         }
       ],
       "functions": [
         {
           "function": "magicaljewelry:set_jewel_nbt_boss"
         }
-      ]
+      ],
+      "name": "magicaljewelry_jewel_boss",
+      "rolls": 1.0
     }
   ]
 }

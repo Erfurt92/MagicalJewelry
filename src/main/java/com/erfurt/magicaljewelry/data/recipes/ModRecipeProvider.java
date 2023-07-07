@@ -1,7 +1,7 @@
 package com.erfurt.magicaljewelry.data.recipes;
 
 import com.erfurt.magicaljewelry.init.ItemInit;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
@@ -13,13 +13,13 @@ import static com.erfurt.magicaljewelry.util.enums.JewelRarity.*;
 
 public class ModRecipeProvider extends RecipeProvider
 {
-    public ModRecipeProvider(DataGenerator generatorIn)
+    public ModRecipeProvider(PackOutput packOutput)
     {
-        super(generatorIn);
+        super(packOutput);
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer)
+    protected void buildRecipes(Consumer<FinishedRecipe> consumer)
     {
         upgradeRecipe(consumer, ItemInit.GOLD_AMULET.get());
         upgradeRecipe(consumer, ItemInit.SILVER_AMULET.get());

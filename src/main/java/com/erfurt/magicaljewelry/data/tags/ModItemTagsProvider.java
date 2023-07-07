@@ -2,22 +2,24 @@ package com.erfurt.magicaljewelry.data.tags;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.init.ItemInit;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider
 {
-    public ModItemTagsProvider(DataGenerator dataGenerator, @Nullable ExistingFileHelper existingFileHelper)
+    public ModItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper, BlockTagsProvider blockTags)
     {
-        super(dataGenerator, new BlockTagsProvider(dataGenerator, MagicalJewelry.MOD_ID, existingFileHelper), MagicalJewelry.MOD_ID, existingFileHelper);
+        super(packOutput, lookupProvider, blockTags.contentsGetter(), MagicalJewelry.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags()
+    protected void addTags(HolderLookup.Provider provider)
     {
         tag(ModTagsBuilder.Items.NECKLACE).add(ItemInit.GOLD_AMULET.get(), ItemInit.SILVER_AMULET.get());
         tag(ModTagsBuilder.Items.RING).add(ItemInit.GOLD_RING.get(), ItemInit.SILVER_RING.get(), ItemInit.THE_ONE_RING.get());

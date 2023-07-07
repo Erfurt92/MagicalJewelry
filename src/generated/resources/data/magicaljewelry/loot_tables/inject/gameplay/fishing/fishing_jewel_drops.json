@@ -2,21 +2,21 @@
   "type": "minecraft:fishing",
   "pools": [
     {
-      "name": "magicaljewelry_jewel_fishing_treasure",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.001,
+          "condition": "minecraft:random_chance"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "magicaljewelry:the_one_ring"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.001
-        }
-      ]
+      "name": "magicaljewelry_jewel_fishing_treasure",
+      "rolls": 1.0
     }
   ]
 }

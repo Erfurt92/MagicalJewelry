@@ -44,7 +44,7 @@
   "item.magicaljewelry.silver_ring": "Silver Ring",
   "item.magicaljewelry.the_one_ring": "The One Ring",
   "item.magicaljewelry.tooltip.creative": "This item have no effects or attributes attached to it, and therefore does nothing! This item can't be upgraded!",
-  "itemGroup.magicaljewelryGroup": "Magical Jewelry",
+  "itemGroup.magicaljewelry_group": "Magical Jewelry",
   "rarity.magicaljewelry.epic": "Epic",
   "rarity.magicaljewelry.legendary": "Legendary",
   "rarity.magicaljewelry.rare": "Rare",

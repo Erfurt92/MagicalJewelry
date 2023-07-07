@@ -2,7 +2,7 @@ package com.erfurt.magicaljewelry.data.client;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.util.enums.JewelRarity;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import static com.erfurt.magicaljewelry.init.ItemInit.*;
@@ -11,9 +11,9 @@ import static com.erfurt.magicaljewelry.util.enums.JewelRarity.*;
 
 public class ModLangProvider extends LanguageProvider
 {
-    public ModLangProvider(DataGenerator gen)
+    public ModLangProvider(PackOutput packOutput)
     {
-        super(gen, MagicalJewelry.MOD_ID, "en_us");
+        super(packOutput, MagicalJewelry.MOD_ID, "en_us");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ModLangProvider extends LanguageProvider
         add(translatable(UPGRADE_DISABLE), "Upgrading is disabled");
         add(translatable(DROP_IN_CHESTS), "Jewels in chests");
 
-        add("itemGroup.magicaljewelryGroup", "Magical Jewelry");
+        add("itemGroup.magicaljewelry_group", "Magical Jewelry");
     }
 
     private String rarity(JewelRarity rarity)

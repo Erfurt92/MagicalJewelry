@@ -1,37 +1,24 @@
 package com.erfurt.magicaljewelry.data.loot.loottable;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ModLootTablesProvider extends LootTableProvider
 {
-    public ModLootTablesProvider(DataGenerator dataGeneratorIn)
-    {
-        super(dataGeneratorIn);
-    }
+    private static final List<LootTableProvider.SubProviderEntry> subProviders = List.of(new LootTableProvider.SubProviderEntry(ModFishingLootTablesBuilder::new, LootContextParamSets.FISHING), new LootTableProvider.SubProviderEntry(ModChestLootTablesBuilder::new, LootContextParamSets.CHEST), new LootTableProvider.SubProviderEntry(ModEntityLootTablesBuilder::new, LootContextParamSets.ENTITY));
 
-    @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables()
+    public ModLootTablesProvider(PackOutput packOutput)
     {
-        return ImmutableList.of(
-                Pair.of(ModFishingLootTablesBuilder::new, LootContextParamSets.FISHING),
-                Pair.of(ModChestLootTablesBuilder::new, LootContextParamSets.CHEST),
-                Pair.of(ModEntityLootTablesBuilder::new, LootContextParamSets.ENTITY)
-        );
+        super(packOutput, BuiltInLootTables.all(), subProviders);
     }
 
     @Override

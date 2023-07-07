@@ -1,14 +1,14 @@
 {
   "type": "magicaljewelry:jewel_upgrade",
+  "addition": {
+    "item": "minecraft:netherite_block"
+  },
   "base": {
     "type": "magicaljewelry:upgrade",
     "item": "magicaljewelry:gold_ring",
     "nbt": {
       "Rarity": "epic"
     }
-  },
-  "addition": {
-    "item": "minecraft:netherite_block"
   },
   "result": {
     "item": "magicaljewelry:gold_ring",

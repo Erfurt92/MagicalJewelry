@@ -1,9 +1,9 @@
 {
-  "replace": false,
   "entries": [
     "magicaljewelry:hostile_jewel_modifier",
     "magicaljewelry:boss_jewel_modifier",
     "magicaljewelry:water_jewel_modifier",
     "magicaljewelry:water_hostile_jewel_modifier"
-  ]
+  ],
+  "replace": false
 }

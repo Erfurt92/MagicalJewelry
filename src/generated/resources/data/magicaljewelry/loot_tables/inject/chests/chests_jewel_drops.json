@@ -2,9 +2,13 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "name": "magicaljewelry_jewel_chests",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.01,
+          "condition": "minecraft:random_chance"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -16,36 +20,32 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:gold_ring"
+          "name": "magicaljewelry:gold_ring",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:silver_ring"
+          "name": "magicaljewelry:silver_ring",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:gold_bracelet"
+          "name": "magicaljewelry:gold_bracelet",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "magicaljewelry:silver_bracelet"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.01
+          "name": "magicaljewelry:silver_bracelet",
+          "weight": 2
         }
       ],
       "functions": [
         {
           "function": "magicaljewelry:set_jewel_nbt"
         }
-      ]
+      ],
+      "name": "magicaljewelry_jewel_chests",
+      "rolls": 1.0
     }
   ]
 }

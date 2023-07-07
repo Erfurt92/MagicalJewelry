@@ -18,9 +18,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -75,7 +73,7 @@ public final class JewelCommands implements IJewelNBTHandler
 
     private static final SuggestionProvider<CommandSourceStack> itemIdSuggestions =
             (context, builder) -> SharedSuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getValues().stream()
-                    .filter(item -> item instanceof JewelItem).map(ForgeRegistryEntry::getRegistryName), builder);
+                    .filter(item -> item instanceof JewelItem).map(ForgeRegistries.ITEMS::getKey), builder);
     private static final SuggestionProvider<CommandSourceStack> raritySuggestions =
             (context, builder) -> SharedSuggestionProvider.suggest(rarities, builder);
     private static final SuggestionProvider<CommandSourceStack> testLootSuggestions =
@@ -178,7 +176,7 @@ public final class JewelCommands implements IJewelNBTHandler
                 if(entityItem != null)
                 {
                     entityItem.setNoPickUpDelay();
-                    entityItem.setOwner(player.getUUID());
+                    entityItem.setTarget(player.getUUID());
                 }
             }
         }
@@ -187,11 +185,11 @@ public final class JewelCommands implements IJewelNBTHandler
 
         if(targets.size() == 1)
         {
-            source.sendSuccess(new TranslatableComponent("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(Component.translatable("commands.give.success.single", 1, itemText, targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendSuccess(new TranslatableComponent("commands.give.success.single", 1, itemText, targets.size()), true);
+            source.sendSuccess(Component.translatable("commands.give.success.single", 1, itemText, targets.size()), true);
         }
 
         return targets.size();
@@ -234,27 +232,27 @@ public final class JewelCommands implements IJewelNBTHandler
         
         if(hostileLootingMultiplier >= 0F && hostileDropRate >= 0F)
         {
-            hostileDropRatePercent = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
-            hostileDropRateLooting = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(hostileDropRate, hostileLootingMultiplier))).withStyle(ChatFormatting.GREEN);
+            hostileDropRatePercent = Component.literal(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            hostileDropRateLooting = Component.literal(typeHostile.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(hostileDropRate, hostileLootingMultiplier))).withStyle(ChatFormatting.GREEN);
         }
         else if(hostileDropRate >= 0F)
         {
-            hostileDropRatePercent = new TextComponent(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            hostileDropRatePercent = Component.literal(typeHostile.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(hostileDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
 
         if(bossLootingMultiplier >= 0F && bossDropRate >= 0F)
         {
-            bossDropRatePercent = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
-            bossDropRateLooting = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(bossDropRate, bossLootingMultiplier))).withStyle(ChatFormatting.GREEN);
+            bossDropRatePercent = Component.literal(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            bossDropRateLooting = Component.literal(typeBoss.getString() + " - ").append(TranslatableComponent(dropratewith, looting, dropRateWithLootingPercent(bossDropRate, bossLootingMultiplier))).withStyle(ChatFormatting.GREEN);
         }
         else if(bossDropRate >= 0F)
         {
-            bossDropRatePercent = new TextComponent(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            bossDropRatePercent = Component.literal(typeBoss.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(bossDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
 
         if(chestDropRate >= 0F)
         {
-            chestDropRatePercent = new TextComponent(typeChest.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(chestDropRate * 100))).withStyle(ChatFormatting.GREEN);
+            chestDropRatePercent = Component.literal(typeChest.getString() + " - ").append(TranslatableComponent(droprate, floatToDeci(chestDropRate * 100))).withStyle(ChatFormatting.GREEN);
         }
         
         MutableComponent oneRarityDrop = TranslatableComponent(config1, "'oneRarityDrop'", "" + true).withStyle(ChatFormatting.YELLOW);
@@ -335,8 +333,8 @@ public final class JewelCommands implements IJewelNBTHandler
                 float legendaryDropRate = legendaryRate / totalDropRate * 100;
                 float epicDropRate = epicRate / totalDropRate * 100;
 
-                source.sendSuccess(new TextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).withStyle(LEGENDARY.getFormat()), false);
-                source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
+                source.sendSuccess(Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryDropRate)).withStyle(LEGENDARY.getFormat()), false);
+                source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
             }
         }
 
@@ -364,9 +362,9 @@ public final class JewelCommands implements IJewelNBTHandler
         if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
         if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
         if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
-        source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
-        source.sendSuccess(new TextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).withStyle(RARE.getFormat()), false);
-        source.sendSuccess(new TextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicDropRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareDropRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
     private static void defaultRarityDrop(CommandSourceStack source, @Nullable MutableComponent dropRatePercent, @Nullable MutableComponent dropRateLooting, @Nullable MutableComponent chestDropRatePercent, MutableComponent bothConfigOptions, float legendaryRate, float epicRate, float rareRate, float uncommonDropRate)
@@ -375,10 +373,10 @@ public final class JewelCommands implements IJewelNBTHandler
         if(chestDropRatePercent != null) source.sendSuccess(chestDropRatePercent, false);
         if(dropRatePercent != null) source.sendSuccess(dropRatePercent, false);
         if(dropRateLooting != null) source.sendSuccess(dropRateLooting, false);
-        source.sendSuccess(new TextComponent(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).withStyle(LEGENDARY.getFormat()), false);
-        source.sendSuccess(new TextComponent(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).withStyle(EPIC.getFormat()), false);
-        source.sendSuccess(new TextComponent(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).withStyle(RARE.getFormat()), false);
-        source.sendSuccess(new TextComponent(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
+        source.sendSuccess(Component.literal(LEGENDARY.getDisplayName() + ": " + floatToDeci(legendaryRate)).withStyle(LEGENDARY.getFormat()), false);
+        source.sendSuccess(Component.literal(EPIC.getDisplayName() + ": " + floatToDeci(epicRate)).withStyle(EPIC.getFormat()), false);
+        source.sendSuccess(Component.literal(RARE.getDisplayName() + ": " + floatToDeci(rareRate)).withStyle(RARE.getFormat()), false);
+        source.sendSuccess(Component.literal(UNCOMMON.getDisplayName() + ": " + floatToDeci(uncommonDropRate)).withStyle(UNCOMMON.getFormat()), false);
     }
 
     private static String dropRateWithLootingPercent(float dropRate, float lootingMultiplier)
@@ -407,33 +405,33 @@ public final class JewelCommands implements IJewelNBTHandler
         return TranslatableComponent(jewelTestLoot, "onerarity", rarityIn.getDisplayName()).withStyle(rarityIn.getFormat());
     }
 
-    private static TranslatableComponent TranslatableComponent(String[] strings, String stringIn)
+    private static MutableComponent TranslatableComponent(String[] strings, String stringIn)
     {
         return TranslatableComponent(strings, stringIn, null);
     }
 
-    private static TranslatableComponent TranslatableComponent(String[] strings, String string1In, String string2In)
+    private static MutableComponent TranslatableComponent(String[] strings, String string1In, String string2In)
     {
         return TranslatableComponent(strings, string1In, string2In, null);
     }
 
-    private static TranslatableComponent TranslatableComponent(String[] strings, String string1In, String string2In, String string3In)
+    private static MutableComponent TranslatableComponent(String[] strings, String string1In, String string2In, String string3In)
     {
         return TranslatableComponent(strings[0], strings[1], string1In, string2In, string3In);
     }
 
-    private static TranslatableComponent TranslatableComponent(String type, String nameIn)
+    private static MutableComponent TranslatableComponent(String type, String nameIn)
     {
         return TranslatableComponent(type, nameIn, null);
     }
 
-    private static TranslatableComponent TranslatableComponent(String type, String nameIn, String stringIn)
+    private static MutableComponent TranslatableComponent(String type, String nameIn, String stringIn)
     {
         return TranslatableComponent(type, nameIn, stringIn, null, null);
     }
 
-    private static TranslatableComponent TranslatableComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
+    private static MutableComponent TranslatableComponent(String type, String nameIn, @Nullable String string1In, @Nullable String string2In, @Nullable String string3In)
     {
-        return new TranslatableComponent("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
+        return Component.translatable("commands." + MagicalJewelry.MOD_ID + "." + type + "." + nameIn, string1In, string2In, string3In);
     }
 }

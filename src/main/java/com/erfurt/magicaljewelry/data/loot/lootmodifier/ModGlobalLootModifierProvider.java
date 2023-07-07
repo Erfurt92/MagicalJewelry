@@ -2,49 +2,48 @@ package com.erfurt.magicaljewelry.data.loot.lootmodifier;
 
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.data.loot.loottable.ModEntityLootTablesBuilder;
-import com.erfurt.magicaljewelry.init.LootInit;
 import com.erfurt.magicaljewelry.loot.JewelModifier;
 import com.erfurt.magicaljewelry.loot.conditions.BossEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.HostileEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterEntityCondition;
 import com.erfurt.magicaljewelry.loot.conditions.WaterHostileEntityCondition;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 
 public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
 {
-    public ModGlobalLootModifierProvider(DataGenerator generator)
+    public ModGlobalLootModifierProvider(PackOutput packOutput)
     {
-        super(generator, MagicalJewelry.MOD_ID);
+        super(packOutput, MagicalJewelry.MOD_ID);
     }
 
     @Override
     protected void start()
     {
-        add("hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+        add("hostile_jewel_modifier", new JewelModifier(
                 new LootItemCondition[] {
                         new HostileEntityCondition()
                 },
-                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.hostileLootTable)
+                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.hostileLootTable).toString()
         ));
-        add("boss_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+        add("boss_jewel_modifier", new JewelModifier(
                 new LootItemCondition[] {
                         new BossEntityCondition()
                 },
-                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.bossLootTable)
+                MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.bossLootTable).toString()
         ));
-       add("water_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+       add("water_jewel_modifier", new JewelModifier(
                new LootItemCondition[] {
                        new WaterEntityCondition()
                },
-               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterLootTable)
+               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterLootTable).toString()
        ));
-       add("water_hostile_jewel_modifier", LootInit.JEWEL_MODIFIER.get(), new JewelModifier(
+       add("water_hostile_jewel_modifier", new JewelModifier(
                new LootItemCondition[] {
                        new WaterHostileEntityCondition()
                },
-               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterHostileLootTable)
+               MagicalJewelry.getId("entities/" + ModEntityLootTablesBuilder.waterHostileLootTable).toString()
        ));
     }
 }

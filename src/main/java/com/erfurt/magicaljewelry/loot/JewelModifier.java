@@ -1,33 +1,39 @@
 package com.erfurt.magicaljewelry.loot;
 
-import com.google.gson.JsonObject;
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class JewelModifier extends LootModifier
 {
+    public static final Supplier<Codec<JewelModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst)
+            .and(Codec.STRING.fieldOf("add_loot_table").forGetter(m -> String.valueOf(m.lootTable)))
+            .apply(inst, JewelModifier::new)
+    ));
     private final ResourceLocation lootTable;
 
-    public JewelModifier(LootItemCondition[] lootConditions, ResourceLocation lootTable)
+    public JewelModifier(LootItemCondition[] lootConditions, String lootTable)
     {
         super(lootConditions);
-        this.lootTable = lootTable;
+        this.lootTable = ResourceLocation.tryParse(lootTable);
     }
 
     boolean doubleEntryPrevention = false;
 
-    @Nonnull
     @Override
-    public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
+    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
     {
         if(doubleEntryPrevention) return generatedLoot;
 
@@ -40,23 +46,9 @@ public class JewelModifier extends LootModifier
         return generatedLoot;
     }
 
-    public static class Serializer extends GlobalLootModifierSerializer<JewelModifier>
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec()
     {
-        String add_loot_table = "add_loot_table";
-
-        @Override
-        public JewelModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] iLootCondition)
-        {
-            ResourceLocation lootTable = new ResourceLocation(GsonHelper.getAsString(object, add_loot_table));
-            return new JewelModifier(iLootCondition, lootTable);
-        }
-
-        @Override
-        public JsonObject write(JewelModifier instance)
-        {
-            JsonObject json = makeConditions(instance.conditions);
-            json.addProperty(add_loot_table, instance.lootTable.toString());
-            return json;
-        }
+        return CODEC.get();
     }
 }

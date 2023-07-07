@@ -3,7 +3,7 @@ package com.erfurt.magicaljewelry.data.loot.loottable;
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTBossFunction;
 import com.erfurt.magicaljewelry.loot.functions.SetJewelNBTFunction;
-import net.minecraft.data.loot.EntityLoot;
+import net.minecraft.data.loot.packs.VanillaEntityLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWit
 
 import java.util.function.BiConsumer;
 
-public class ModEntityLootTablesBuilder extends EntityLoot implements IModLootTablesHelper
+public class ModEntityLootTablesBuilder extends VanillaEntityLoot implements IModLootTablesHelper
 {
     public static float hostileDropRate = 0.01F;
     public static float bossDropRate = 0.25F;
@@ -27,7 +27,7 @@ public class ModEntityLootTablesBuilder extends EntityLoot implements IModLootTa
     float waterLootingMultiplier = 0.001F;
 
     @Override
-    public void accept(BiConsumer<ResourceLocation, LootTable.Builder> builder)
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> builder)
     {
         builder.accept(MagicalJewelry.getId("entities/" + hostileLootTable), LootTable.lootTable().withPool(jewelDefaultLootTable("hostile", SetJewelNBTFunction.builder())
                 .when(LootItemKilledByPlayerCondition.killedByPlayer())

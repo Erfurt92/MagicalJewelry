@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -59,7 +60,7 @@ public class UpgradeNBTIngredient extends Ingredient
     {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(UpgradeNBTIngredient.Serializer.INSTANCE).toString());
-        json.addProperty("item", stack.getItem().getRegistryName().toString());
+        json.addProperty("item", ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
         if(stack.hasTag()) json.addProperty("nbt", stack.getTag().get(JewelItem.NBT_RARITY).toString());
         return json;
     }

@@ -9,18 +9,18 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewel;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import top.theillusivec4.curios.api.SlotContext;
@@ -45,7 +45,7 @@ public class JewelItem extends Item implements IJewel
 
 	public JewelItem()
 	{
-		super(new Item.Properties().durability(21600).tab(MagicalJewelry.GROUP));
+		super(new Item.Properties().durability(21600));
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class JewelItem extends Item implements IJewel
 
 					int level = maxLevelJewelEffect(levelValue, effect);
 
-					player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+					player.addEffect(new MobEffectInstance(effect, -1, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 
 					if(rarity.equals(JewelRarity.LEGENDARY.getName())) legendaryEffectRemoval(stack, player);
 				}
@@ -213,7 +213,7 @@ public class JewelItem extends Item implements IJewel
 						if(newValue < MagicalJewelryConfigBuilder.JEWEL_MAX_EFFECT_LEVEL.get())
 						{
 							player.removeEffect(effect);
-							player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, newValue - 1, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+							player.addEffect(new MobEffectInstance(effect, -1, newValue - 1, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 						}
 					}
 				}
@@ -293,7 +293,7 @@ public class JewelItem extends Item implements IJewel
 						int level = maxLevelJewelEffect(newValue - 1, effect);
 
 						player.removeEffect(effect);
-						player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+						player.addEffect(new MobEffectInstance(effect, -1, level, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 
 						break;
 					}
@@ -301,7 +301,7 @@ public class JewelItem extends Item implements IJewel
 					{
 						totalJewelEffectsPlayer.get(player).put(effect, 1);
 
-						player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+						player.addEffect(new MobEffectInstance(effect, -1, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 					}
 				}
 			}
@@ -309,7 +309,7 @@ public class JewelItem extends Item implements IJewel
 			{
 				totalJewelEffectsPlayer.get(player).put(effect, 1);
 
-				player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+				player.addEffect(new MobEffectInstance(effect, -1, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 			}
 		}
 		else
@@ -317,7 +317,7 @@ public class JewelItem extends Item implements IJewel
 			totalJewelEffectsPlayer.put(player, new HashMap<>());
 			totalJewelEffectsPlayer.get(player).put(effect, 1);
 
-			player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
+			player.addEffect(new MobEffectInstance(effect, -1, 0, true, false, !MagicalJewelryConfigBuilder.JEWEL_EFFECT_ICON.get()));
 		}
 	}
 
@@ -424,7 +424,7 @@ public class JewelItem extends Item implements IJewel
 
 			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_NAME.get()) tooltip.set(0, tooltip.get(0).copy().append(" (" + JewelRarity.byName(rarity).getDisplayName() + ")"));
 
-			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(new TextComponent(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
+			if(MagicalJewelryConfigBuilder.JEWEL_RARITY_TOOLTIP.get()) tooltip.add(Component.literal(JewelRarity.byName(rarity).getFormat() + JewelRarity.byName(rarity).getDisplayName()));
 
 			if(legendaryEffectsEnabled(stack) && stack.getTag().contains(NBT_LEGENDARY_EFFECT))
 			{
@@ -432,7 +432,7 @@ public class JewelItem extends Item implements IJewel
 				MobEffect effect = (MobEffect) legendaryEffectsList.toArray()[j];
 				String effectName = effect.getDisplayName().getString();
 
-				tooltip.add(new TextComponent(ChatFormatting.BLUE + effectName));
+				tooltip.add(Component.literal(ChatFormatting.BLUE + effectName));
 			}
 
 			if(stack.getTag().contains(NBT_EFFECTS))
@@ -443,16 +443,16 @@ public class JewelItem extends Item implements IJewel
 					MobEffect effect = (MobEffect) defaultEffectsList.toArray()[j];
 					String effectName = effect.getDisplayName().getString();
 
-					tooltip.add(new TextComponent(ChatFormatting.BLUE + effectName));
+					tooltip.add(Component.literal(ChatFormatting.BLUE + effectName));
 				}
 			}
 		}
 		else
 		{
-			String creativeJewelTooltip = new TranslatableComponent("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
+			String creativeJewelTooltip = Component.translatable("item." + MagicalJewelry.MOD_ID + ".tooltip.creative").getString();
 			for(String s : creativeJewelTooltip.split("(?<=\\G.{25,}\\s)"))
 			{
-				tooltip.add(new TextComponent(s).copy().withStyle(ChatFormatting.RED));
+				tooltip.add(Component.literal(s).copy().withStyle(ChatFormatting.RED));
 			}
 		}
 	}
@@ -544,19 +544,5 @@ public class JewelItem extends Item implements IJewel
 	{
 		if(tintIndex == 0) return getColorValue(stack);
 		return 0xFFFFFF;
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
-	{
-		if(allowdedIn(group))
-		{
-			for(DyeColor color : DyeColor.values())
-			{
-				ItemStack stack = new ItemStack(this);
-				setGemColor(stack, color.getSerializedName());
-				items.add(stack);
-			}
-		}
 	}
 }

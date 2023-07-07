@@ -1,14 +1,14 @@
 {
   "type": "magicaljewelry:jewel_upgrade",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
   "base": {
     "type": "magicaljewelry:upgrade",
     "item": "magicaljewelry:silver_bracelet",
     "nbt": {
       "Rarity": "rare"
     }
-  },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
   },
   "result": {
     "item": "magicaljewelry:silver_bracelet",

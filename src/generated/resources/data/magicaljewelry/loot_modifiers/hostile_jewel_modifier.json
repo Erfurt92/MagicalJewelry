@@ -1,9 +1,9 @@
 {
+  "type": "magicaljewelry:jewel_modifier",
+  "add_loot_table": "magicaljewelry:entities/hostile_jewel_drops",
   "conditions": [
     {
       "condition": "magicaljewelry:is_hostile_entity"
     }
-  ],
-  "add_loot_table": "magicaljewelry:entities/hostile_jewel_drops",
-  "type": "magicaljewelry:jewel_modifier"
+  ]
 }

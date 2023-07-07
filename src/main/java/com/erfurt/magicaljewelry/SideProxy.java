@@ -2,10 +2,11 @@ package com.erfurt.magicaljewelry;
 
 import com.erfurt.magicaljewelry.capability.JewelItemCapability;
 import com.erfurt.magicaljewelry.command.JewelCommands;
+import com.erfurt.magicaljewelry.init.CreativeTabInit;
 import com.erfurt.magicaljewelry.init.ItemInit;
 import com.erfurt.magicaljewelry.init.LootInit;
+import com.erfurt.magicaljewelry.init.RecipeInit;
 import com.erfurt.magicaljewelry.objects.items.JewelAmuletItem;
-import com.erfurt.magicaljewelry.recipes.JewelUpgradeRecipe;
 import com.erfurt.magicaljewelry.recipes.UpgradeNBTIngredient;
 import com.erfurt.magicaljewelry.render.JewelLayerDefinitions;
 import com.erfurt.magicaljewelry.render.model.JewelAmuletModel;
@@ -15,13 +16,11 @@ import com.erfurt.magicaljewelry.util.interfaces.IJewelAttributes;
 import com.erfurt.magicaljewelry.util.interfaces.IJewelEffects;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -31,10 +30,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
+
+import static com.erfurt.magicaljewelry.MagicalJewelry.getId;
 
 public class SideProxy
 {
@@ -48,8 +48,13 @@ public class SideProxy
 
         ItemInit.ITEMS.register(modEventBus);
         LootInit.GLM.register(modEventBus);
+        modEventBus.addListener(LootInit::init);
+        RecipeInit.SERIALIZERS.register(modEventBus);
+        CraftingHelper.register(getId("upgrade"), UpgradeNBTIngredient.Serializer.INSTANCE);
 
-        modEventBus.addGenericListener(RecipeSerializer.class, SideProxy::registerRecipeSerializers);
+        modEventBus.addListener(CreativeTabInit::registerCreativeModeTabs);
+        modEventBus.addListener(CreativeTabInit::addCreative);
+
         MinecraftForge.EVENT_BUS.addListener(SideProxy::registerCommands);
         modEventBus.addListener(SideProxy::init);
         modEventBus.addListener(SideProxy::enqueue);
@@ -60,7 +65,6 @@ public class SideProxy
     {
         IJewelEffects.init();
         IJewelAttributes.init();
-        LootInit.init();
     }
 
     private static void enqueue(final InterModEnqueueEvent event)
@@ -69,15 +73,6 @@ public class SideProxy
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("ring").size(2).build());
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("bracelet").size(2).build());
         MagicalJewelry.LOGGER.info("enqueue method registered.");
-    }
-
-    public static void registerRecipeSerializers(final RegistryEvent.Register<RecipeSerializer<?>> event)
-    {
-        CraftingHelper.register(MagicalJewelry.getId("upgrade"), UpgradeNBTIngredient.Serializer.INSTANCE);
-        IForgeRegistry<RecipeSerializer<?>> r = event.getRegistry();
-
-        r.registerAll(JewelUpgradeRecipe.Serializer.SERIALIZER);
-        MagicalJewelry.LOGGER.info("registerRecipeSerializers method registered.");
     }
 
     public static void registerCommands(RegisterCommandsEvent event)

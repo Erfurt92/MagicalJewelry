@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -70,7 +71,7 @@ public class JewelUpgradeRecipeBuilder
         {
             JsonObject jsonBase = new JsonObject();
             jsonBase.addProperty("type", CraftingHelper.getID(UpgradeNBTIngredient.Serializer.INSTANCE).toString());
-            jsonBase.addProperty("item", this.jewel.getRegistryName().toString());
+            jsonBase.addProperty("item", ForgeRegistries.ITEMS.getKey(this.jewel).toString());
             JsonObject jsonNBTin = new JsonObject();
             jsonNBTin.addProperty(JewelItem.NBT_RARITY, rarityIn);
             jsonBase.add("nbt", jsonNBTin);
@@ -79,7 +80,7 @@ public class JewelUpgradeRecipeBuilder
             json.add("addition", this.addition.toJson());
 
             JsonObject jsonResult = new JsonObject();
-            jsonResult.addProperty("item", this.jewel.getRegistryName().toString());
+            jsonResult.addProperty("item", ForgeRegistries.ITEMS.getKey(this.jewel).toString());
             JsonObject jsonNBTout = new JsonObject();
             jsonNBTout.addProperty(JewelItem.NBT_RARITY, rarityOut);
             jsonResult.add("nbt", jsonNBTout);

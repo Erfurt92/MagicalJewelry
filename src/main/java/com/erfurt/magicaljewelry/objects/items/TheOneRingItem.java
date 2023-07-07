@@ -8,7 +8,6 @@ import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -102,10 +101,10 @@ public class TheOneRingItem extends Item
     {
         tooltip.set(0, tooltip.get(0).copy().withStyle(ChatFormatting.GOLD));
 
-        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg durbatul\u00FBk.").copy().withStyle(ChatFormatting.DARK_RED));
-        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg gimbatul.").copy().withStyle(ChatFormatting.DARK_RED));
-        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "Ash nazg thrakatul\u00FBk").copy().withStyle(ChatFormatting.DARK_RED));
-        tooltip.add(new TextComponent(ChatFormatting.ITALIC + "agh burzum-ishi krimpatul.").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(Component.literal(ChatFormatting.ITALIC + "Ash nazg durbatul\u00FBk.").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(Component.literal(ChatFormatting.ITALIC + "Ash nazg gimbatul.").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(Component.literal(ChatFormatting.ITALIC + "Ash nazg thrakatul\u00FBk").copy().withStyle(ChatFormatting.DARK_RED));
+        tooltip.add(Component.literal(ChatFormatting.ITALIC + "agh burzum-ishi krimpatul.").copy().withStyle(ChatFormatting.DARK_RED));
     }
 
     @Override

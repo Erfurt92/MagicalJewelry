@@ -3,7 +3,6 @@ package com.erfurt.magicaljewelry.util.enums;
 import com.erfurt.magicaljewelry.MagicalJewelry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public enum JewelRarity
 {
@@ -20,7 +19,7 @@ public enum JewelRarity
 	{
 		this.name = nameIn;
 		this.format = formatIn;
-		this.displayName = new TranslatableComponent("rarity." + MagicalJewelry.MOD_ID + "." + nameIn);
+		this.displayName = Component.translatable("rarity." + MagicalJewelry.MOD_ID + "." + nameIn);
 	}
 	
 	public String getName()
